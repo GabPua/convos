@@ -1,12 +1,30 @@
+@import url('http://fonts.cdnfonts.com/css/keep-calm');
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+@layer base {
+  * {
+    font-family: 'Roboto', sans-serif
+  }
+}
+
+@layer components {
+  .input {
+    @apply rounded-full px-5 py-3 border my-3 text-xl min-w-max
+  }
+
+  .btn {
+    @apply rounded-full block font-keep-calm py-2
+  }
+
+  .btn.primary {
+    @apply bg-primary text-secondary border border-secondary
+  }
+}
+
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
