@@ -18,7 +18,7 @@ export default function Landing() {
             <p className="help-text">Wrong Password</p>
           </div>
           <button className="btn primary max-w-sm w-1/2 text-xl mt-2">Log In</button>
-          <a href="/" className="text-primary mt-2 hover:text-primary-hover">Forgot your password?</a>
+          <Link to="reset" className="text-primary mt-2 hover:text-primary-hover">Forgot your password?</Link>
         </div>
       </div>
       <div className="bg-primary shadow-2xl flex items-center flex-auto">

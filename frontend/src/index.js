@@ -2,8 +2,9 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import './index.css';
-import Landing from './landing';
-import Register from './register';
+import Landing from './routes/landing';
+import Register from './routes/register';
+import ResetForm from './routes/reset-form';
 import reportWebVitals from './reportWebVitals';
 
 ReactDOM.render(
@@ -12,6 +13,7 @@ ReactDOM.render(
       <Routes>
         <Route path="/" element={<Landing />} />
         <Route path="register" element={<Register />} />
+        <Route path="reset" element={<ResetForm />} />
       </Routes>
     </Router>
   </React.StrictMode>,
