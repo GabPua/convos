@@ -17,5 +17,8 @@
   "bugs": {
     "url": "https://github.com/GabPua/Convos/issues"
   },
-  "homepage": "https://github.com/GabPua/Convos#readme"
+  "homepage": "https://github.com/GabPua/Convos#readme",
+  "devDependencies": {
+    "concurrently": "^6.4.0"
+  }
 }
