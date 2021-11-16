@@ -1,12 +1,19 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import './index.css';
-import Landing from './Landing';
+import Landing from './landing';
+import Register from './register';
 import reportWebVitals from './reportWebVitals';
 
 ReactDOM.render(
   <React.StrictMode>
-    <Landing />
+    <Router>
+      <Routes>
+        <Route path="/" element={<Landing />} />
+        <Route path="register" element={<Register />} />
+      </Routes>
+    </Router>
   </React.StrictMode>,
   document.getElementById('root')
 );
