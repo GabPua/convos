@@ -1,3 +1,5 @@
+const colors = require('tailwindcss/colors')
+
 module.exports = {
   mode: 'jit',
   purge: ['./src/**/*.{js,jsx,ts,tsx}', './public/index.html'],
@@ -8,7 +10,9 @@ module.exports = {
     },
     colors: {
       primary: '#544179',
+      'primary-hover': '#371f65',
       secondary: '#FFF',
+      error: colors.red,
     }
   },
   variants: {

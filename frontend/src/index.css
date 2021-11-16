@@ -10,8 +10,16 @@
 }
 
 @layer components {
+  .field {
+    @apply mb-2 w-full
+  }
+
   .input {
-    @apply rounded-full px-5 py-3 border my-3 text-xl min-w-max
+    @apply rounded-full px-5 py-3 border text-xl min-w-max
+  }
+
+  .field .input+.help-text {
+    @apply ml-5 mt-1 font-thin text-sm text-error-600
   }
 
   .btn {
@@ -19,7 +27,7 @@
   }
 
   .btn.primary {
-    @apply bg-primary text-secondary border border-secondary
+    @apply bg-primary text-secondary border border-secondary hover:bg-primary-hover
   }
 }
 
