@@ -1,8 +1,18 @@
 /* eslint-disable no-param-reassign */
 const express = require('express');
 const path = require('path');
+const mongoose = require('mongoose');
 
 require('dotenv').config();
+const dbUri = process.env.SERVER_DB_URI;
+const options = {
+  useUnifiedTopology: true,
+  useNewUrlParser: true
+};
+
+mongoose.connect(dbUri, options, (err) => {
+  console.log(err? err : 'Established connection with mongodb!');
+});
 
 const app = express();
 
@@ -17,9 +27,12 @@ app.use((req, res, next) => {
   next();
 });
 
-app.get('/', (req, res) => {
-  res.send('Hello World!')
-})
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
+
+const user_route = require('./user_management/user_route')
+
+app.use('/api/user', user_route);
 
 app.listen(app.get('port'), () => {
   console.log(`Find the server at: http://localhost:${app.get('port')}/`); // eslint-disable-line no-console
