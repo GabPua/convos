@@ -29,6 +29,10 @@
   .btn.primary {
     @apply bg-primary text-secondary border border-secondary hover:bg-primary-hover
   }
+
+  .bg-question-mark {
+    @apply absolute z-0
+  }
 }
 
 body {
