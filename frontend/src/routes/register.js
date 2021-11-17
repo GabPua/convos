@@ -1,25 +1,6 @@
 import { Link } from 'react-router-dom'
 import { Component } from 'react'
-
-function isValidPassword(pw) {
-  const re = /\d/g;
-
-  if (pw == null || pw.trim() === '') {
-      return false;
-  } else {
-      return re.test(pw);
-  }
-}
-
-function isValidName(name) {
-  return !(name == null || name === '');
-}
-
-function isValidEmail(email) {
-  const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-  
-  return re.test(String(email).toLowerCase());
-}
+import { isValidEmail, isValidName, isValidPassword } from 'convos-validator'
 
 class Register extends Component {
   state = { error: {} }
@@ -37,7 +18,6 @@ class Register extends Component {
       fetch(`/api/user/checkEmail?_id=${email}`)
         .then(res => res.json())
         .then(res => {
-          console.log(res);
           if (!res.result) {
             error.email = "Email is taken"
           }
@@ -98,4 +78,4 @@ class Register extends Component {
   }
 }
 
-export default Register;
+export default Register

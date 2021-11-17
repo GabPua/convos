@@ -23,7 +23,7 @@
   }
 
   .btn {
-    @apply rounded-full block font-keep-calm py-2
+    @apply rounded-full block font-keep-calm py-2 cursor-pointer
   }
 
   .btn.primary {
