@@ -6,7 +6,7 @@ function isBlank(str) {
 }
 exports.isBlank = isBlank;
 function isValidPassword(password) {
-    const re = /\d/g;
+    const re = /^(?=.*?[a-zA-Z])(?=.*?[0-9~\`!@#$%^&*()_\-+={[}\]|:;"'<,>.?/]).{5,}$/g;
     return isBlank(password) ? false : re.test(password);
 }
 exports.isValidPassword = isValidPassword;

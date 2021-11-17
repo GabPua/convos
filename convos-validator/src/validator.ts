@@ -3,7 +3,7 @@ export function isBlank(str : string) : boolean {
 }
 
 export function isValidPassword(password : string) : boolean {
-  const re = /\d/g
+  const re = /^(?=.*?[a-zA-Z])(?=.*?[0-9~\`!@#$%^&*()_\-+={[}\]|:;"'<,>.?/]).{5,}$/g
   return isBlank(password) ? false : re.test(password)
 }
 

@@ -1,5 +1,5 @@
 const User = require('./user');
-const { isValidEmail, isValidName, isValidPassword } = require('convos-validator')
+const { isValidEmail, isValidName, isValidPassword } = require('convos-validator');
 
 async function isUniqueEmail(email) {
     return await User.findById(email, '_id', null).exec()
