@@ -8,26 +8,20 @@ async function isUniqueEmail(email) {
 
 const user_ctrl = {
     register: (req, res) => {
-        const { email, name, password } = req.body;
+        const { _id, name, password } = req.body;
 
         // final check before creating account
-        let isValid = isValidEmail(email) && isValidName(name) && isValidPassword(password);
+        let isValid = isValidEmail(_id) && isValidName(name) && isValidPassword(password);
         
-        isUniqueEmail(email)
+        isUniqueEmail(_id)
             .then(result => {
                 isValid = isValid && result;
                 if (!isValid) { // inputs are invalid
-                    res.send(false); 
+                    res.json({ result: true });
+                    return
                 }
-        
-                let user = {
-                    _id: email,
-                    name,
-                    password,
-                    groups: []
-                };
-        
-                User.create(user, (err, result) => res.send(err ? null : result));
+                let user = { _id, name, password, groups: [] };
+                User.create(user, (err, result) => res.send({ result }));
             })
     },
 

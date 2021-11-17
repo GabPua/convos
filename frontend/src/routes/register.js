@@ -2,41 +2,59 @@ import { Link } from 'react-router-dom'
 import { Component } from 'react'
 import { isValidEmail, isValidName, isValidPassword } from 'convos-validator'
 
+function createAccount(_id, name, password) {
+  fetch('/api/user/register', {
+    method: 'post',
+    headers: { 
+      'Accept': 'application/json',
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ _id, name, password })
+  })
+    .then(res => res.json())
+    .then(res => {
+      if (res.result) {
+        // TODO: Route to homepage
+        console.log('SUCCESS!')
+      } else {
+        alert("An error was encountered!")
+      }
+    })
+    .catch(e => alert(e))
+}
+
 class Register extends Component {
   state = { error: {} }
 
   handleSubmit = (e) => {
     e.preventDefault()
     const { email, name, password, confirm } = Object.fromEntries(new FormData(e.target))
-
     let error = {}
 
-    // check email
-    if (!isValidEmail(email)) {
-      error.email = "Invalid email"
-    } else {
-      fetch(`/api/user/checkEmail?_id=${email}`)
-        .then(res => res.json())
-        .then(res => {
-          if (!res.result) {
-            error.email = "Email is taken"
-          }
-        })
-    }
+    if (!isValidName(name)) { error.name = "Invalid name" }
 
-    // check name
-    if (!isValidName(name)) {
-      error.name = "Invalid name"
-    }
-
-    // check password
     if (!isValidPassword(password)) {
       error.password = "Invalid password"
     } else if (password !== confirm) {
       error.password = "Password does not match"
     }
 
-    this.setState({ error })
+    if (!isValidEmail(email)) {
+      error.email = "Invalid email"
+      this.setState({ error })
+    } else {
+      fetch(`/api/user/checkEmail?_id=${email}`)
+        .then(res => res.json())
+        .then(res => {
+          if (!res.result) error.email = "Email is taken"
+
+          if (Object.keys(error).length) {
+            this.setState({ error })
+          } else {
+            createAccount(email, name, password)
+          }
+        })
+    }
   }
 
   render() {

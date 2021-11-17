@@ -15,9 +15,9 @@ mongoose.connect(dbUri, options, (err) => {
 });
 
 const app = express();
-
 app.set('port', (process.env.PORT || 3001));
-
+app.use(express.urlencoded({ extended: true }))
+app.use(express.json());
 app.use('/', express.static(path.join(__dirname, 'public')));
 
 app.use((req, res, next) => {
@@ -26,9 +26,6 @@ app.use((req, res, next) => {
   res.setHeader('Expires', '0');
   next();
 });
-
-app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
 
 const user_route = require('./user_management/user_route')
 
