@@ -1,25 +1,5 @@
 const User = require('./user');
-
-/* temp password checker */
-function isValidPassword(pw) {
-    const re = /\d/g;
-
-    if (pw == null || pw.trim() === '') {
-        return false;
-    } else {
-        return re.test(pw);
-    }
-}
-
-function isValidName(name) {
-    return !(name == null || name === '');
-}
-
-function isValidEmail(email) {
-    const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-    
-    return re.test(String(email).toLowerCase());
-}
+const { isValidEmail, isValidName, isValidPassword } = require('convos-validator')
 
 async function isUniqueEmail(email) {
     return await User.findById(email, '_id', null).exec()
@@ -42,18 +22,12 @@ const user_ctrl = {
         
                 let user = {
                     _id: email,
-                    name: name,
-                    password: password,
+                    name,
+                    password,
                     groups: []
                 };
         
-                User.create(user, (err, result) => {
-                    if (err) {
-                        res.send(null);
-                    } else {
-                        res.send(result);
-                    }
-                });
+                User.create(user, (err, result) => res.send(err ? null : result));
             })
     },
 
