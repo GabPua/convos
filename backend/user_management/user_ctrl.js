@@ -1,5 +1,10 @@
+const dotenv = require('dotenv');
+const crypto = require('crypto-js');
 const User = require('./user');
 const { isValidEmail, isValidName, isValidPassword } = require('convos-validator');
+
+dotenv.config();
+const salt = process.env.SALT;
 
 async function getUser(_id) {
     return await User.findById(_id).exec();
@@ -21,9 +26,13 @@ const user_ctrl = {
                 isValid = isValid && result;
                 if (!isValid) { // inputs are invalid
                     res.json({ result: true });
-                    return
                 }
-                let user = { _id, name, password, groups: [] };
+                let user = {
+                    _id, 
+                    name, 
+                    password: crypto.AES.encrypt(password, salt).toString(), 
+                    groups: [] 
+                };
                 User.create(user, (err, result) => res.send({ result }));
             })
     },
@@ -37,6 +46,10 @@ const user_ctrl = {
     getUser: (req, res) => {
         const { _id } = req.query;
         getUser(_id)
+            .then(result => {
+                result.password = crypto.AES.decrypt(result.password, salt).toString(crypto.enc.Utf8);
+                return result;
+            })
             .then(result => res.json(result));
     }
 }
