@@ -5,4 +5,6 @@ router.get('/checkEmail', ctrl.checkEmail);
 
 router.post('/register', ctrl.register);
 
+router.get('/getUser', ctrl.getUser);
+
 module.exports = router;

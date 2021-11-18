@@ -1,9 +1,12 @@
 const User = require('./user');
 const { isValidEmail, isValidName, isValidPassword } = require('convos-validator');
 
+async function getUser(_id) {
+    return await User.findById(_id).exec();
+}
+
 async function isUniqueEmail(email) {
-    return await User.findById(email, '_id', null).exec()
-        .then(result => (result == null));
+    return await getUser(email).then(result => (result == null));
 }
 
 const user_ctrl = {
@@ -26,9 +29,15 @@ const user_ctrl = {
     },
 
     checkEmail: (req, res) => {
-        let email = req.query._id;
+        const email = req.query._id;
         isUniqueEmail(email)
             .then(result => res.json({result: result}));
+    },
+
+    getUser: (req, res) => {
+        const { _id } = req.query;
+        getUser(_id)
+            .then(result => res.json(result));
     }
 }
 
