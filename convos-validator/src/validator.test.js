@@ -26,9 +26,83 @@ describe('Tests for isBlank', () => {
     });
 });
 
-// describe('Tests for isValidEmail', () => {
-//     it();
-// });
+describe('Tests for isValidEmail', () => {
+    describe('Invalid Emails', () => {
+        it('Email is blank', () => {
+            const input = '  ';
+            const result = isValidEmail(input);
+            expect(result).toBe(false);
+        });
+
+        it('Email does not have @ or domain name', () => {
+            const input = 'email';
+            const result = isValidEmail(input);
+            expect(result).toBe(false);
+        });
+
+        it('Email does not have @', () => {
+            const input = 'email.example.com';
+            const result = isValidEmail(input);
+            expect(result).toBe(false);
+        });
+
+        it('Email does not have domain name', () => {
+            const input = 'email@';
+            const result = isValidEmail(input);
+            expect(result).toBe(false);
+        });
+
+        it('Email has multiple @', () => {
+            const input = 'email@example@example.com';
+            const result = isValidEmail(input);
+            expect(result).toBe(false);
+        });
+
+        it('Email has invalid username', () => {
+            const input = 'email..@example.com';
+            const result = isValidEmail(input);
+            expect(result).toBe(false);
+        });
+
+        it('Email has invalid domain', () => {
+            const input = 'email@$example.com';
+            const result = isValidEmail(input);
+            expect(result).toBe(false);
+        });
+
+        it('Email has invalid domain', () => {
+            const input = 'email@111.222.333.44444';
+            const result = isValidEmail(input);
+            expect(result).toBe(false);
+        });
+    });
+
+    describe('Valid Emails', () => {
+        it('Email has only letters in userame', () => {
+            const input = 'email@example.com';
+            const result = isValidEmail(input);
+            expect(result).toBe(true);
+        });
+
+        it('Email has only numbers in userame', () => {
+            const input = '1234@example.com';
+            const result = isValidEmail(input);
+            expect(result).toBe(true);
+        });
+
+        it('Email has dots in userame', () => {
+            const input = 'first.middle.last@example.com';
+            const result = isValidEmail(input);
+            expect(result).toBe(true);
+        });
+
+        it('Email has IP address as domain', () => {
+            const input = 'email@[123.123.123.123]';
+            const result = isValidEmail(input);
+            expect(result).toBe(true);
+        });
+    });
+});
 
 describe('Tests for isValidName', () => {
     it('Input name is null', () => {
