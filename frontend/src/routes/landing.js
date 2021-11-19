@@ -17,7 +17,7 @@ class Landing extends Component {
     if (!isValidEmail(email) || !isValidPassword(password)) {
       this.setState({ error: true })
     } else {
-      fetch(`/api/user/getUser?_id=${email}`)
+      fetch(`/api/user/getUser?_id=${email.toString().toLowerCase()}`)
       .then(res => res.json())
       .then(res => {
         if (res == null || res.password !== password) {

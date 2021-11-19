@@ -43,7 +43,7 @@ class Register extends Component {
       error.email = "Invalid email"
       this.setState({ error })
     } else {
-      fetch(`/api/user/checkEmail?_id=${email}`)
+      fetch(`/api/user/checkEmail?_id=${email.toString().toLowerCase()}`)
         .then(res => res.json())
         .then(res => {
           if (!res.result) error.email = "Email is taken"
@@ -51,7 +51,7 @@ class Register extends Component {
           if (Object.keys(error).length) {
             this.setState({ error })
           } else {
-            createAccount(email, name, password)
+            createAccount(email.toString().toLowerCase(), name, password)
           }
         })
     }
