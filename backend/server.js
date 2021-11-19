@@ -27,9 +27,11 @@ app.use((req, res, next) => {
   next();
 });
 
-const user_route = require('./user_management/user_route')
+const user_route = require('./user_management/user_route');
+const password_route = require('./forgot_password/password_route');
 
 app.use('/api/user', user_route);
+app.use('/api/password', password_route);
 
 app.listen(app.get('port'), () => {
   console.log(`Find the server at: http://localhost:${app.get('port')}/`); // eslint-disable-line no-console

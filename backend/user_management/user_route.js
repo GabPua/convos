@@ -7,4 +7,6 @@ router.post('/register', ctrl.register);
 
 router.get('/getUser', ctrl.getUser);
 
+router.patch('/updatePassword', ctrl.updatePassword);
+
 module.exports = router;
