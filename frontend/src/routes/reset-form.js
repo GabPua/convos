@@ -1,5 +1,6 @@
 import { Component } from 'react'
 import { Link } from 'react-router-dom'
+import { isValidEmail, isValidPassword } from 'convos-validator'
 
 function Content(props) {
   switch (props.status) {
@@ -7,8 +8,8 @@ function Content(props) {
       return (
         <form onSubmit={props.submitHandler}>
           <div className="field">
-            <input type="email" className="input w-full" placeholder="Email" />
-            <p className="help-text">send help</p>
+            <input type="email" name="email" className="input w-full" placeholder="Email" />
+            <p className="help-text">{props.error}</p>
           </div>
           <input type="submit" className="btn primary w-full mt-4" />
         </form>
@@ -18,10 +19,11 @@ function Content(props) {
       return (
         <form onSubmit={props.submitHandler}>
           <div className="field">
-            <input className="input w-full" placeholder="Password" />
+            <input type="password" name="password" className="input w-full" placeholder="Password" />
           </div>
           <div className="field">
-            <input className="input w-full" placeholder="Confirm password" />
+            <input type="password" name="confirm" className="input w-full" placeholder="Confirm password" />
+            <p className="help-text">{props.error}</p>
           </div>
           <input type="submit" className="btn primary w-full mt-4" />
         </form>
@@ -40,7 +42,7 @@ function Content(props) {
 }
 
 class ResetForm extends Component {
-  state = { status: undefined, submitHandler: undefined }
+  state = { status: undefined, error: undefined, _id: undefined, submitHandler: undefined }
 
   componentDidMount() {
     // initial state (on mount)
@@ -48,25 +50,108 @@ class ResetForm extends Component {
       const params = new URLSearchParams(window.location.search)
 
       if (params.get('token') && params.get('user')) {
-        // TODO: confirm with server if token is not expired by fetching
-        this.setState({ status: 'get password', submitHandler: this.onPasswordSubmit })
+        const token = params.get('token')
+        const email = params.get('user')
+
+        fetch(`/api/password/checkToken?token=${token}&user=${email}`)
+          .then(res => res.json())
+          .then(res => {
+            if (res.result) {
+              this.setState({ status: 'get password', submitHandler: this.onPasswordSubmit, _id: res.email })
+            } else {
+              this.setState({ 
+                status: 'get email', 
+                submitHandler: this.onEmailSubmit, 
+                error: "Invalid or expired password reset token" 
+              })
+            }
+          })
       } else {
         this.setState({ status: 'get email', submitHandler: this.onEmailSubmit })
       }
     }
   }
 
+  sendEmail = (email) => {
+    fetch(`/api/password/requestPasswordReset?_id=${email.toLowerCase()}`)
+      .then(res => res.json())
+      .then(res => {
+        if (res.result) {
+          this.setState({ status: 'email sent' })
+        } else {
+          this.setState({ 
+            status: 'get email', 
+            submitHandler: this.onEmailSubmit, 
+            error: "Something went wrong. Please try again." 
+          })
+        }
+      })
+  }
+
   onEmailSubmit = (e) => {
     e.preventDefault()
-    // TODO: ask server to send email, if success
-    this.setState({ status: 'email sent' })
+    const { email } = Object.fromEntries(new FormData(e.target))
+
+    if (!isValidEmail(email)) {
+      this.setState({ status: 'get email', submitHandler: this.onEmailSubmit, error: "Invalid email" })
+    } else {
+      fetch(`/api/user/checkEmail?_id=${email.toString().toLowerCase()}`)
+      .then(res => res.json())
+      .then(res => {
+        if (res.result) {
+          this.setState({ 
+            status: 'get email', 
+            submitHandler: this.onEmailSubmit, 
+            error: "No account associated with email" 
+          })
+        } else {
+          this.sendEmail(email)
+        }
+      })
+    }
   }
 
   onPasswordSubmit = (e) => {
     e.preventDefault()
     // TODO: front end check, update backend password
-    this.setState({ status: 'password updated' })
-    window.history.replaceState(null, '', '/reset')
+    const { password, confirm } = Object.fromEntries(new FormData(e.target))
+    const _id = this.state._id
+
+    if (!isValidPassword(password)) {
+      this.setState({ 
+        status: 'get password', 
+        submitHandler: this.onPasswordSubmit, 
+        _id: _id, 
+        error: "Invalid password" 
+      })
+    } else if (password !== confirm) {
+      this.setState({ 
+        status: 'get password', 
+        submitHandler: this.onPasswordSubmit, 
+        _id: _id, 
+        error: "Password does not match" 
+      })
+    } else {
+      fetch('/api/user/updatePassword', {
+        method: 'patch',
+        headers: { 
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ _id, password })
+      })
+        .then(res => res.json())
+        .then(res => {
+          if (res.result) {
+            this.setState({ status: 'password updated' })
+            window.history.replaceState(null, '', '/reset')
+            console.log('SUCCESS!')
+          } else {
+            alert("An error was encountered!")
+          }
+        })
+        .catch(e => alert(e))
+    }
   }
 
   render() {
@@ -89,6 +174,7 @@ class ResetForm extends Component {
           </figure>
           <Content
             status={this.state.status}
+            error={this.state.error}
             submitHandler={this.state.submitHandler}
           />
         </div>

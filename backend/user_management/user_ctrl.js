@@ -47,10 +47,20 @@ const user_ctrl = {
         const { _id } = req.query;
         getUser(_id)
             .then(result => {
-                result.password = crypto.AES.decrypt(result.password, salt).toString(crypto.enc.Utf8);
+                if (result != null) {
+                    result.password = crypto.AES.decrypt(result.password, salt).toString(crypto.enc.Utf8);
+                }
+
                 return result;
             })
             .then(result => res.json(result));
+    },
+
+    updatePassword: (req, res) => {
+        const { _id, password } = req.body;
+        User.updateOne({ _id }, { password: crypto.AES.encrypt(password, salt).toString() }, (err, result) => {
+            res.send(result);
+        });
     }
 }
 
