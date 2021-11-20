@@ -1,52 +1,49 @@
 const dotenv = require('dotenv');
-const crypto = require('crypto');
-const cryptojs = require('crypto-js');
+const { randomBytes } = require('crypto');
 const Token = require('./token');
+const { sendPasswordReset } = require('../utils/email/sendEmail');
+const ObjectId = require('mongoose').Types.ObjectId;
 
 dotenv.config();
-const salt = process.env.SALT;
 
 const password_ctrl = {
-    requestPasswordReset: (req, res) => {
-        const email = req.query._id;
+  requestPasswordReset: (req, res) => {
+    const email = req.query._id;
 
-        Token.findOneAndDelete({ userId: email }, (err) => {
-            let resetToken = crypto.randomBytes(32).toString("hex"); // generate random token
-            const tokenHash = cryptojs.AES.encrypt(resetToken, salt).toString(); // encrypt token
-            const emailHash = cryptojs.AES.encrypt(email, salt).toString(); // encrypt email
+    Token.findOneAndDelete({ userId: email }, () => {
+      const tokenString = randomBytes(16).toString('hex'); // generate random token
 
-            let token = {
-                userId: email,
-                token: tokenHash,
-                createdAt: Date.now()
-            };
+      let myToken = {
+        userId: email,
+        token: tokenString,
+      };
 
-            Token.create(token, (err) => {
-                const link = `http://localhost:3000/reset?token=${resetToken}&user=${emailHash}`;
-                // TODO: send email here
+      Token.create(myToken, async (err, token) => {
+        let result = false
+        try {
+          if (!err) {
+            // TODO: how to set domain???
+            await sendPasswordReset(email, `http://localhost:3000/reset?token=${tokenString}&id=${token._id}`)
+            result = true
+          }
+        } finally {
+          res.json({ result })
+        }
+      });
+    });
+  },
 
-                let result = true;
-                res.json({ result: result });
-            });
-        });
-    },
+  checkToken: (req, res) => {
+    const { token, id } = req.query;
 
-    checkToken: (req, res) => {
-        const token = req.query.token;
-        const emailHash = req.query.user;
-        const email = cryptojs.AES.decrypt(emailHash, salt).toString(cryptojs.enc.Utf8); // decrypt email
-
-        Token.findOne({ userId: email }).exec()
-            .then(result => {
-                if (result == null) {
-                    return false;
-                } else {
-                    // compare tokens
-                    return cryptojs.AES.decrypt(result.token, salt).toString(cryptojs.enc.Utf8) === token;
-                }
-            })
-            .then(result => res.json({ result: result, email: email }));
+    if (ObjectId.isValid(id) && ObjectId(id).toString() === id) {
+      Token.findById(id).exec()
+      .then(result => result != null && result.token === token)
+      .then(result => res.json({ result }));
+    } else {
+      res.json({ result: false })
     }
+  }
 }
 
 module.exports = password_ctrl;
