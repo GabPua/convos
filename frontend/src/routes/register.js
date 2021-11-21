@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import { Component } from 'react'
+import React from 'react'
 import { isValidEmail, isValidName, isValidPassword } from 'convos-validator'
 
 function createAccount(_id, name, password) {
@@ -17,13 +17,13 @@ function createAccount(_id, name, password) {
         // TODO: Route to homepage
         console.log('SUCCESS!')
       } else {
-        alert("An error was encountered!")
+        alert('An error was encountered!')
       }
     })
     .catch(e => alert(e))
 }
 
-class Register extends Component {
+class Register extends React.Component {
   state = { error: {} }
 
   handleSubmit = (e) => {
@@ -31,22 +31,22 @@ class Register extends Component {
     const { email, name, password, confirm } = Object.fromEntries(new FormData(e.target))
     let error = {}
 
-    if (!isValidName(name)) { error.name = "Invalid name" }
+    if (!isValidName(name)) { error.name = 'Invalid name' }
 
     if (!isValidPassword(password)) {
-      error.password = "Invalid password"
+      error.password = 'Invalid password'
     } else if (password !== confirm) {
-      error.password = "Password does not match"
+      error.password = 'Password does not match'
     }
 
     if (!isValidEmail(email)) {
-      error.email = "Invalid email"
+      error.email = 'Invalid email'
       this.setState({ error })
     } else {
       fetch(`/api/user/checkEmail?_id=${email.toString().toLowerCase()}`)
         .then(res => res.json())
         .then(res => {
-          if (!res.result) error.email = "Email is taken"
+          if (!res.result) error.email = 'Email is taken'
 
           if (Object.keys(error).length) {
             this.setState({ error })

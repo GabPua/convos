@@ -38,19 +38,19 @@ const password_ctrl = {
 
     if (ObjectId.isValid(id) && ObjectId(id).toString() === id) {
       Token.findById(id).exec()
-      .then(result => {
-        let verified = result != null && result.token === token;
-        let json = { result: verified };
-        
-        if (verified) {
-          json.email = result.userId;
-        }
-        res.json(json);
-      });
+        .then(result => {
+          let verified = result != null && result.token === token;
+          let json = { result: verified };
+
+          if (verified) {
+            json.email = result.userId;
+          }
+          res.json(json);
+        });
     } else {
       res.json({ result: false });
     }
   }
-}
+};
 
 module.exports = password_ctrl;

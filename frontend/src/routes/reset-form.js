@@ -1,5 +1,6 @@
-import { Component } from 'react'
+import React from 'react'
 import { Link } from 'react-router-dom'
+import PropTypes from 'prop-types'
 import { isValidEmail, isValidPassword } from 'convos-validator'
 
 function SubmitButton(props) {
@@ -13,46 +14,56 @@ function SubmitButton(props) {
   return <input type="submit" className="btn primary w-full mt-4" />
 }
 
-function Content(props) {
-  switch (props.status) {
-    case 'get email':
-      return (
-        <form onSubmit={props.submitHandler}>
-          <div className="field">
-            <input type="email" name="email" className="input w-full" placeholder="Email" />
-            <p className="help-text">{props.error}</p>
-          </div>
-          <SubmitButton loading={props.loading} />
-        </form>
-      )
-
-    case 'get password':
-      return (
-        <form onSubmit={props.submitHandler}>
-          <div className="field">
-            <input type="password" name="password" className="input w-full" placeholder="Password" />
-          </div>
-          <div className="field">
-            <input type="password" name="confirm" className="input w-full" placeholder="Confirm password" />
-            <p className="help-text">{props.error}</p>
-          </div>
-          <SubmitButton loading={props.loading} />
-        </form>
-      )
-
-    case 'password updated':
-      return (
-        <p className="text-center text-xl">Password has been updated!<br />
-          Please <Link to="/" className="text-primary font-bold hover:text-primary-hover">log in.</Link></p>
-      )
-
-    default:
-      return <p className="text-center text-xl">Email was sent.<br />Please check your email!</p>
-  }
-
+SubmitButton.propTypes = {
+  loading: PropTypes.bool.isRequired
 }
 
-class ResetForm extends Component {
+function Content(props) {
+  switch (props.status) {
+  case 'get email':
+    return (
+      <form onSubmit={props.submitHandler}>
+        <div className="field">
+          <input type="email" name="email" className="input w-full" placeholder="Email" />
+          <p className="help-text">{props.error}</p>
+        </div>
+        <SubmitButton loading={props.loading} />
+      </form>
+    )
+
+  case 'get password':
+    return (
+      <form onSubmit={props.submitHandler}>
+        <div className="field">
+          <input type="password" name="password" className="input w-full" placeholder="Password" />
+        </div>
+        <div className="field">
+          <input type="password" name="confirm" className="input w-full" placeholder="Confirm password" />
+          <p className="help-text">{props.error}</p>
+        </div>
+        <SubmitButton loading={props.loading} />
+      </form>
+    )
+
+  case 'password updated':
+    return (
+      <p className="text-center text-xl">Password has been updated!<br />
+        Please <Link to="/" className="text-primary font-bold hover:text-primary-hover">log in.</Link></p>
+    )
+
+  default:
+    return <p className="text-center text-xl">Email was sent.<br />Please check your email!</p>
+  }
+}
+
+Content.propTypes = {
+  status: PropTypes.string.isRequired,
+  submitHandler: PropTypes.func,
+  error: PropTypes.string,
+  loading: PropTypes.bool.isRequired,
+}
+
+class ResetForm extends React.Component {
   state = { status: undefined, error: undefined, _id: undefined, submitHandler: undefined, loading: false }
 
   componentDidMount() {
@@ -72,7 +83,7 @@ class ResetForm extends Component {
               this.setState({
                 status: 'get email',
                 submitHandler: this.onEmailSubmit,
-                error: "Invalid or expired password reset token"
+                error: 'Invalid or expired password reset token'
               })
             }
           })
@@ -93,7 +104,7 @@ class ResetForm extends Component {
           this.setState({
             status: 'get email',
             submitHandler: this.onEmailSubmit,
-            error: "Something went wrong. Please try again.",
+            error: 'Something went wrong. Please try again.',
           })
         }
       }).finally(() => this.setState({ loading: false }))
@@ -104,7 +115,7 @@ class ResetForm extends Component {
     const { email } = Object.fromEntries(new FormData(e.target))
 
     if (!isValidEmail(email)) {
-      this.setState({ status: 'get email', submitHandler: this.onEmailSubmit, error: "Invalid email" })
+      this.setState({ status: 'get email', submitHandler: this.onEmailSubmit, error: 'Invalid email' })
     } else {
       fetch(`/api/user/checkEmail?_id=${email.toString().toLowerCase()}`)
         .then(res => res.json())
@@ -113,7 +124,7 @@ class ResetForm extends Component {
             this.setState({
               status: 'get email',
               submitHandler: this.onEmailSubmit,
-              error: "No account associated with email"
+              error: 'No account associated with email'
             })
           } else {
             this.sendEmail(email)
@@ -133,14 +144,14 @@ class ResetForm extends Component {
         status: 'get password',
         submitHandler: this.onPasswordSubmit,
         _id: _id,
-        error: "Invalid password"
+        error: 'Invalid password'
       })
     } else if (password !== confirm) {
       this.setState({
         status: 'get password',
         submitHandler: this.onPasswordSubmit,
         _id: _id,
-        error: "Password does not match"
+        error: 'Password does not match'
       })
     } else {
       fetch('/api/user/updatePassword', {
@@ -158,7 +169,7 @@ class ResetForm extends Component {
             window.history.replaceState(null, '', '/reset')
             console.log('SUCCESS!')
           } else {
-            alert("An error was encountered!")
+            alert('An error was encountered!')
           }
         })
         .catch(e => alert(e))
