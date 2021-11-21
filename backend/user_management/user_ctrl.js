@@ -1,6 +1,6 @@
 const User = require('./user');
 const { isValidEmail, isValidName, isValidPassword } = require('convos-validator');
-const { randomBytes, createHmac } = require('crypto');
+const hashPassword = require('../utils/hashPassword')
 
 async function getUser(_id) {
   return await User.findById(_id).exec();
@@ -20,7 +20,7 @@ const user_ctrl = {
     isUniqueEmail(_id)
       .then(result => {
         if (isValid && result) {
-          const user = { _id, name, password, groups: [] };
+          const user = { _id, name, groups: [], ...hashPassword(password) };
           User.create(user, (err, result) => res.send({ result }));
           return;
         }
@@ -37,10 +37,7 @@ const user_ctrl = {
   login: (req, res) => {
     const { _id, password } = req.query;
     getUser(_id)
-      .then(user => {
-        const salt = user.salt;
-        return createHmac('sha512', salt).update(password).digest('hex') === user.password;
-      })
+      .then(user => hashPassword(password, user.salt).password === user.password)
       .then(result => res.json({ result }));
   },
 
@@ -50,12 +47,7 @@ const user_ctrl = {
 
   updatePassword: (req, res) => {
     const { _id, password } = req.body;
-    const salt = randomBytes(32).toString('hex');
-    const newPassword = createHmac('sha512', salt).update(password).digest('hex');
-
-    User.updateOne({ _id }, { password: newPassword, salt }, (err, result) => {
-      res.send({ result: true });
-    });
+    User.updateOne({ _id }, { ...hashPassword(password) }, (err) => res.json({ result: !err }));
   }
 }
 
