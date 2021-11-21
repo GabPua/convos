@@ -16,6 +16,6 @@ userSchema.pre('save', function encryptPassword(next) {
     this.password = createHmac('sha512', this.salt).update(this.password).digest('hex');
   }
   next();
-})
+});
 
 module.exports = mongoose.model('User', userSchema, 'users');

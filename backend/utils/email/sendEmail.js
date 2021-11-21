@@ -1,8 +1,8 @@
-"use strict"
+"use strict";
 const nodemailer = require('nodemailer');
-require('dotenv').config()
+require('dotenv').config();
 
-const user = process.env.MAIL_USER
+const user = process.env.MAIL_USER;
 
 async function sendEmail(to, subject, html) {
   const transporter = nodemailer.createTransport({
@@ -11,9 +11,12 @@ async function sendEmail(to, subject, html) {
       user,
       pass: process.env.MAIL_PASS,
     },
-  })
+    tls: {
+      rejectUnauthorized: false
+    }
+  });
 
-  return await transporter.sendMail({ from: `Convos <${user}>`, to, subject, html })
+  return await transporter.sendMail({ from: `Convos <${user}>`, to, subject, html });
 }
 
 async function sendPasswordReset(to, link) {
@@ -21,10 +24,10 @@ async function sendPasswordReset(to, link) {
     <p>Good day!</p>
     <p>Please click on this <a href="${link}">link</a> to reset your password!</p>
     <p>The link will expire in 1 hour.</p>
-  `)
+  `);
 }
 
 module.exports = {
   sendEmail,
   sendPasswordReset,
-}
+};

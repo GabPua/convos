@@ -1,8 +1,6 @@
-const dotenv = require('dotenv');
 const User = require('./user');
 const { isValidEmail, isValidName, isValidPassword } = require('convos-validator');
-
-dotenv.config();
+const { randomBytes, createHmac } = require('crypto');
 
 async function getUser(_id) {
   return await User.findById(_id).exec();
@@ -24,7 +22,7 @@ const user_ctrl = {
         if (isValid && result) {
           const user = { _id, name, password, groups: [] };
           User.create(user, (err, result) => res.send({ result }));
-          return
+          return;
         }
 
         res.json({ result: false });
@@ -32,7 +30,18 @@ const user_ctrl = {
   },
 
   checkEmail: (req, res) => {
-    isUniqueEmail(req.query._id).then(result => res.json({ result }));
+    isUniqueEmail(req.query._id)
+      .then(result => res.json({ result }));
+  },
+
+  login: (req, res) => {
+    const { _id, password } = req.query;
+    getUser(_id)
+      .then(user => {
+        const salt = user.salt;
+        return createHmac('sha512', salt).update(password).digest('hex') === user.password;
+      })
+      .then(result => res.json({ result }));
   },
 
   getUser: (req, res) => {
@@ -41,8 +50,11 @@ const user_ctrl = {
 
   updatePassword: (req, res) => {
     const { _id, password } = req.body;
-    User.updateOne({ _id }, { password }, (err, result) => {
-      res.send(result);
+    const salt = randomBytes(32).toString('hex');
+    const newPassword = createHmac('sha512', salt).update(password).digest('hex');
+
+    User.updateOne({ _id }, { password: newPassword, salt }, (err, result) => {
+      res.send({ result: true });
     });
   }
 }

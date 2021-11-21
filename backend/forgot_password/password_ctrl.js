@@ -19,15 +19,15 @@ const password_ctrl = {
       };
 
       Token.create(myToken, async (err, token) => {
-        let result = false
+        let result = false;
         try {
           if (!err) {
             // TODO: how to set domain???
-            await sendPasswordReset(email, `http://localhost:3000/reset?token=${tokenString}&id=${token._id}`)
-            result = true
+            await sendPasswordReset(email, `http://localhost:3000/reset?token=${tokenString}&id=${token._id}`);
+            result = true;
           }
         } finally {
-          res.json({ result })
+          res.json({ result });
         }
       });
     });
@@ -38,10 +38,17 @@ const password_ctrl = {
 
     if (ObjectId.isValid(id) && ObjectId(id).toString() === id) {
       Token.findById(id).exec()
-      .then(result => result != null && result.token === token)
-      .then(result => res.json({ result }));
+      .then(result => {
+        let verified = result != null && result.token === token;
+        let json = { result: verified };
+        
+        if (verified) {
+          json.email = result.userId;
+        }
+        res.json(json);
+      });
     } else {
-      res.json({ result: false })
+      res.json({ result: false });
     }
   }
 }

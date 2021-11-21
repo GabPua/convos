@@ -2,9 +2,9 @@ import { Link } from 'react-router-dom'
 import { Component } from 'react'
 import { isValidEmail, isValidPassword } from 'convos-validator'
 
-function loginAccount(user) {
+function loginAccount(_id) {
   // TODO: Route to homepage
-  console.log(user)
+  console.log(_id)
 }
 
 class Landing extends Component {
@@ -17,14 +17,15 @@ class Landing extends Component {
     if (!isValidEmail(email) || !isValidPassword(password)) {
       this.setState({ error: true })
     } else {
-      fetch(`/api/user/getUser?_id=${email.toString().toLowerCase()}`)
+      const _id = email.toString().toLowerCase()
+      fetch(`/api/user/login?_id=${_id}&password=${password}`)
       .then(res => res.json())
       .then(res => {
-        if (res == null || res.password !== password) {
-          this.setState({ error: true })
-        } else {
+        if (res.result) {
           this.setState({ error: false })
-          loginAccount(res)
+          loginAccount(_id)
+        } else {
+          this.setState({ error: true })
         }
       })
     }

@@ -144,7 +144,7 @@ class ResetForm extends Component {
       })
     } else {
       fetch('/api/user/updatePassword', {
-        method: 'patch',
+        method: 'post',
         headers: {
           'Accept': 'application/json',
           'Content-Type': 'application/json',

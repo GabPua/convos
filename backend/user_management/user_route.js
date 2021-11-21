@@ -5,8 +5,10 @@ router.get('/checkEmail', ctrl.checkEmail);
 
 router.post('/register', ctrl.register);
 
+router.get('/login', ctrl.login);
+
 router.get('/getUser', ctrl.getUser);
 
-router.patch('/updatePassword', ctrl.updatePassword);
+router.post('/updatePassword', ctrl.updatePassword);
 
 module.exports = router;
