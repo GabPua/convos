@@ -5,6 +5,7 @@ import './index.css'
 import Landing from './routes/landing'
 import Register from './routes/register'
 import ResetForm from './routes/reset-form'
+import Dashboard from './routes/dashboard'
 import reportWebVitals from './reportWebVitals'
 
 ReactDOM.render(
@@ -14,6 +15,7 @@ ReactDOM.render(
         <Route path="/" element={<Landing />} />
         <Route path="register" element={<Register />} />
         <Route path="reset" element={<ResetForm />} />
+        <Route path="/dashboard" element={<Dashboard />} />
       </Routes>
     </Router>
   </React.StrictMode>,

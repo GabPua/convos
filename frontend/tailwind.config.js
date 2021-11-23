@@ -13,6 +13,7 @@ module.exports = {
       'primary-hover': '#371f65',
       secondary: '#FFF',
       error: colors.red,
+      gray: colors.gray,
     }
   },
   variants: {
