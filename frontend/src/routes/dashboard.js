@@ -1,8 +1,12 @@
 import React from 'react'
+import { useLocation } from 'react-router'
 // eslint-disable-next-line no-unused-vars
 import styles from '../dashboard.css'
 
 export default function Dashboard() {
+  const state = useLocation()
+  console.log(state)
+
   return (
     <body>
       <header className="bg-primary fixed w-full">
