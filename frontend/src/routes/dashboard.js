@@ -1,11 +1,20 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useLocation } from 'react-router'
 // eslint-disable-next-line no-unused-vars
 import styles from '../dashboard.css'
 
 export default function Dashboard() {
-  const state = useLocation()
-  console.log(state)
+  let [user, setUser] = React.useState({})
+
+  const _id = useLocation().state._id
+
+  useEffect(() => {
+    fetch(`/api/user/getUser?_id=${_id}`)
+      .then(res => res.json())
+      .then(res => {
+        setUser(res)
+      })
+  })
 
   return (
     <body>
@@ -53,12 +62,12 @@ export default function Dashboard() {
               <hr className="border-gray-300" />
               <div className="my-5">
                 <p className="text-xl">Email address</p>
-                <p className="underline text-gray-500">benito_flores @dlsu.edu.ph</p>
+                <p className="underline text-gray-500">{user?._id}</p>
               </div>
               <div className="flex justify-between items-center my-5">
                 <div>
                   <p className="text-xl">Name</p>
-                  <p className="text-gray-500">Miguel Flores</p>
+                  <p className="text-gray-500">{user?.name}</p>
                 </div>
                 <button className="btn primary w-40 text-xl h-10">CHANGE</button>
               </div>
