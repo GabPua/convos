@@ -48,6 +48,11 @@ const user_ctrl = {
   updatePassword: (req, res) => {
     const { _id, password } = req.body;
     User.updateOne({ _id }, { ...hashPassword(password) }, (err) => res.json({ result: !err }));
+  },
+
+  updateName: (req, res) => {
+    const { _id, name } = req.body;
+    User.updateOne({ _id }, { name }, (err) => res.json({ result: !err }));
   }
 }
 
