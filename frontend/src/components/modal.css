@@ -1,0 +1,19 @@
+@tailwind components;
+
+@layer components {
+  .modal .field {
+    @apply flex flex-row justify-between items-center
+  }
+
+  .modal label {
+    @apply text-xl font-light
+  }
+
+  .modal .input {
+    @apply text-black flex-1 w-80
+  }
+
+  .modal .field .input+.help-text {
+    @apply text-secondary
+  }
+}

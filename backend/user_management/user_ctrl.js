@@ -1,6 +1,6 @@
 const User = require('./user');
 const { isValidEmail, isValidName, isValidPassword } = require('convos-validator');
-const hashPassword = require('../utils/hashPassword')
+const hashPassword = require('../utils/hashPassword');
 
 async function getUser(_id) {
   return await User.findById(_id).exec();
@@ -26,7 +26,7 @@ const user_ctrl = {
         }
 
         res.json({ result: false });
-      })
+      });
   },
 
   checkEmail: (req, res) => {
@@ -38,11 +38,19 @@ const user_ctrl = {
     const { _id, password } = req.query;
     getUser(_id)
       .then(user => hashPassword(password, user.salt).password === user.password)
-      .then(result => res.json({ result }));
+      .then(result => {
+        if (result) {
+          req.session._id = _id;
+        }
+        res.json({ result });
+      });
   },
 
   getUser: (req, res) => {
-    getUser(req.query._id).then(user => res.json(user));
+    getUser(req.session._id).then(user => res.json({
+      _id: user._id,
+      name: user.name,
+    }));
   },
 
   updatePassword: (req, res) => {
@@ -54,6 +62,6 @@ const user_ctrl = {
     const { _id, name } = req.body;
     User.updateOne({ _id }, { name }, (err) => res.json({ result: !err }));
   }
-}
+};
 
 module.exports = user_ctrl;

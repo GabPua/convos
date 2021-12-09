@@ -1,10 +1,15 @@
-/* eslint-disable no-param-reassign */
 const express = require('express');
 const path = require('path');
 const mongoose = require('mongoose');
 
+// session dependencies
+const cookieParser = require('cookie-parser');
+const session = require('express-session');
+const mongoStore = require('connect-mongodb-session')(session);
+
 require('dotenv').config();
 const dbUri = process.env.SERVER_DB_URI;
+const secret = process.env.SECRET;
 const options = {
   useUnifiedTopology: true,
   useNewUrlParser: true
@@ -14,11 +19,36 @@ mongoose.connect(dbUri, options, (err) => {
   console.log(err? err : 'Established connection with mongodb!');
 });
 
+// storage for user sessions
+const store = new mongoStore({
+  uri: dbUri,
+  databaseName: 'convos',
+  collection: 'session',
+});
+
+store.on('error', error => {
+  console.log(error.message);
+});
+
 const app = express();
 app.set('port', (process.env.PORT || 3001));
-app.use(express.urlencoded({ extended: true }))
+app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
+app.use(cookieParser());
 app.use('/', express.static(path.join(__dirname, 'public')));
+
+// configure user session
+app.use(session({
+  key: 'sid',
+  secret,
+  resave: false,
+  saveUninitialized: false,
+  rolling: true,  // refresh cookie age
+  cookie: {
+    maxAge: 18144e5 // three weeks
+  },
+  store,
+}));
 
 app.use((req, res, next) => {
   res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');

@@ -11,7 +11,7 @@
 
 @layer components {
   .field {
-    @apply mb-2 w-full
+    @apply mb-2 w-full flex-col
   }
 
   .input {

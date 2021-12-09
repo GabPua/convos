@@ -14,6 +14,9 @@ module.exports = {
       secondary: '#FFF',
       error: colors.red,
       gray: colors.gray,
+      black: colors.black,
+      white: colors.white,
+      red: colors.red,
     }
   },
   variants: {
