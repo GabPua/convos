@@ -20,11 +20,11 @@ export default class Dashboard extends React.Component {
 
   handleChangeClick = (component, event) => {
     event.preventDefault()
-    this.setState({ modal: component }, () => { document.addEventListener('click', this.closeMenu) })
+    this.setState({ modal: component })
   }
 
   closeModal = () => {
-    this.setState({ modal: null }, () => { document.removeEventListener('click', this.closeModal) })
+    this.setState({ modal: null })
   }
 
   render() {
@@ -88,7 +88,7 @@ export default class Dashboard extends React.Component {
                     <p className="text-xl">Password</p>
                     <p className="text-gray-500">***************</p>
                   </div>
-                  <button className="btn primary w-40 text-xl h-10" onClick={() => this.handleChangeClick(<ChangePassword />)}>CHANGE</button>
+                  <button className="btn primary w-40 text-xl h-10" onClick={(e) => this.handleChangeClick(<ChangePassword />, e)}>CHANGE</button>
                 </div>
               </div>
               <div className="col-span-2 xl:col-span-1 row-span-3 items-start self-start place-self-center w-3/4 min-w-min mt-4 2nxl:mt-0">
@@ -115,7 +115,7 @@ export default class Dashboard extends React.Component {
             </div>
           </div>
         </main>
-        <Modal component={this.modal} />
+        <Modal component={this.state.modal} closeHandler={this.closeModal} />
       </div>
     )
   }
