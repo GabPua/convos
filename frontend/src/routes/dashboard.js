@@ -3,6 +3,7 @@ import React from 'react'
 import styles from '../dashboard.css'
 import Modal from '../components/modal'
 import ChangePassword from '../components/change-password'
+import EditUsername from '../components/edit-username'
 
 export default class Dashboard extends React.Component {
   state = {
@@ -81,7 +82,7 @@ export default class Dashboard extends React.Component {
                     <p className="text-xl">Name</p>
                     <p className="text-gray-500">{this.state.user?.name}</p>
                   </div>
-                  <button className="btn primary w-40 text-xl h-10">CHANGE</button>
+                  <button className="btn primary w-40 text-xl h-10" onClick={(e) => this.handleChangeClick(<EditUsername />, e)}>CHANGE</button>
                 </div>
                 <div className="flex justify-between items-center my-5">
                   <div>

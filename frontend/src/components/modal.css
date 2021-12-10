@@ -10,7 +10,7 @@
   }
 
   .modal .input {
-    @apply text-black flex-1 w-80
+    @apply text-black flex-1
   }
 
   .modal .field .input+.help-text {
