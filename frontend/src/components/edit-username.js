@@ -1,15 +1,17 @@
+/* eslint-disable react/prop-types */
 import React from 'react'
+import PropTypes from 'prop-types'
 
-export default function EditUsername() {
+function EditUsername(props) {
   return (
     <div>
       <div className="text-secondary">
         <p className="font-keep-calm text-3xl text-center mt-3 mb-5">Edit Username</p>
-
+ 
         <form>
           <div className="field">
             <div className="w-full">
-              <input className="input w-full" type="password" id="confirm-password" name="confirmPassword" />
+              <input className="input w-full text-center" type="text" id="confirm-password" name="confirmPassword" value={props.username} />
               <p className="help-text">Sample</p>
             </div>
           </div>
@@ -21,3 +23,9 @@ export default function EditUsername() {
     </div>
   )
 }
+
+EditUsername.PropTypes = {
+  username: PropTypes.string.isRequired,
+}
+
+export default EditUsername

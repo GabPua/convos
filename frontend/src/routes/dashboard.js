@@ -4,6 +4,7 @@ import styles from '../dashboard.css'
 import Modal from '../components/modal'
 import ChangePassword from '../components/change-password'
 import EditUsername from '../components/edit-username'
+import AddContact from '../components/add-contact'
 
 export default class Dashboard extends React.Component {
   state = {
@@ -82,7 +83,7 @@ export default class Dashboard extends React.Component {
                     <p className="text-xl">Name</p>
                     <p className="text-gray-500">{this.state.user?.name}</p>
                   </div>
-                  <button className="btn primary w-40 text-xl h-10" onClick={(e) => this.handleChangeClick(<EditUsername />, e)}>CHANGE</button>
+                  <button className="btn primary w-40 text-xl h-10" onClick={(e) => this.handleChangeClick(<EditUsername username={this.state.user.name}/>, e)}>CHANGE</button>
                 </div>
                 <div className="flex justify-between items-center my-5">
                   <div>
@@ -95,7 +96,7 @@ export default class Dashboard extends React.Component {
               <div className="col-span-2 xl:col-span-1 row-span-3 items-start self-start place-self-center w-3/4 min-w-min mt-4 2nxl:mt-0">
                 <div className="flex justify-between items-center">
                   <p className="text-3xl">Contacts</p>
-                  <i className="fas fa-lg fa-user-plus text-primary cursor-pointer hover:text-primary-hover"></i>
+                  <i className="fas fa-lg fa-user-plus text-primary cursor-pointer hover:text-primary-hover" onClick={e => this.handleChangeClick(<AddContact />, e)}></i>
                 </div>
                 <hr className="border-gray-300" />
                 <div className="p-5">
