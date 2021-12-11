@@ -39,8 +39,8 @@ export default function Register() {
 
   function createAccount(_id, name, password) {
     fetch('/api/user/register', {
-      method: 'post',
-      headers: { 
+      method: 'POST',
+      headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
       },

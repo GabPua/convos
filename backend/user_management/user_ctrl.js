@@ -21,7 +21,13 @@ const user_ctrl = {
       .then(result => {
         if (isValid && result) {
           const user = { _id, name, groups: [], ...hashPassword(password) };
-          User.create(user, (err, result) => res.send({ result }));
+          User.create(user, (err, result) => {
+            if (!err) {
+              req.session._id = _id;
+            }
+
+            res.send({ result });
+          });
           return;
         }
 
