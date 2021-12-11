@@ -117,7 +117,7 @@ class ResetForm extends React.Component {
     if (!isValidEmail(email)) {
       this.setState({ status: 'get email', submitHandler: this.onEmailSubmit, error: 'Invalid email' })
     } else {
-      fetch(`/api/user/checkEmail?_id=${email.toString().toLowerCase()}`)
+      fetch(`/api/user/checkEmail?_id=${email.toString().trim().toLowerCase()}`)
         .then(res => res.json())
         .then(res => {
           if (res.result) {

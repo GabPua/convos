@@ -35,7 +35,7 @@ const user_ctrl = {
   },
 
   login: (req, res) => {
-    const { _id, password } = req.query;
+    const { _id, password } = req.body;
     getUser(_id)
       .then(user => hashPassword(password, user.salt).password === user.password)
       .then(result => {
@@ -47,10 +47,16 @@ const user_ctrl = {
   },
 
   getUser: (req, res) => {
-    getUser(req.session._id).then(user => res.json({
-      _id: user._id,
-      name: user.name,
-    }));
+    getUser(req.session._id).then(user => {
+      if (user) {
+        res.json({
+          _id: user._id,
+          name: user.name,
+        });
+      } else {
+        res.json({});
+      }
+    });
   },
 
   updatePassword: (req, res) => {

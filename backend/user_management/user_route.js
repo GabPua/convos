@@ -5,7 +5,7 @@ router.get('/checkEmail', ctrl.checkEmail);
 
 router.post('/register', ctrl.register);
 
-router.get('/login', ctrl.login);
+router.post('/login', ctrl.login);
 
 router.get('/getUser', ctrl.getUser);
 
