@@ -5,6 +5,5 @@ node_js:
 script: 
   - echo '**Build Start**'
   - echo '**Installing**'
-  - npm install
-  - npm i 
+  - npm i
   
