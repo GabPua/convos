@@ -70,7 +70,7 @@ const user_ctrl = {
     });
   },
 
-  updatePassword: (req, res) => {
+  forgotPassword: (req, res) => {
     const { _id, password } = req.body;
     updatePassword(_id, password)
       .then(() => res.json({ result: true }))

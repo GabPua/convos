@@ -154,7 +154,7 @@ class ResetForm extends React.Component {
         error: 'Password does not match'
       })
     } else {
-      fetch('/api/user/updatePassword', {
+      fetch('/api/user/forgotPassword', {
         method: 'post',
         headers: {
           'Accept': 'application/json',

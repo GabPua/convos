@@ -9,7 +9,7 @@ router.post('/login', ctrl.login);
 
 router.get('/getUser', ctrl.getUser);
 
-router.post('/updatePassword', ctrl.updatePassword);
+router.post('/forgotPassword', ctrl.forgotPassword);
 
 router.post('/changePassword', ctrl.changePassword);
 
