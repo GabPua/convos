@@ -10,7 +10,7 @@ function EditUsername(props) {
         <form>
           <div className="field">
             <div className="w-full">
-              <input className="input w-full text-center" type="text" id="confirm-password" name="confirmPassword" value={props.username} />
+              <input className="input w-full text-center" type="text" id="confirm-password" name="confirmPassword" defaultValue={props.username} />
               <p className="help-text">Sample</p>
             </div>
           </div>
