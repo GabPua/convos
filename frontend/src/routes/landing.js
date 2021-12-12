@@ -2,6 +2,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import React from 'react'
 import { isValidEmail, isValidPassword } from 'convos-validator'
 import Loading from '../components/loading'
+import postRequest from '../utils/postRequest'
 
 export default function Landing() {
   let navigate = useNavigate()
@@ -16,14 +17,7 @@ export default function Landing() {
       setError(true)
     } else {
       const _id = email.toString().trim().toLowerCase()
-      fetch('/api/user/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ _id, password })
-      })
-        .then(res => res.json())
+      postRequest('/api/user/login', JSON.stringify({ _id, password }))
         .then(res => {
           if (res.result) {
             setError(false)

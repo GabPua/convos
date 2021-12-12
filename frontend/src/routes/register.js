@@ -1,6 +1,7 @@
 import { Link, useNavigate } from 'react-router-dom'
 import React from 'react'
 import { isValidEmail, isValidName, isValidPassword } from 'convos-validator'
+import postRequest from '../utils/postRequest'
 
 export default function Register() {
   let navigate = useNavigate()
@@ -16,7 +17,7 @@ export default function Register() {
     if (!isValidPassword(password)) {
       tempError.password = 'Invalid password'
     } else if (password !== confirm) {
-      tempError.password = 'Password does not match'
+      tempError.password = 'Passwords do not match'
     }
 
     if (!isValidEmail(email)) {
@@ -38,15 +39,7 @@ export default function Register() {
   }
 
   function createAccount(_id, name, password) {
-    fetch('/api/user/register', {
-      method: 'POST',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ _id, name, password })
-    })
-      .then(res => res.json())
+    postRequest('/api/user/register', JSON.stringify({ _id, name, password }))
       .then(res => {
         if (res.result) {
           navigate('/dashboard', { state: { _id: res.result._id } })
