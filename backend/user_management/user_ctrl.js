@@ -1,6 +1,6 @@
 const User = require('./user');
 const { isValidEmail, isValidName, isValidPassword } = require('convos-validator');
-const hashPassword = require('../utils/hashPassword');
+const { hashPassword, matchPassword } = require('../utils/hashPassword');
 
 async function getUser(_id) {
   return await User.findById(_id).exec();
@@ -8,6 +8,10 @@ async function getUser(_id) {
 
 async function isUniqueEmail(email) {
   return await getUser(email).then(result => (result == null));
+}
+
+async function updatePassword(_id, password) {
+  return await User.updateOne({ _id }, { ...hashPassword(password) });
 }
 
 const user_ctrl = {
@@ -43,7 +47,7 @@ const user_ctrl = {
   login: (req, res) => {
     const { _id, password } = req.body;
     getUser(_id)
-      .then(user => hashPassword(password, user.salt).password === user.password)
+      .then(user => matchPassword(password, user.password, user.salt))
       .then(result => {
         if (result) {
           req.session._id = _id;
@@ -67,12 +71,37 @@ const user_ctrl = {
 
   updatePassword: (req, res) => {
     const { _id, password } = req.body;
-    User.updateOne({ _id }, { ...hashPassword(password) }, (err) => res.json({ result: !err }));
+    updatePassword(_id, password)
+      .then(() => res.json({ result: true }))
+      .catch(() => res.json({ result: false }));
   },
 
   updateName: (req, res) => {
     const { _id, name } = req.body;
     User.updateOne({ _id }, { name }, (err) => res.json({ result: !err }));
+  },
+
+  changePassword: (req, res) => {
+    const { oldPassword, newPassword } = req.body;
+    const _id = req.session._id;
+
+    User.findById(_id, (err, user) => {
+      if (err) {
+        return res.json({ old: err });
+      }
+
+      if (!matchPassword(oldPassword, user.password, user.salt)) {
+        return res.json({ old: 'Invalid password' });
+      }
+
+      if (!isValidPassword(newPassword)) {
+        return res.json({ new: 'Password must contain' }); // TODO: Error message
+      }
+
+      updatePassword(_id, newPassword)
+        .then(() => res.json({ result: true }))
+        .catch(() => res.json({ result: false }));
+    });
   }
 };
 

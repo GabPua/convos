@@ -18,6 +18,10 @@
     @apply rounded-full px-5 py-3 border text-xl min-w-max
   }
 
+  input[type="submit"] {
+    @apply cursor-pointer
+  }
+
   .field .input+.help-text {
     @apply ml-5 mt-1 font-thin text-sm text-error-600 min-h-[1.5em]
   }

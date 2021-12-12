@@ -11,6 +11,8 @@ router.get('/getUser', ctrl.getUser);
 
 router.post('/updatePassword', ctrl.updatePassword);
 
+router.post('/changePassword', ctrl.changePassword);
+
 router.post('/updateName', ctrl.updateName);
 
 module.exports = router;
