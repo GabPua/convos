@@ -24,7 +24,7 @@ export default function Register() {
       tempError.email = 'Invalid email'
       setError(tempError)
     } else {
-      fetch(`/api/user/checkEmail?_id=${email.toString().toLowerCase()}`)
+      fetch(`/api/user/checkEmail?_id=${encodeURIComponent(email.toString().toLowerCase())}`)
         .then(res => res.json())
         .then(res => {
           if (!res.result) tempError.email = 'Email is taken'

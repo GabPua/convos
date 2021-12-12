@@ -40,7 +40,8 @@ const user_ctrl = {
   },
 
   checkEmail: (req, res) => {
-    isUniqueEmail(req.query._id)
+    const email = decodeURIComponent(req.query._id);
+    isUniqueEmail(email)
       .then(result => res.json({ result }));
   },
 
