@@ -95,7 +95,7 @@ class ResetForm extends React.Component {
 
   sendEmail = (email) => {
     this.setState({ loading: true, error: null })
-    fetch(`/api/password/requestPasswordReset?_id=${email.toLowerCase()}`)
+    fetch(`/api/password/requestPasswordReset?_id=${encodeURIComponent(email.toLowerCase())}`)
       .then(res => res.json())
       .then(res => {
         if (res.result) {
@@ -117,7 +117,7 @@ class ResetForm extends React.Component {
     if (!isValidEmail(email)) {
       this.setState({ status: 'get email', submitHandler: this.onEmailSubmit, error: 'Invalid email' })
     } else {
-      fetch(`/api/user/checkEmail?_id=${email.toString().trim().toLowerCase()}`)
+      fetch(`/api/user/checkEmail?_id=${encodeURIComponent(email.toString().trim().toLowerCase())}`)
         .then(res => res.json())
         .then(res => {
           if (res.result) {

@@ -2,7 +2,8 @@ const Contact = require('./contact');
 
 const contact_ctrl = {
   getContacts: (req, res) => {
-    Contact.find({ userId: req.query._id }).exec()
+    const userId = decodeURIComponent(req.query._id);
+    Contact.find({ userId }).exec()
       .then(contacts => res.json(contacts));
   },
 

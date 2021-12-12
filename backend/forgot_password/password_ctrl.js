@@ -8,7 +8,7 @@ dotenv.config();
 
 const password_ctrl = {
   requestPasswordReset: (req, res) => {
-    const email = req.query._id;
+    const email = decodeURIComponent(req.query._id);
 
     Token.findOneAndDelete({ userId: email }, () => {
       const tokenString = randomBytes(16).toString('hex'); // generate random token
