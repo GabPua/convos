@@ -1,9 +1,9 @@
 import React from 'react'
 import { isValidPassword } from 'convos-validator'
 import postRequest from '../utils/postRequest'
+import PropTypes from 'prop-types'
 
-
-export default function ChangePassword() {
+function ChangePassword(props) {
   const [error, setError] = React.useState({})
 
   function handleSubmit(e) {
@@ -25,7 +25,8 @@ export default function ChangePassword() {
       postRequest('/api/user/changePassword', JSON.stringify({ oldPassword, newPassword }))
         .then(res => {
           if (res.result) {
-            console.log('SUCCESSFULL!') // TODO: Feedback
+            alert('Password was changed successfully.')
+            props.closeHandler()
           } else {
             setError(res)
           }
@@ -64,3 +65,9 @@ export default function ChangePassword() {
     </div>
   )
 }
+
+ChangePassword.propTypes = {
+  closeHandler: PropTypes.func.isRequired
+}
+
+export default ChangePassword
