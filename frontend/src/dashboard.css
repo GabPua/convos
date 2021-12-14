@@ -1,9 +1,3 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
-@layer components {
-  .sidebar-item {
-    @apply flex h-14 text-xl font-light text-gray-600 cursor-pointer hover:text-primary
-  }
+.sidebar-item {
+  @apply flex h-14 text-xl font-light text-gray-600 cursor-pointer hover:text-primary
 }
