@@ -16,7 +16,10 @@ export default function Dashboard() {
   useEffect(() => {
     fetch('/api/user/getUser')
       .then(res => res.json())
-      .then(res => setUser(res))
+      .then(res => {
+        if (Object.keys(res).length) setUser(res)
+        else navigate('/')
+      })
   }, [])
 
   function handleChangeClick(component, event) {
