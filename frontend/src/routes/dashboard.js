@@ -5,6 +5,7 @@ import Modal from '../components/modal'
 import ChangePassword from '../components/change-password'
 import EditUsername from '../components/edit-username'
 import AddContact from '../components/add-contact'
+import postRequest from '../utils/postRequest'
 
 export default class Dashboard extends React.Component {
   state = {
@@ -39,7 +40,12 @@ export default class Dashboard extends React.Component {
               <span className="heavy text-secondary text-3xl font-keep-calm align-middle">CONVOS</span>
             </div>
             <div className="flex justify-end flex-grow">
-              <img src="/assets/avatar.png" alt="Profile Picture" className="cursor-pointer" />
+              <div className="group relative">
+                <img src="/assets/avatar.png" alt="Profile Picture" className="cursor-pointer h-full" />
+                <div className="group-hover:block dropdown-menu absolute hidden h-auto bg-secondary p-2">
+                  <button className="top-0 bg-primary text-secondary font-medium hover:bg-primary-hover p-2 w-20">Log Out</button>
+                </div>
+              </div>
             </div>
           </nav>
         </header>
@@ -83,7 +89,7 @@ export default class Dashboard extends React.Component {
                     <p className="text-xl">Name</p>
                     <p className="text-gray-500">{this.state.user?.name}</p>
                   </div>
-                  <button className="btn primary w-40 text-xl h-10" onClick={(e) => this.handleChangeClick(<EditUsername username={this.state.user.name}/>, e)}>CHANGE</button>
+                  <button className="btn primary w-40 text-xl h-10" onClick={(e) => this.handleChangeClick(<EditUsername username={this.state.user.name} />, e)}>CHANGE</button>
                 </div>
                 <div className="flex justify-between items-center my-5">
                   <div>
