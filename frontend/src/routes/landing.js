@@ -1,5 +1,5 @@
 import { Link, useNavigate } from 'react-router-dom'
-import React from 'react'
+import React, { useEffect } from 'react'
 import { isValidEmail, isValidPassword } from 'convos-validator'
 import Loading from '../components/loading'
 import postRequest from '../utils/postRequest'
@@ -30,12 +30,15 @@ export default function Landing() {
   }
 
   // check cookie validity and login automatically
-  fetch('/api/user/getUser')
-    .then(res => res.json())
-    .then(res => {
-      if (res._id) navigate('/dashboard')
-      else setLoading(false)
-    })
+  useEffect(() => {
+    fetch('/api/user/getUser')
+      .then(res => res.json())
+      .then(res => {
+        if (res._id) navigate('/dashboard')
+        else setLoading(false)
+      })
+  }, [])
+
 
   return (
     <div>
