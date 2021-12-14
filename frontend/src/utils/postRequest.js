@@ -1,4 +1,4 @@
-export default async function postRequest(url, body) {
+export default async function postRequest(url, body = null) {
   let results = await fetch(url, {
     method: 'POST',
     headers: {

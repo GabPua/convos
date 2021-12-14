@@ -103,7 +103,14 @@ const user_ctrl = {
         .then(() => res.json({ result: true }))
         .catch(() => res.json({ result: false }));
     });
+  },
+
+  logout: (req, res) => {
+    req.session.destroy((err) => {
+      req.session = null;
+      res.json({ err });
+    });
   }
-};
+}; 
 
 module.exports = user_ctrl;

@@ -5,10 +5,13 @@ import Modal from '../components/modal'
 import ChangePassword from '../components/change-password'
 import EditUsername from '../components/edit-username'
 import AddContact from '../components/add-contact'
+import postRequest from '../utils/postRequest'
+import { useNavigate } from 'react-router-dom'
 
 export default function Dashboard() {
   const [user, setUser] = useState({})
   const [modal, setModal] = useState(null)
+  const navigate = useNavigate()
 
   useEffect(() => {
     fetch('/api/user/getUser')
@@ -19,6 +22,12 @@ export default function Dashboard() {
   function handleChangeClick(component, event) {
     event.preventDefault()
     setModal(component)
+  }
+
+  function handleLogoutClick() {
+    postRequest('/api/user/logout')
+      .then(() => navigate('/', { replace: true }))
+      .catch(() => alert('An error has occured!'))
   }
 
   const closeModal = () => setModal(null)
@@ -35,7 +44,7 @@ export default function Dashboard() {
             <div className="group relative">
               <img src="/assets/avatar.png" alt="Profile Picture" className="cursor-pointer h-full" />
               <div className="group-hover:block dropdown-menu absolute hidden h-auto bg-secondary p-2">
-                <button className="top-0 bg-primary text-secondary font-medium hover:bg-primary-hover p-2 w-20">Log Out</button>
+                <button className="top-0 bg-primary text-secondary font-medium hover:bg-primary-hover p-2 w-20" onClick={handleLogoutClick}>Log Out</button>
               </div>
             </div>
           </div>
