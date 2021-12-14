@@ -15,7 +15,7 @@ function SubmitButton(props) {
 }
 
 SubmitButton.propTypes = {
-  loading: PropTypes.bool.isRequired
+  loading: PropTypes.bool
 }
 
 function Content(props) {
