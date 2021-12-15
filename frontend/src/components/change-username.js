@@ -11,6 +11,8 @@ function ChangeUsername(props) {
     const { username } = Object.fromEntries(new FormData(e.target))
     if (isValidName(username)) {
       postRequest('/api/user/updateName', { name: username })
+        .then(() => props.setFeedback(true, 'Changed username successfully!'))
+        .catch(() => props.setFeedback(false, 'An error was encountered.'))
     } else {
       setError('Invalid username!') // TODO: better error message
     }
@@ -43,6 +45,7 @@ function ChangeUsername(props) {
 
 ChangeUsername.propTypes = {
   username: PropTypes.string.isRequired,
+  setFeedback: PropTypes.func,
 }
 
 export default ChangeUsername
