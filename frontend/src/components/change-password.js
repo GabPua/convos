@@ -25,8 +25,7 @@ function ChangePassword(props) {
       postRequest('/api/user/changePassword', JSON.stringify({ oldPassword, newPassword }))
         .then(res => {
           if (res.result) {
-            alert('Password was changed successfully.')
-            props.closeHandler()
+            props.setFeedback(true, 'Password was changed successfully!')
           } else {
             setError(res)
           }
@@ -67,7 +66,8 @@ function ChangePassword(props) {
 }
 
 ChangePassword.propTypes = {
-  closeHandler: PropTypes.func.isRequired
+  closeHandler: PropTypes.func,
+  setFeedback: PropTypes.func,
 }
 
 export default ChangePassword
