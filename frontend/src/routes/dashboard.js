@@ -14,14 +14,14 @@ export default function Dashboard() {
   const [modal, setModal] = useState(null)
   const navigate = useNavigate()
 
-  useEffect(() => {
+  function updateUser() {
     fetch('/api/user/getUser')
       .then(res => res.json())
       .then(res => {
         if (Object.keys(res).length) setUser(res)
         else navigate('/')
       })
-  }, [])
+  }
 
   function handleChangeClick(component, event) {
     event.preventDefault()
@@ -35,10 +35,12 @@ export default function Dashboard() {
   }
 
   function setFeedback(isSuccess, feedbackText) {
-    setModal(<Feedback isSuccess={isSuccess} text={feedbackText}/>)
+    setModal(<Feedback isSuccess={isSuccess} text={feedbackText} />)
   }
 
   const closeModal = () => setModal(null)
+
+  useEffect(updateUser, [])
 
   return (
     <div>
@@ -132,7 +134,7 @@ export default function Dashboard() {
           </div>
         </div>
       </main>
-      <Modal component={modal} closeHandler={closeModal} setFeedback={setFeedback}/>
+      <Modal component={modal} closeHandler={closeModal} setFeedback={setFeedback} changeHandler={updateUser} />
     </div>
   )
 }
