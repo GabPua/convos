@@ -6,6 +6,7 @@ module.exports = {
   darkMode: false, // or 'media' or 'class'
   theme: {
     fontFamily: {
+      'roboto': ['roboto', 'sans-serif'],
       'keep-calm': ['keep calm', 'sans-serif']
     },
     colors: {

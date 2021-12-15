@@ -7,6 +7,7 @@ import EditUsername from '../components/change-username'
 import AddContact from '../components/add-contact'
 import postRequest from '../utils/postRequest'
 import { useNavigate } from 'react-router-dom'
+import Feedback from '../components/feedback-modal'
 
 export default function Dashboard() {
   const [user, setUser] = useState({})
@@ -31,6 +32,10 @@ export default function Dashboard() {
     postRequest('/api/user/logout')
       .then(() => navigate('/', { replace: true }))
       .catch(() => alert('An error has occured!'))
+  }
+
+  function setFeedback(isSuccess, feedbackText) {
+    setModal(<Feedback isSuccess={isSuccess} text={feedbackText}/>)
   }
 
   const closeModal = () => setModal(null)
@@ -127,7 +132,7 @@ export default function Dashboard() {
           </div>
         </div>
       </main>
-      <Modal component={modal} closeHandler={closeModal} />
+      <Modal component={modal} closeHandler={closeModal} setFeedback={setFeedback}/>
     </div>
   )
 }
