@@ -2,6 +2,7 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 import PropTypes from 'prop-types'
 import { isValidEmail, isValidPassword } from 'convos-validator'
+import postRequest from '../utils/postRequest'
 
 function SubmitButton(props) {
   if (props.loading) {
@@ -154,15 +155,7 @@ class ResetForm extends React.Component {
         error: 'Password does not match'
       })
     } else {
-      fetch('/api/user/forgotPassword', {
-        method: 'post',
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ _id, password })
-      })
-        .then(res => res.json())
+      postRequest('/api/user/forgotPassword', { _id, password })
         .then(res => {
           if (res.result) {
             this.setState({ status: 'password updated' })

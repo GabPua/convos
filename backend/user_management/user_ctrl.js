@@ -78,8 +78,15 @@ const user_ctrl = {
   },
 
   updateName: (req, res) => {
-    const { _id, name } = req.body;
-    User.updateOne({ _id }, { name }, (err) => res.json({ result: !err }));
+    const _id = req.session._id;
+    const { name } = req.body;
+
+    if (_id && name) {
+      User.updateOne({ _id }, { name }, (err) => res.json({ result: !err }));
+    } else {
+      res.status(400);
+      res.json({ err: 'Bad Request: No session or new name passed.' });
+    }
   },
 
   changePassword: (req, res) => {

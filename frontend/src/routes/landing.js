@@ -17,7 +17,7 @@ export default function Landing() {
       setError(true)
     } else {
       const _id = email.toString().trim().toLowerCase()
-      postRequest('/api/user/login', JSON.stringify({ _id, password }))
+      postRequest('/api/user/login', { _id, password })
         .then(res => {
           if (res.result) {
             setError(false)

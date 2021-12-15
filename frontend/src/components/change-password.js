@@ -22,7 +22,7 @@ export default function ChangePassword() {
     setError(errors)
 
     if (!errors.new) {
-      postRequest('/api/user/changePassword', JSON.stringify({ oldPassword, newPassword }))
+      postRequest('/api/user/changePassword', { oldPassword, newPassword })
         .then(res => {
           if (res.result) {
             console.log('SUCCESSFULL!') // TODO: Feedback

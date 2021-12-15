@@ -39,7 +39,7 @@ export default function Register() {
   }
 
   function createAccount(_id, name, password) {
-    postRequest('/api/user/register', JSON.stringify({ _id, name, password }))
+    postRequest('/api/user/register', { _id, name, password })
       .then(res => {
         if (res.result) {
           navigate('/dashboard', { state: { _id: res.result._id } })
