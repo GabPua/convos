@@ -58,7 +58,7 @@ function Content(props) {
 }
 
 Content.propTypes = {
-  status: PropTypes.string.isRequired,
+  status: PropTypes.string,
   submitHandler: PropTypes.func,
   error: PropTypes.string,
   loading: PropTypes.bool.isRequired,

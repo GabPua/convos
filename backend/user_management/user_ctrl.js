@@ -47,13 +47,18 @@ const user_ctrl = {
 
   login: (req, res) => {
     const { _id, password } = req.body;
+
     getUser(_id)
-      .then(user => matchPassword(password, user.password, user.salt))
-      .then(result => {
-        if (result) {
+      .then(user => {
+        if (matchPassword(password, user.password, user.salt)) {
           req.session._id = _id;
+          req.session.name = user.name;
+          res.status(200);
+          res.json({ _id, name: user.name });
+        } else {
+          res.status(401);
+          res.json({});
         }
-        res.json({ result });
       });
   },
 
@@ -113,8 +118,8 @@ const user_ctrl = {
   },
 
   logout: (req, res) => {
+    res.clearCookie('sid');
     req.session.destroy((err) => {
-      req.session = null;
       res.json({ err });
     });
   }

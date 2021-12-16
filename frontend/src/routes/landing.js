@@ -2,12 +2,13 @@ import { Link, useNavigate } from 'react-router-dom'
 import React, { useEffect } from 'react'
 import { isValidEmail, isValidPassword } from 'convos-validator'
 import Loading from '../components/loading'
-import postRequest from '../utils/postRequest'
+import useAuth from '../utils/useAuth'
 
 export default function Landing() {
-  let navigate = useNavigate()
-  let [error, setError] = React.useState(false)
-  let [loading, setLoading] = React.useState(true)
+  const navigate = useNavigate()
+  const [error, setError] = React.useState(false)
+  const [loading, setLoading] = React.useState(true)
+  const { login, isAuthed } = useAuth()
 
   function handleSubmit(e) {
     e.preventDefault()
@@ -17,13 +18,11 @@ export default function Landing() {
       setError(true)
     } else {
       const _id = email.toString().trim().toLowerCase()
-      postRequest('/api/user/login', { _id, password })
-        .then(res => {
-          if (res.result) {
-            setError(false)
-            navigate('/dashboard', { state: { _id } })
-          } else {
-            setError(true)
+      login(_id, password)
+        .then(isSuccess => {
+          setError(!isSuccess)
+          if (isSuccess) {
+            navigate('/dashboard')
           }
         })
     }
@@ -31,14 +30,9 @@ export default function Landing() {
 
   // check cookie validity and login automatically
   useEffect(() => {
-    fetch('/api/user/getUser')
-      .then(res => res.json())
-      .then(res => {
-        if (res._id) navigate('/dashboard')
-        else setLoading(false)
-      })
+    if (isAuthed()) navigate('/dashboard')
+    else setLoading(false)
   }, [])
-
 
   return (
     <div>

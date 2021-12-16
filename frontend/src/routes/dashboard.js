@@ -1,27 +1,18 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 // eslint-disable-next-line no-unused-vars
 import styles from '../dashboard.css'
 import Modal from '../components/modal'
 import ChangePassword from '../components/change-password'
 import EditUsername from '../components/change-username'
 import AddContact from '../components/add-contact'
-import postRequest from '../utils/postRequest'
 import { useNavigate } from 'react-router-dom'
 import Feedback from '../components/feedback-modal'
+import useAuth from '../utils/useAuth'
 
 export default function Dashboard() {
-  const [user, setUser] = useState({})
   const [modal, setModal] = useState(null)
   const navigate = useNavigate()
-
-  function updateUser() {
-    fetch('/api/user/getUser')
-      .then(res => res.json())
-      .then(res => {
-        if (Object.keys(res).length) setUser(res)
-        else navigate('/')
-      })
-  }
+  const { user, refreshUser, logout } = useAuth()
 
   function handleChangeClick(component, event) {
     event.preventDefault()
@@ -29,7 +20,7 @@ export default function Dashboard() {
   }
 
   function handleLogoutClick() {
-    postRequest('/api/user/logout')
+    logout()
       .then(() => navigate('/', { replace: true }))
       .catch(() => alert('An error has occured!'))
   }
@@ -39,8 +30,6 @@ export default function Dashboard() {
   }
 
   const closeModal = () => setModal(null)
-
-  useEffect(updateUser, [])
 
   return (
     <div>
@@ -134,7 +123,7 @@ export default function Dashboard() {
           </div>
         </div>
       </main>
-      <Modal component={modal} closeHandler={closeModal} setFeedback={setFeedback} changeHandler={updateUser} />
+      <Modal component={modal} closeHandler={closeModal} setFeedback={setFeedback} changeHandler={refreshUser} />
     </div>
   )
 }
