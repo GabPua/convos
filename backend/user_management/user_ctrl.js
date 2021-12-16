@@ -50,7 +50,7 @@ const user_ctrl = {
 
     getUser(_id)
       .then(user => {
-        if (matchPassword(password, user.password, user.salt)) {
+        if (user !== null && matchPassword(password, user.password, user.salt)) {
           req.session._id = _id;
           req.session.name = user.name;
           res.status(200);
