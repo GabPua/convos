@@ -13,6 +13,6 @@ const contact_ctrl = {
     
     Contact.create(contact, (err, result) => res.send({ result }));
   }
-}
+};
 
 module.exports = contact_ctrl;
