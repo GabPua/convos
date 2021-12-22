@@ -8,6 +8,7 @@ import AddContact from '../components/add-contact'
 import { useNavigate } from 'react-router-dom'
 import Feedback from '../components/feedback-modal'
 import useAuth from '../utils/useAuth'
+import CloudinaryUploadWidget from '../components/upload-widget'
 
 export default function Dashboard() {
   const [modal, setModal] = useState(null)
@@ -75,7 +76,7 @@ export default function Dashboard() {
           <div className="min-h-full grid grid-cols-3 grid-rows-5 items-center">
             <div className="col-span-1 row-span-2 flex flex-col justify-center items-center place-self-center">
               <img src="/assets/avatar.png" alt="Profile Picture" className="w-60" />
-              <button className="btn primary mt-4 text-xl h-10 w-40">CHANGE</button>
+              <CloudinaryUploadWidget text="CHANGE" />
             </div>
             <div className="col-span-2 row-span-2 w-full max-w-2xl">
               <p className="text-3xl">Account Details</p>
