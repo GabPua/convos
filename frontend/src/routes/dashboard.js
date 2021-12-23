@@ -9,9 +9,12 @@ import { useNavigate } from 'react-router-dom'
 import Feedback from '../components/feedback-modal'
 import useAuth from '../utils/useAuth'
 import CloudinaryUploadWidget from '../components/upload-widget'
+import postRequest from '../utils/postRequest'
+import Loading from '../components/loading'
 
 export default function Dashboard() {
   const [modal, setModal] = useState(null)
+  const [dpLoading, setDpLoading] = useState(false)
   const navigate = useNavigate()
   const { user, refreshUser, logout } = useAuth()
 
@@ -32,6 +35,20 @@ export default function Dashboard() {
 
   const closeModal = () => setModal(null)
 
+  function handleDpChange(result) {
+    console.log(result)
+    setDpLoading(true)
+    postRequest('/api/user/updateDp', { dpUri: result.url })
+      .then(res => {
+        if (res) {
+          refreshUser()
+        } else {
+          console.log('An error has occured!')
+        }
+        setDpLoading(false)
+      })
+  }
+
   return (
     <div>
       <header className="bg-primary fixed w-full">
@@ -42,7 +59,8 @@ export default function Dashboard() {
           </div>
           <div className="flex justify-end flex-grow">
             <div className="group relative">
-              <img src="/assets/avatar.png" alt="Profile Picture" className="cursor-pointer h-full" />
+              <Loading show={dpLoading} />
+              <img src={user.dpUri} alt="Profile Picture" className="cursor-pointer h-full" />
               <div className="group-hover:block dropdown-menu absolute hidden h-auto bg-secondary p-2">
                 <button className="top-0 bg-primary text-secondary font-medium hover:bg-primary-hover p-2 w-20" onClick={handleLogoutClick}>Log Out</button>
               </div>
@@ -75,8 +93,8 @@ export default function Dashboard() {
         <div className="ml-60 h-full p-5">
           <div className="min-h-full grid grid-cols-3 grid-rows-5 items-center">
             <div className="col-span-1 row-span-2 flex flex-col justify-center items-center place-self-center">
-              <img src="/assets/avatar.png" alt="Profile Picture" className="w-60" />
-              <CloudinaryUploadWidget text="CHANGE" />
+              <img src={user.dpUri} alt="Profile Picture" className="w-60" />
+              <CloudinaryUploadWidget text="CHANGE" onSuccessHandler={handleDpChange} />
             </div>
             <div className="col-span-2 row-span-2 w-full max-w-2xl">
               <p className="text-3xl">Account Details</p>
