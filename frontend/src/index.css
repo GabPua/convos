@@ -1,0 +1,63 @@
+@import url('http://fonts.cdnfonts.com/css/keep-calm');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    font-family: 'Roboto', sans-serif
+  }
+}
+
+@layer components {
+  .field {
+    @apply mb-2 w-full flex-col
+  }
+
+  .input {
+    @apply rounded-full px-5 py-3 border text-xl min-w-max
+  }
+
+  input[type="submit"] {
+    @apply cursor-pointer
+  }
+
+  .field .input+.help-text {
+    @apply ml-5 mt-1 font-thin text-sm text-error-600 min-h-[1.5em]
+  }
+
+  .btn {
+    @apply rounded-full block font-keep-calm py-2 cursor-pointer
+  }
+
+  .btn.primary {
+    @apply bg-primary text-secondary border border-secondary hover:bg-primary-hover
+  }
+
+  .bg-question-mark {
+    @apply absolute z-0
+  }
+
+  .flex-center {
+    @apply flex justify-center items-center
+  }
+
+  .main-content {
+    height: calc(100vh - theme('width.16'))
+  }
+
+  .abs-center {
+    @apply absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2
+  }
+}
+
+body {
+  margin: 0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}

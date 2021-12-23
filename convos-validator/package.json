@@ -1,0 +1,16 @@
+{
+  "name": "convos-validator",
+  "version": "1.0.0",
+  "description": "Simple validation logic for convos",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "/dist"
+  ],
+  "dependencies": {
+    "jest": "^27.3.1"
+  },
+  "scripts": {
+    "test": "jest --color"
+  }
+}
