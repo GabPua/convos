@@ -60,7 +60,7 @@ export default function Dashboard() {
           <div className="flex justify-end flex-grow">
             <div className="group relative">
               <Loading show={dpLoading} />
-              <img src={user.dpUri} alt="Profile Picture" className="cursor-pointer h-full" />
+              <img src={user.dpUri} alt="Profile Picture" className="cursor-pointer h-full rounded-full" />
               <div className="group-hover:block dropdown-menu absolute hidden h-auto bg-secondary p-2">
                 <button className="top-0 bg-primary text-secondary font-medium hover:bg-primary-hover p-2 w-20" onClick={handleLogoutClick}>Log Out</button>
               </div>
@@ -93,7 +93,7 @@ export default function Dashboard() {
         <div className="ml-60 h-full p-5">
           <div className="min-h-full grid grid-cols-3 grid-rows-5 items-center">
             <div className="col-span-1 row-span-2 flex flex-col justify-center items-center place-self-center">
-              <img src={user.dpUri} alt="Profile Picture" className="w-60" />
+              <img src={user.dpUri} alt="Profile Picture" className="w-60 rounded-full" />
               <CloudinaryUploadWidget text="CHANGE" onSuccessHandler={handleDpChange} />
             </div>
             <div className="col-span-2 row-span-2 w-full max-w-2xl">

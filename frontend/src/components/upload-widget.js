@@ -25,8 +25,17 @@ export default function CloudinaryUploadWidget(props) {
       cropping: true,
       multiple: false,
       maxFiles: 1,
-      sources: [ 'local', 'camera', 'url' ],
+      sources: ['local', 'camera', 'url'],
       clientAllowedFormats: 'image',
+      styles: {
+        fonts: {
+          default: null,
+          '"Poppins", sans-serif': {
+            url: 'https://fonts.googleapis.com/css?family=Poppins',
+            active: true
+          }
+        }
+      },
     }
 
     const myWidget = window.cloudinary.createUploadWidget(options, (err, result) => {

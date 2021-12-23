@@ -5,7 +5,7 @@ let userSchema = new mongoose.Schema({
   password: { type: String, require: true },
   salt: { type: String, require: true },
   name: { type: String, trim: true, require: true },
-  dpUri: { type: String, trime: true, require: true, default: 'https://res.cloudinary.com/convos456/image/upload/v1640239184/user_dps/avatar_nzm3ui.png' },
+  dpUri: { type: String, trime: true, require: true, default: 'https://res.cloudinary.com/convos456/image/upload/v1640260589/user_dps/avatar.png' },
   groups: [{ type: mongoose.ObjectId, require: true }] // [ {type: mongoose.ObjectId, require: true, ref: 'Group'} ] 
 });
 
