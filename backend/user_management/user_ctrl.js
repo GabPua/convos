@@ -1,3 +1,4 @@
+require('dotenv').config();
 const User = require('./user');
 const { isValidEmail, isValidName, isValidPassword } = require('convos-validator');
 const { hashPassword, matchPassword } = require('../utils/hashPassword');
@@ -54,7 +55,11 @@ const user_ctrl = {
           req.session._id = _id;
           req.session.name = user.name;
           res.status(200);
-          res.json({ _id, name: user.name });
+          res.json({
+            _id,
+            name: user.name,
+            dpUri: user.dpUri,
+          });
         } else {
           res.status(401);
           res.json({});
@@ -68,6 +73,7 @@ const user_ctrl = {
         res.json({
           _id: user._id,
           name: user.name,
+          dpUri: user.dpUri,
         });
       } else {
         res.json({});
@@ -91,6 +97,18 @@ const user_ctrl = {
     } else {
       res.status(400);
       res.json({ err: 'Bad Request: No session or new name passed.' });
+    }
+  },
+
+  updateDp: (req, res) => {
+    const _id = req.session._id;
+    const { dpUri } = req.body;
+
+    if (_id && dpUri) {
+      User.updateOne({ _id }, { dpUri }, (err) => res.json({ result: !err }));
+    } else {
+      res.status(400);
+      res.json({ err: 'Bad Request: No session or new URI passed.' });
     }
   },
 
@@ -123,6 +141,6 @@ const user_ctrl = {
       res.json({ err });
     });
   }
-}; 
+};
 
 module.exports = user_ctrl;
