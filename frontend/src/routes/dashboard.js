@@ -11,6 +11,7 @@ import useAuth from '../utils/useAuth'
 import CloudinaryUploadWidget from '../components/upload-widget'
 import postRequest from '../utils/postRequest'
 import Loading from '../components/loading'
+import ContactList from '../components/contacts/contact-list'
 
 export default function Dashboard() {
   const [modal, setModal] = useState(null)
@@ -124,20 +125,7 @@ export default function Dashboard() {
                 <i className="fas fa-lg fa-user-plus text-primary cursor-pointer hover:text-primary-hover" onClick={e => handleChangeClick(<AddContact />, e)}></i>
               </div>
               <hr className="border-gray-300" />
-              <div className="p-5">
-                <div className="flex items-center py-1">
-                  <figure className="mr-6">
-                    <img src="/assets/hans.png" alt="avatar" className="rounded-full" />
-                  </figure>
-                  <p className="text-xl">Hans Ibrahinm</p>
-                </div>
-                <div className="flex items-center py-1">
-                  <figure className="mr-6">
-                    <img src="/assets/hans.png" alt="avatar" className="rounded-full" />
-                  </figure>
-                  <p className="text-xl">Hans Ibrahinm</p>
-                </div>
-              </div>
+              <ContactList contacts={[{_id: 'hans@gmail.com', name: 'Hans Ibrahim', dpUri: '/assets/avatar.png'}]} />
             </div>
           </div>
         </div>
