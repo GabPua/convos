@@ -13,5 +13,5 @@ export default function ContactList({ contacts }) {
 }
 
 ContactList.propTypes = {
-  contacts: PropTypes.object.isRequired,
+  contacts: PropTypes.array.isRequired,
 }

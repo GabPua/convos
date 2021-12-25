@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 // eslint-disable-next-line no-unused-vars
 import styles from '../dashboard.css'
 import Modal from '../components/modal'
@@ -16,8 +16,18 @@ import ContactList from '../components/contacts/contact-list'
 export default function Dashboard() {
   const [modal, setModal] = useState(null)
   const [dpLoading, setDpLoading] = useState(false)
+  const [contacts, setContacts] = useState([])
   const navigate = useNavigate()
   const { user, refreshUser, logout } = useAuth()
+
+  useEffect(() => {
+    fetch('/api/contact/getContacts')
+      .then(res => res.json())
+      .then(res => {
+        console.log(res)
+        setContacts(res)
+      })
+  }, [])
 
   function handleChangeClick(component, event) {
     event.preventDefault()
@@ -125,7 +135,7 @@ export default function Dashboard() {
                 <i className="fas fa-lg fa-user-plus text-primary cursor-pointer hover:text-primary-hover" onClick={e => handleChangeClick(<AddContact />, e)}></i>
               </div>
               <hr className="border-gray-300" />
-              <ContactList contacts={[{_id: 'hans@gmail.com', name: 'Hans Ibrahim', dpUri: '/assets/avatar.png'}]} />
+              <ContactList contacts={contacts} />
             </div>
           </div>
         </div>
