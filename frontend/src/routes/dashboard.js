@@ -23,10 +23,7 @@ export default function Dashboard() {
   useEffect(() => {
     fetch('/api/contact/getContacts')
       .then(res => res.json())
-      .then(res => {
-        console.log(res)
-        setContacts(res)
-      })
+      .then(res => setContacts(res))
   }, [])
 
   function handleChangeClick(component, event) {
@@ -58,6 +55,10 @@ export default function Dashboard() {
         }
         setDpLoading(false)
       })
+  }
+
+  function addContact(c) {
+    setContacts(contacts.concat(c))
   }
 
   return (
@@ -132,7 +133,7 @@ export default function Dashboard() {
             <div className="col-span-2 xl:col-span-1 row-span-3 items-start self-start place-self-center w-3/4 min-w-min mt-4 2nxl:mt-0">
               <div className="flex justify-between items-center">
                 <p className="text-3xl">Contacts</p>
-                <i className="fas fa-lg fa-user-plus text-primary cursor-pointer hover:text-primary-hover" onClick={e => handleChangeClick(<AddContact />, e)}></i>
+                <i className="fas fa-lg fa-user-plus text-primary cursor-pointer hover:text-primary-hover" onClick={e => handleChangeClick(<AddContact addContact={addContact} />, e)}></i>
               </div>
               <hr className="border-gray-300" />
               <ContactList contacts={contacts} />
