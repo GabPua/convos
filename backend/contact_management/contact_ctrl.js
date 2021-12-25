@@ -2,15 +2,13 @@ const Contact = require('./contact');
 
 const contact_ctrl = {
   getContacts: (req, res) => {
-    const userId = decodeURIComponent(req.query._id);
-    Contact.find({ userId }).exec()
-      .then(contacts => res.json(contacts));
+    Contact.find({ userId: req.session._id }, 'contactId').populate('contactId', 'name dpUri').exec()
+      .then(contacts => res.json(contacts.map(c => c.contactId)));
   },
 
   addContact: (req, res) => {
-    const { userId, contactId } = req.body;
-    const contact = { userId, contactId };
-    
+    const { contactId } = req.body;
+    const contact = { userId: req.session._id, contactId };
     Contact.create(contact, (err, result) => res.send({ result }));
   }
 };
