@@ -1,6 +1,7 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 
-export default function AddContact() {
+export default function AddContact(props) {
   return (
     <div>
       <div className="text-secondary">
@@ -14,10 +15,15 @@ export default function AddContact() {
             </div>
           </div>
           <div className="p-3  mt-2 text-center space-x-4 md:block">
-            <button type="submit" className="mb-2 md:mb-0 bg-white px-5 py-2 text-sm shadow-sm font-medium tracking-wider border text-gray-600 rounded-full hover:shadow-lg hover:bg-gray-100">ADD</button>
+            <input type="submit" className="mb-2 md:mb-0 bg-white px-5 py-2 text-sm shadow-sm font-medium tracking-wider border text-gray-600 rounded-full hover:shadow-lg hover:bg-gray-100" value="Add" />
+            <button type="button" className="mb-2 md:mb-0 bg-error-500 px-5 py-2 text-sm shadow-sm font-medium tracking-wider text-secondary rounded-full hover:shadow-lg hover:bg-error-600" onClick={props.closeHandler}>Cancel</button>
           </div>
         </form>
       </div>
     </div>
   )
+}
+
+AddContact.propTypes = {
+  closeHandler: PropTypes.func,
 }
