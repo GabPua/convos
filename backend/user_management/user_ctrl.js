@@ -2,6 +2,7 @@ require('dotenv').config();
 const User = require('./user');
 const { isValidEmail, isValidName, isValidPassword } = require('convos-validator');
 const { hashPassword, matchPassword } = require('../utils/hashPassword');
+const Token = require('../forgot_password/token');
 
 async function getUser(_id) {
   return await User.findById(_id).exec();
@@ -84,7 +85,9 @@ const user_ctrl = {
   forgotPassword: (req, res) => {
     const { _id, password } = req.body;
     updatePassword(_id, password)
-      .then(() => res.json({ result: true }))
+      .then(() => {
+        Token.deleteOne({ userId: _id }, () => res.json({ result: true })); // remove forgot password token 
+      })
       .catch(() => res.json({ result: false }));
   },
 
