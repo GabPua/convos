@@ -12,7 +12,7 @@ function SubmitButton(props) {
       </div>
     )
   }
-  return <input type="submit" className="btn primary w-full mt-4" />
+  return <input type="submit" value="Reset Password" className="btn primary w-full mt-4" />
 }
 
 SubmitButton.propTypes = {
