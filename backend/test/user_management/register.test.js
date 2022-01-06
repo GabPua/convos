@@ -21,9 +21,9 @@ describe('Register', () => {
 
   it('has valid fields and a unique email', (done) => {
     req.body = {
-      _id: "example@email.com",
-      name: "example",
-      password: "pass1234"
+      _id: 'example@email.com',
+      name: 'example',
+      password: 'pass1234'
     };
     const mock = { exec: () => { return null; } };
     getStub = sinon.stub(mongoose.Model, 'findById').returns(mock);
@@ -47,6 +47,114 @@ describe('Register', () => {
           expect(result.result.name).toBe(req.body.name);
           expect(matchPassword(req.body.password, result.result.password, result.result.salt)).toBe(true);
           expect(req.session._id).toBe(req.body._id);
+          done();
+        } catch (error) {
+          done(error);
+        }
+      }
+    };
+
+    ctrl.register(req, res);
+
+    sinon.assert.calledWith(User.findById, req.body._id);
+  });
+
+  it('has valid fields but not a unique email', (done) => {
+    req.body = {
+      _id: 'example@email.com',
+      name: 'example',
+      password: 'pass1234'
+    };
+    const mock = { exec: () => { return req.body; } };
+    getStub = sinon.stub(mongoose.Model, 'findById').returns(mock);
+
+    const user = {
+      _id: req.body._id,
+      name: req.body.name,
+      groups: [],
+      ...hashPassword(req.body.password)
+    };
+
+    createStub = sinon.stub(mongoose.Model, 'create').yields(null, user, user);
+
+    const res = {
+      json: (result) => {
+        try {
+          sinon.assert.notCalled(User.create);
+
+          expect(result.result).toBe(false);
+          done();
+        } catch (error) {
+          done(error);
+        }
+      }
+    };
+
+    ctrl.register(req, res);
+
+    sinon.assert.calledWith(User.findById, req.body._id);
+  });
+
+  it('does not have valid fields but has a unique email', (done) => {
+    req.body = {
+      _id: 'example@email.com',
+      name: 'example',
+      password: 'invalid'
+    };
+    const mock = { exec: () => { return null; } };
+    getStub = sinon.stub(mongoose.Model, 'findById').returns(mock);
+
+    const user = {
+      _id: req.body._id,
+      name: req.body.name,
+      groups: [],
+      ...hashPassword(req.body.password)
+    };
+
+    createStub = sinon.stub(mongoose.Model, 'create').yields(null, user, user);
+
+    const res = {
+      json: (result) => {
+        try {
+          sinon.assert.notCalled(User.create);
+
+          expect(result.result).toBe(false);
+          done();
+        } catch (error) {
+          done(error);
+        }
+      }
+    };
+
+    ctrl.register(req, res);
+
+    sinon.assert.calledWith(User.findById, req.body._id);
+  });
+
+  it('does not have valid fields or a unique email', (done) => {
+    req.body = {
+      _id: 'example@email.com',
+      name: 'example',
+      password: 'invalid'
+    };
+    const mock = { exec: () => { return req.body; } };
+    getStub = sinon.stub(mongoose.Model, 'findById').returns(mock);
+
+    const user = {
+      _id: req.body._id,
+      name: req.body.name,
+      groups: [],
+      ...hashPassword(req.body.password)
+    };
+
+    createStub = sinon.stub(mongoose.Model, 'create').yields(null, user, user);
+
+    const res = {
+      json: (result) => {
+        try {
+          sinon.assert.notCalled(User.create);
+
+          expect(result.result).toBe(false);
           done();
         } catch (error) {
           done(error);

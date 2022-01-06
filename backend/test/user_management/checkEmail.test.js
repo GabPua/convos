@@ -6,7 +6,7 @@ const ctrl = require('../../user_management/user_ctrl');
 describe('Check Email', () => {
   const req = {
     query: {
-      _id: "example@email.com"
+      _id: 'example@email.com'
     }
   };
   let stub;
@@ -41,7 +41,7 @@ describe('Check Email', () => {
     // findById returns a document
     const user = {
       _id: req.query._id,
-      name: "example"
+      name: 'example'
     };
     const mock = { exec: () => { return user; } };
     stub = sinon.stub(mongoose.Model, 'findById').returns(mock);
