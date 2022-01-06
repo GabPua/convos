@@ -1,6 +1,6 @@
 require('dotenv').config();
 const User = require('./user');
-const { isValidEmail, isValidName, isValidPassword } = require('convos-validator');
+const { isValidEmail, isValidName, isValidPassword, passwordErrorMessage } = require('convos-validator');
 const { hashPassword, matchPassword } = require('../utils/hashPassword');
 
 async function getUser(_id) {
@@ -126,7 +126,7 @@ const user_ctrl = {
       }
 
       if (!isValidPassword(newPassword)) {
-        return res.json({ new: 'Password must contain' }); // TODO: Error message
+        return res.json({ new: passwordErrorMessage });
       }
 
       updatePassword(_id, newPassword)
