@@ -11,6 +11,10 @@ const contact_ctrl = {
     const { contactId } = req.body;
     let user;
 
+    if (contactId == req.session._id) {
+      return res.json({ err: 'You cannot add yourself!'});
+    }
+
     // check if user to be added does exist
     try {
       user = await User.findById(contactId).exec();
