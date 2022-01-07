@@ -13,7 +13,7 @@ const contact_ctrl = {
 
     // check if user to be added does exist
     try {
-      user = await User.findById(contactId);
+      user = await User.findById(contactId).exec();
     } catch (err) {
       res.status(500);
       return res.json({ err });
@@ -27,8 +27,13 @@ const contact_ctrl = {
     const contact = { userId: req.session._id, contactId };
 
     try {
-      await Contact.create(contact);
-      res.json({ user });
+      let record = await Contact.findOne(contact).exec();
+
+      if (record) {
+        res.json({ err: 'User is already in contacts!' });
+      } else {
+        res.json({ user });
+      }
     } catch (err) {
       res.status(500);
       return res.json({ err });
