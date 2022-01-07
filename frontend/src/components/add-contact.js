@@ -10,7 +10,10 @@ export default function AddContact(props) {
 
   const { user } = useAuth()
 
-  const handleChange = e => setInput(e.target.value)
+  const handleChange = e => {
+    setInput(e.target.value)
+    setError('')
+  }
 
   const handleFormSubmit = e => {
     e.preventDefault()
