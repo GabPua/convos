@@ -19,7 +19,7 @@ export default function AddContact(props) {
     e.preventDefault()
 
     if (isValidEmail(input)) {
-      postRequest('/api/contact/addContact', { input })
+      postRequest('/api/contact/addContact', { contactId: input })
         .then(res => {
           if (res.err) {
             setError(res.err)
@@ -41,7 +41,7 @@ export default function AddContact(props) {
         <form onSubmit={handleFormSubmit}>
           <div className="field">
             <div className="w-full">
-              <input className="input w-full text-center" value={input} onChange={handleChange} type="text" id="contact-name" name="contactId" placeholder="Input Email Address" />
+              <input className="input w-full text-center" value={input} onChange={handleChange} type="text" id="contact-name" placeholder="Input Email Address" />
               <p className="help-text">{error}</p>
             </div>
           </div>
