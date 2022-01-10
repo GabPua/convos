@@ -36,6 +36,7 @@ const contact_ctrl = {
       if (record) {
         res.json({ err: 'User is already in contacts!' });
       } else {
+        Contact.create({ userId: req.session._id, contactId: user._id });
         res.json({ user });
       }
     } catch (err) {
