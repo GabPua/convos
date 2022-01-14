@@ -102,7 +102,7 @@ export default function Dashboard() {
             </span>
           </div>
         </div>
-        <div className="ml-60 h-full p-5">
+        <div className="ml-60 h-full p-5" style={{'width': 'calc(100vw - 15rem)'}}>
           <div className="min-h-full grid grid-cols-3 grid-rows-5 items-center">
             <div className="col-span-1 row-span-2 flex flex-col justify-center items-center place-self-center">
               <img src={user.dpUri} alt="Profile Picture" className="w-60 rounded-full" />
