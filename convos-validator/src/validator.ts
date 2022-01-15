@@ -7,8 +7,8 @@ export function isValidPassword(password : string) : boolean {
   return isBlank(password) ? false : re.test(password)
 }
 
-export function isValidName(name : string) : boolean{
-  return !isBlank(name)
+export function isValidName(name : string) : boolean {
+  return !isBlank(name) && name.length <= 15
 }
 
 export function isValidEmail(email: string) : boolean {
@@ -17,3 +17,5 @@ export function isValidEmail(email: string) : boolean {
 }
 
 export const passwordErrorMessage = "Password must be at least 5 characters long with at least one letter and at least one special character/digit"
+
+export const usernameErrorMessage = "Username must not be blank nor exceed 15 characters"

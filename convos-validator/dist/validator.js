@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.passwordErrorMessage = exports.isValidEmail = exports.isValidName = exports.isValidPassword = exports.isBlank = void 0;
+exports.usernameErrorMessage = exports.passwordErrorMessage = exports.isValidEmail = exports.isValidName = exports.isValidPassword = exports.isBlank = void 0;
 function isBlank(str) {
     return str === null || !str.trim();
 }
@@ -11,7 +11,7 @@ function isValidPassword(password) {
 }
 exports.isValidPassword = isValidPassword;
 function isValidName(name) {
-    return !isBlank(name);
+    return !isBlank(name) && name.length <= 15;
 }
 exports.isValidName = isValidName;
 function isValidEmail(email) {
@@ -20,3 +20,4 @@ function isValidEmail(email) {
 }
 exports.isValidEmail = isValidEmail;
 exports.passwordErrorMessage = "Password must be at least 5 characters long with at least one letter and at least one special character/digit";
+exports.usernameErrorMessage = "Username must not be blank nor exceed 15 characters";

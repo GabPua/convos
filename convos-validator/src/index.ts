@@ -1,1 +1,1 @@
-export { isBlank, isValidPassword, isValidName, isValidEmail, passwordErrorMessage } from './validator'
+export { isBlank, isValidPassword, isValidName, isValidEmail, passwordErrorMessage, usernameErrorMessage } from './validator'
