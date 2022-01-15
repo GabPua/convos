@@ -1,16 +1,18 @@
 const sinon = require('sinon');
 const User = require('../../user_management/user');
+const Token = require('../../forgot_password/token');
 const mongoose = require('mongoose');
 const ctrl = require('../../user_management/user_ctrl');
 
 describe('Forgot Password', () => {
-  let stub;
+  let updateStub, deleteStub;
 
   afterEach(() => {
-    stub.restore();
+    updateStub.restore();
+    deleteStub.restore();
   });
 
-  it('successfully updated password', (done) => {
+  it('successfully updated password', () => {
     const req = {
       body: { 
         _id: 'example@email.com',
@@ -18,16 +20,13 @@ describe('Forgot Password', () => {
       }
     }
     const mock = Promise.resolve();
-    stub = sinon.stub(mongoose.Model, 'updateOne').returns(mock);
+    updateStub = sinon.stub(mongoose.Model, 'updateOne').returns(mock);
+    deleteStub = sinon.stub(mongoose.Model, 'deleteOne').yields(null);
 
     const res = {
       json: (result) => {
-        try {
-          expect(result.result).toBe(true);
-          done();
-        } catch (error) {
-          done(error);
-        }
+        expect(result.result).toBe(true);
+        sinon.assert.calledOnce(Token.deleteOne);
       }
     };
 
@@ -36,7 +35,7 @@ describe('Forgot Password', () => {
     sinon.assert.calledOnce(User.updateOne);
   });
 
-  it('failed to updated password', (done) => {
+  it('failed to updated password', () => {
     const req = {
       body: { 
         _id: 'example@email.com',
@@ -44,16 +43,13 @@ describe('Forgot Password', () => {
       }
     }
     const mock = Promise.reject();
-    stub = sinon.stub(mongoose.Model, 'updateOne').returns(mock);
+    updateStub = sinon.stub(mongoose.Model, 'updateOne').returns(mock);
+    deleteStub = sinon.stub(mongoose.Model, 'deleteOne').yields(null);
 
     const res = {
       json: (result) => {
-        try {
-          expect(result.result).toBe(false);
-          done();
-        } catch (error) {
-          done(error);
-        }
+        expect(result.result).toBe(false);
+        sinon.assert.notCalled(Token.deleteOne);
       }
     };
 

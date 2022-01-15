@@ -23,6 +23,7 @@ export default function CloudinaryUploadWidget(props) {
       folder: 'user_dps',
       uploadPreset: 'user_dps',
       cropping: true,
+      croppingAspectRatio: 1,
       multiple: false,
       maxFiles: 1,
       sources: ['local', 'camera', 'url'],
