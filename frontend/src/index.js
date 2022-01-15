@@ -12,6 +12,7 @@ import reportWebVitals from './reportWebVitals'
 
 function RequireAuth({ children }) {
   const { isAuthed } = useAuth()
+  console.log('Is logged in: ', isAuthed())
   return isAuthed() ? children : <Navigate to="/" replace />
 }
 
@@ -21,6 +22,7 @@ RequireAuth.propTypes = {
 
 function RequireUnauth({ children }) {
   const { isAuthed } = useAuth()
+  console.log('Is logged in: ', isAuthed())
   return isAuthed() ? <Navigate to="/dashboard" replace /> : children
 }
 

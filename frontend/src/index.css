@@ -23,7 +23,7 @@
   }
 
   .field .input+.help-text {
-    @apply ml-5 mt-1 font-normal text-sm text-error-600 min-h-[1.5em]
+    @apply ml-5 mt-1 font-thin text-sm text-error-600 min-h-[1.5em]
   }
 
   .btn {

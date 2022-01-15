@@ -7,15 +7,12 @@ export default function Modal(props) {
   useEffect(() => {
     if (props.component == null) {
       document.removeEventListener('click', handleClick)
-      document.removeEventListener('keydown', handleEscapePress)
     } else {
       document.addEventListener('click', handleClick)
-      document.addEventListener('keydown', handleEscapePress)
     }
     
     return () => {
       document.removeEventListener('click', handleClick)
-      document.removeEventListener('keydown', handleEscapePress)
     }
   }, [props.component])
 
@@ -26,12 +23,6 @@ export default function Modal(props) {
       return
     }
     props.closeHandler()
-  }
-
-  const handleEscapePress = e => {
-    if (e.key === 'Escape') {
-      props.closeHandler()
-    }
   }
 
   if (!props.component) {
