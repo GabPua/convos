@@ -1,6 +1,6 @@
 import { Link, useNavigate } from 'react-router-dom'
 import React from 'react'
-import { isValidEmail, isValidName, isValidPassword, passwordErrorMessage } from 'convos-validator'
+import { isValidEmail, isValidName, isValidPassword, passwordErrorMessage, usernameErrorMessage } from 'convos-validator'
 import postRequest from '../utils/postRequest'
 
 export default function Register() {
@@ -12,7 +12,7 @@ export default function Register() {
     const { email, name, password, confirm } = Object.fromEntries(new FormData(e.target))
     let tempError = {}
 
-    if (!isValidName(name)) { tempError.name = 'Invalid name' }
+    if (!isValidName(name)) { tempError.name = usernameErrorMessage }
 
     if (!isValidPassword(password)) {
       tempError.password = passwordErrorMessage

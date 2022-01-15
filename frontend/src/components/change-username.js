@@ -1,5 +1,5 @@
 import React from 'react'
-import { isValidName } from 'convos-validator'
+import { isValidName, usernameErrorMessage } from 'convos-validator'
 import PropTypes from 'prop-types'
 import postRequest from '../utils/postRequest'
 
@@ -15,9 +15,9 @@ function ChangeUsername(props) {
           props.setFeedback(true, 'Changed username successfully!')
           props.changeHandler()
         })
-        .catch(() => props.setFeedback(false, 'An error was encountered.'))
+        .catch(() => props.setFeedback(false, 'A server error was encountered.'))
     } else {
-      setError('Invalid username!') // TODO: better error message
+      setError(usernameErrorMessage)
     }
   }
 
