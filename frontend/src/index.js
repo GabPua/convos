@@ -8,6 +8,8 @@ import Landing from './routes/landing'
 import Register from './routes/register'
 import ResetForm from './routes/reset-form'
 import Dashboard from './routes/dashboard'
+import AccountDetails from './components/account-details'
+import GroupList from './components/groups/group-list'
 import reportWebVitals from './reportWebVitals'
 
 function RequireAuth({ children }) {
@@ -48,11 +50,14 @@ ReactDOM.render(
               <ResetForm />
             </RequireUnauth>
           } />
-          <Route path="/dashboard" element={
+          <Route path="/dashboard/" element={
             <RequireAuth>
               <Dashboard />
             </RequireAuth>
-          } />
+          } >
+            <Route path="" element={<AccountDetails />} />
+            <Route path="groups" element={<GroupList />} />
+          </Route>
         </Routes>
       </Router>
     </AuthProvider>

@@ -1,30 +1,16 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 // eslint-disable-next-line no-unused-vars
 import styles from '../dashboard.css'
 import Modal from '../components/modal'
-import ChangePassword from '../components/change-password'
-import EditUsername from '../components/change-username'
-import AddContact from '../components/add-contact'
-import { useNavigate } from 'react-router-dom'
+import { Outlet, useNavigate } from 'react-router-dom'
 import Feedback from '../components/feedback-modal'
 import useAuth from '../utils/useAuth'
-import CloudinaryUploadWidget from '../components/upload-widget'
-import postRequest from '../utils/postRequest'
-import Loading from '../components/loading'
-import ContactList from '../components/contacts/contact-list'
+import SideBarItem from '../components/side-bar-item'
 
 export default function Dashboard() {
   const [modal, setModal] = useState(null)
-  const [dpLoading, setDpLoading] = useState(false)
-  const [contacts, setContacts] = useState([])
   const navigate = useNavigate()
   const { user, refreshUser, logout } = useAuth()
-
-  useEffect(() => {
-    fetch('/api/contact/getContacts')
-      .then(res => res.json())
-      .then(res => setContacts(res))
-  }, [])
 
   function handleChangeClick(component, event) {
     event.preventDefault()
@@ -43,24 +29,6 @@ export default function Dashboard() {
 
   const closeModal = () => setModal(null)
 
-  function handleDpChange(result) {
-    console.log(result)
-    setDpLoading(true)
-    postRequest('/api/user/updateDp', { dpUri: result.url })
-      .then(res => {
-        if (res) {
-          refreshUser()
-        } else {
-          console.log('An error has occured!')
-        }
-        setDpLoading(false)
-      })
-  }
-
-  function addContact(c) {
-    setContacts(contacts.concat(c))
-  }
-
   return (
     <div>
       <header className="bg-primary fixed w-full">
@@ -71,7 +39,6 @@ export default function Dashboard() {
           </div>
           <div className="flex justify-end flex-grow">
             <div className="group relative">
-              <Loading show={dpLoading} />
               <img src={user.dpUri} alt="Profile Picture" className="cursor-pointer h-full rounded-full" />
               <div className="group-hover:block dropdown-menu absolute hidden h-auto bg-secondary p-2">
                 <button className="top-0 bg-primary text-secondary font-medium hover:bg-primary-hover p-2 w-20" onClick={handleLogoutClick}>Log Out</button>
@@ -82,63 +49,16 @@ export default function Dashboard() {
       </header>
 
       <main className="main-content pt-16">
-        <div className="fixed top-16 left-0 h-screen w-60 m-0 p-5 flex flex-col border border-gray border-t-0">
-          <div className="sidebar-item">
-            <span className="flex-center w-14"><i className="fas fa-user fa-lg"></i></span>
-            <span className="flex-center flex-grow">
-              <p>Account</p>
-            </span>
+        <div className="fixed top-16 left-0 w-60 m-0 p-5 flex flex-col justify-between border border-gray border-t-0" style={{'height': 'calc(100vh - 4rem)' }}>
+          <div>
+            <SideBarItem title="Account" to="/dashboard" className="fas fa-user fa-lg" />
+            <SideBarItem title="My Groups" to="/dashboard/groups" className="fas fa-users fa-lg" />
+            <SideBarItem title="Dashboard" to="/dashboard/groups" className="fas fa-chalkboard fa-lg" />
           </div>
-          <div className="sidebar-item">
-            <span className="flex-center w-14"><i className="fas fa-users fa-lg"></i></span>
-            <span className="flex-center flex-grow">
-              <p>My Groups</p>
-            </span>
-          </div>
-          <div className="sidebar-item">
-            <span className="flex-center w-14"><i className="fas fa-chalkboard fa-lg"></i></span>
-            <span className="flex-center flex-grow">
-              <p>Dashboard</p>
-            </span>
-          </div>
+          <button className="btn primary">New Convo</button>
         </div>
         <div className="ml-60 h-full p-5" style={{'width': 'calc(100vw - 15rem)'}}>
-          <div className="min-h-full grid grid-cols-3 grid-rows-5 items-center">
-            <div className="col-span-1 row-span-2 flex flex-col justify-center items-center place-self-center">
-              <img src={user.dpUri} alt="Profile Picture" className="w-60 rounded-full" />
-              <CloudinaryUploadWidget text="CHANGE" onSuccessHandler={handleDpChange} />
-            </div>
-            <div className="col-span-2 row-span-2 w-full max-w-2xl">
-              <p className="text-3xl">Account Details</p>
-              <hr className="border-gray-300" />
-              <div className="my-5">
-                <p className="text-xl">Email address</p>
-                <p className="underline text-gray-500">{user._id}</p>
-              </div>
-              <div className="flex justify-between items-center my-5">
-                <div>
-                  <p className="text-xl">Name</p>
-                  <p className="text-gray-500">{user.name}</p>
-                </div>
-                <button className="btn primary w-40 text-xl h-10" onClick={e => handleChangeClick(<EditUsername username={user.name} />, e)}>CHANGE</button>
-              </div>
-              <div className="flex justify-between items-center my-5">
-                <div>
-                  <p className="text-xl">Password</p>
-                  <p className="text-gray-500">***************</p>
-                </div>
-                <button className="btn primary w-40 text-xl h-10" onClick={e => handleChangeClick(<ChangePassword />, e)}>CHANGE</button>
-              </div>
-            </div>
-            <div className="col-span-2 xl:col-span-1 row-span-3 items-start self-start place-self-center w-3/4 min-w-min mt-4 2nxl:mt-0">
-              <div className="flex justify-between items-center">
-                <p className="text-3xl">Contacts</p>
-                <i className="fas fa-lg fa-user-plus text-primary cursor-pointer hover:text-primary-hover" onClick={e => handleChangeClick(<AddContact addContact={addContact} />, e)}></i>
-              </div>
-              <hr className="border-gray-300" />
-              <ContactList contacts={contacts} />
-            </div>
-          </div>
+          <Outlet context={handleChangeClick} />
         </div>
       </main>
       <Modal component={modal} closeHandler={closeModal} setFeedback={setFeedback} changeHandler={refreshUser} />
