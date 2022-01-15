@@ -39,20 +39,20 @@ function ChangePassword(props) {
       <form onSubmit={handleSubmit}>
         <div className="field">
           <label htmlFor="old-password" className="mb-6">Old Password</label>
-          <div className="w-32">
+          <div>
             <input className="input" type="text" id="old-password" name="oldPassword" />
             <p className="help-text">{error.old}</p>
           </div>
         </div>
         <div className="field">
           <label htmlFor="new-password">New Password</label>
-          <div className="w-32">
+          <div>
             <input className="input" type="password" id="new-password" name="newPassword" />
           </div>
         </div>
         <div className="field">
           <label htmlFor="confirm-password" className="mb-6">Confirm Password</label>
-          <div className="w-32">
+          <div>
             <input className="input" type="password" id="confirm-password" name="confirmPassword" />
             <p className="help-text">{error.new}</p>
           </div>
