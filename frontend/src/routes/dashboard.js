@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 // eslint-disable-next-line no-unused-vars
 import styles from '../dashboard.css'
 import Modal from '../components/modal'
@@ -8,23 +8,11 @@ import AddContact from '../components/add-contact'
 import { useNavigate } from 'react-router-dom'
 import Feedback from '../components/feedback-modal'
 import useAuth from '../utils/useAuth'
-import CloudinaryUploadWidget from '../components/upload-widget'
-import postRequest from '../utils/postRequest'
-import Loading from '../components/loading'
-import ContactList from '../components/contacts/contact-list'
 
 export default function Dashboard() {
   const [modal, setModal] = useState(null)
-  const [dpLoading, setDpLoading] = useState(false)
-  const [contacts, setContacts] = useState([])
   const navigate = useNavigate()
   const { user, refreshUser, logout } = useAuth()
-
-  useEffect(() => {
-    fetch('/api/contact/getContacts')
-      .then(res => res.json())
-      .then(res => setContacts(res))
-  }, [])
 
   function handleChangeClick(component, event) {
     event.preventDefault()
@@ -43,24 +31,6 @@ export default function Dashboard() {
 
   const closeModal = () => setModal(null)
 
-  function handleDpChange(result) {
-    console.log(result)
-    setDpLoading(true)
-    postRequest('/api/user/updateDp', { dpUri: result.url })
-      .then(res => {
-        if (res) {
-          refreshUser()
-        } else {
-          console.log('An error has occured!')
-        }
-        setDpLoading(false)
-      })
-  }
-
-  function addContact(c) {
-    setContacts(contacts.concat(c))
-  }
-
   return (
     <div>
       <header className="bg-primary fixed w-full">
@@ -71,8 +41,7 @@ export default function Dashboard() {
           </div>
           <div className="flex justify-end flex-grow">
             <div className="group relative">
-              <Loading show={dpLoading} />
-              <img src={user.dpUri} alt="Profile Picture" className="cursor-pointer h-full rounded-full" />
+              <img src="/assets/avatar.png" alt="Profile Picture" className="cursor-pointer h-full" />
               <div className="group-hover:block dropdown-menu absolute hidden h-auto bg-secondary p-2">
                 <button className="top-0 bg-primary text-secondary font-medium hover:bg-primary-hover p-2 w-20" onClick={handleLogoutClick}>Log Out</button>
               </div>
@@ -105,8 +74,8 @@ export default function Dashboard() {
         <div className="ml-60 h-full p-5">
           <div className="min-h-full grid grid-cols-3 grid-rows-5 items-center">
             <div className="col-span-1 row-span-2 flex flex-col justify-center items-center place-self-center">
-              <img src={user.dpUri} alt="Profile Picture" className="w-60 rounded-full" />
-              <CloudinaryUploadWidget text="CHANGE" onSuccessHandler={handleDpChange} />
+              <img src="/assets/avatar.png" alt="Profile Picture" className="w-60" />
+              <button className="btn primary mt-4 text-xl h-10 w-40">CHANGE</button>
             </div>
             <div className="col-span-2 row-span-2 w-full max-w-2xl">
               <p className="text-3xl">Account Details</p>
@@ -133,10 +102,23 @@ export default function Dashboard() {
             <div className="col-span-2 xl:col-span-1 row-span-3 items-start self-start place-self-center w-3/4 min-w-min mt-4 2nxl:mt-0">
               <div className="flex justify-between items-center">
                 <p className="text-3xl">Contacts</p>
-                <i className="fas fa-lg fa-user-plus text-primary cursor-pointer hover:text-primary-hover" onClick={e => handleChangeClick(<AddContact addContact={addContact} />, e)}></i>
+                <i className="fas fa-lg fa-user-plus text-primary cursor-pointer hover:text-primary-hover" onClick={e => handleChangeClick(<AddContact />, e)}></i>
               </div>
               <hr className="border-gray-300" />
-              <ContactList contacts={contacts} />
+              <div className="p-5">
+                <div className="flex items-center py-1">
+                  <figure className="mr-6">
+                    <img src="/assets/hans.png" alt="avatar" className="rounded-full" />
+                  </figure>
+                  <p className="text-xl">Hans Ibrahinm</p>
+                </div>
+                <div className="flex items-center py-1">
+                  <figure className="mr-6">
+                    <img src="/assets/hans.png" alt="avatar" className="rounded-full" />
+                  </figure>
+                  <p className="text-xl">Hans Ibrahinm</p>
+                </div>
+              </div>
             </div>
           </div>
         </div>

@@ -1,49 +1,18 @@
 const Contact = require('./contact');
-const User = require('../user_management/user');
 
 const contact_ctrl = {
   getContacts: (req, res) => {
-    Contact.find({ userId: req.session._id }, 'contactId').populate('contactId', 'name dpUri').exec()
-      .then(contacts => res.json(contacts.map(c => c.contactId)));
+    const userId = decodeURIComponent(req.query._id);
+    Contact.find({ userId }).exec()
+      .then(contacts => res.json(contacts));
   },
 
-  addContact: async (req, res) => {
-    const { contactId } = req.body;
-    let user;
-
-    if (contactId == req.session._id) {
-      return res.json({ err: 'You cannot add yourself!'});
-    }
-
-    // check if user to be added does exist
-    try {
-      user = await User.findById(contactId).exec();
-    } catch (err) {
-      res.status(500);
-      return res.json({ err });
-    }
-
-    if (!user) {
-      res.status(400);
-      return res.json({ err: 'User does not exist!' });
-    }
-
-    const contact = { userId: req.session._id, contactId };
-
-    try {
-      let record = await Contact.findOne(contact).exec();
-
-      if (record) {
-        res.json({ err: 'User is already in contacts!' });
-      } else {
-        Contact.create({ userId: req.session._id, contactId: user._id });
-        res.json({ user });
-      }
-    } catch (err) {
-      res.status(500);
-      return res.json({ err });
-    }
+  addContact: (req, res) => {
+    const { userId, contactId } = req.body;
+    const contact = { userId, contactId };
+    
+    Contact.create(contact, (err, result) => res.send({ result }));
   }
-};
+}
 
 module.exports = contact_ctrl;
