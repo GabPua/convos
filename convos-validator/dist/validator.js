@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.isValidEmail = exports.isValidName = exports.isValidPassword = exports.isBlank = void 0;
+exports.passwordErrorMessage = exports.isValidEmail = exports.isValidName = exports.isValidPassword = exports.isBlank = void 0;
 function isBlank(str) {
     return str === null || !str.trim();
 }
@@ -19,3 +19,4 @@ function isValidEmail(email) {
     return re.test(String(email).toLowerCase());
 }
 exports.isValidEmail = isValidEmail;
+exports.passwordErrorMessage = "Password must be at least 5 characters long with at least one letter and at least one special character/digit";

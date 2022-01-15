@@ -1,7 +1,7 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import PropTypes from 'prop-types'
-import { isValidEmail, isValidPassword } from 'convos-validator'
+import { isValidEmail, isValidPassword, passwordErrorMessage } from 'convos-validator'
 import postRequest from '../utils/postRequest'
 
 function SubmitButton(props) {
@@ -12,7 +12,7 @@ function SubmitButton(props) {
       </div>
     )
   }
-  return <input type="submit" className="btn primary w-full mt-4" />
+  return <input type="submit" value="Reset Password" className="btn primary w-full mt-4" />
 }
 
 SubmitButton.propTypes = {
@@ -145,7 +145,7 @@ class ResetForm extends React.Component {
         status: 'get password',
         submitHandler: this.onPasswordSubmit,
         _id: _id,
-        error: 'Invalid password'
+        error: passwordErrorMessage
       })
     } else if (password !== confirm) {
       this.setState({
@@ -182,7 +182,7 @@ class ResetForm extends React.Component {
         </div>
         <div className="h-[40vh] relative bg-secondary z-10"></div>
 
-        <div className="absolute w-1/5 min-w-max left-1/2 top-1/2 shadow-2xl bg-secondary -translate-x-1/2 -translate-y-1/2 rounded-xl p-8 z-50">
+        <div className="absolute lg:w-2/5 xl:w-1/4 left-1/2 top-1/2 shadow-2xl bg-secondary -translate-x-1/2 -translate-y-1/2 rounded-xl p-8 z-50">
           <figure className="mb-10">
             <img className="m-auto w-10 mb-2" src="/assets/white-question-mark.png" alt="question mark" />
             <figcaption className="text-2xl font-keep-calm text-center">Reset your<br />password</figcaption>
