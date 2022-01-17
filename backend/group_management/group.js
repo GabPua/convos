@@ -9,4 +9,4 @@ let groupSchema = new mongoose.Schema({
   tag: { type: String, trim: true, lowercase: true, required: true }
 });
 
-module.exports = mongoose.model('Groups', groupSchema, 'groups');
+module.exports = mongoose.model('Group', groupSchema, 'groups');

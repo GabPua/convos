@@ -11,6 +11,8 @@ router.use('/', (req, res, next) => {
 
 router.post('/createGroup', ctrl.createGroup);
 
+router.get('/all', ctrl.getGroups);
+
 router.get('/:id', ctrl.getGroup);
 
 module.exports = router;
