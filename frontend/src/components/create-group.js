@@ -13,16 +13,15 @@ export default function CreateGroup(props) {
   const handleFormSubmit = async e => {
     e.preventDefault()
 
-    const { name, tag } = Object.fromEntries(new FormData(e.target))
+    const { groupName: name, tag } = Object.fromEntries(new FormData(e.target))
 
     if (isValidGroupName(name)) {
       const { result } = await postRequest('/api/group/createGroup', { name, tag })
       if (result) {
-        navigate(`/groups/${result}/details`)
+        navigate(`/groups/${result}`)
       } else {
         setError('A server error has occured!')
       }
-
     } else {
       setError(groupNameErrorMessage)
     }
@@ -37,7 +36,7 @@ export default function CreateGroup(props) {
           <div className="field">
             <label className="mb-6" htmlFor="group-name">Name</label>
             <div className="w-72">
-              <input className="input w-full text-center" onChange={handleChange} type="text" id="group-name" name="name" placeholder="Input Group Name" />
+              <input className="input w-full text-center" onChange={handleChange} type="text" id="group-name" name="groupName" placeholder="Input Group Name" autoComplete="off" />
               <p className="help-text">{error}</p>
             </div>
           </div>

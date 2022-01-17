@@ -11,6 +11,7 @@ import Dashboard from './routes/dashboard'
 import AccountDetails from './components/account-details'
 import GroupList from './components/groups/group-list'
 import reportWebVitals from './reportWebVitals'
+import GroupSettings from './routes/group-settings'
 
 function RequireAuth({ children }) {
   const { isAuthed } = useAuth()
@@ -57,6 +58,12 @@ ReactDOM.render(
           } >
             <Route path="" element={<AccountDetails />} />
             <Route path="groups" element={<GroupList />} />
+          </Route>
+          <Route path="/groups/:groupId" element={
+            <RequireAuth>
+              <GroupSettings />
+            </RequireAuth>
+          }>
           </Route>
         </Routes>
       </Router>
