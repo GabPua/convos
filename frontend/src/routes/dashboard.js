@@ -6,6 +6,7 @@ import { Outlet, useNavigate } from 'react-router-dom'
 import Feedback from '../components/feedback-modal'
 import useAuth from '../utils/useAuth'
 import SideBarItem from '../components/side-bar-item'
+import CreateGroup from '../components/create-group'
 
 export default function Dashboard() {
   const [modal, setModal] = useState(null)
@@ -55,7 +56,7 @@ export default function Dashboard() {
             <SideBarItem title="My Groups" to="/dashboard/groups" className="fas fa-users fa-lg" />
             <SideBarItem title="Dashboard" to="/dashboard/groups" className="fas fa-chalkboard fa-lg" />
           </div>
-          <button className="btn primary">New Convo</button>
+          <button className="btn primary" onClick={() => setModal(<CreateGroup closeHandler={closeModal} />)}>New Convo</button>
         </div>
         <div className="ml-60 h-full p-5" style={{'width': 'calc(100vw - 15rem)'}}>
           <Outlet context={handleChangeClick} />
