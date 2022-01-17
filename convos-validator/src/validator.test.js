@@ -123,7 +123,19 @@ describe('Tests for isValidName', () => {
         expect(result).toBe(false);
     });
 
-    it('Input name has at least one character that is not whitespace', () => {
+    it('Input name is more than 15 characters in length', () => {
+        const input = '12345678901234567890';
+        const result = isValidName(input);
+        expect(result).toBe(false);
+    });
+
+    it('Input name is 15 characters in length', () => {
+        const input = '123456789012345';
+        const result = isValidName(input);
+        expect(result).toBe(true);
+    });
+
+    it('Input name is less than 15 characters in length', () => {
         const input = 'name';
         const result = isValidName(input);
         expect(result).toBe(true);
