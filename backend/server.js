@@ -59,11 +59,13 @@ const user_route = require('./user_management/user_route');
 const password_route = require('./forgot_password/password_route');
 const contact_route = require('./contact_management/contact_route');
 const storage_route = require('./cloud_storage/storage_route');
+const group_route = require('./group_management/group_route');
 
 app.use('/api/user', user_route);
 app.use('/api/password', password_route);
 app.use('/api/contact', contact_route);
 app.use('/api/storage', storage_route);
+app.use('/api/group', group_route);
 
 app.listen(app.get('port'), () => {
   console.log(`Find the server at: http://localhost:${app.get('port')}/`); // eslint-disable-line no-console

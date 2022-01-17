@@ -5,7 +5,8 @@ const { isValidGroupName } = require('convos-validator');
 
 const group_ctrl = {
   createGroup: (req, res) => {
-    const { userId, name, tag } = req.body;
+    const { name, tag } = req.body;
+    const userId = req.session._id;
     
     if (!isValidGroupName(name)) {
       res.json({ result: false });
@@ -22,14 +23,21 @@ const group_ctrl = {
     Group.create(group, async (err, result) => {
       if (!err) {
         const _id = result._id;
-        const user = await User.findById(userId).exec();
+        const user = await User.findById(userId).lean().exec();
         const groups = user.groups;
         groups.push(_id);
 
         User.updateOne({ userId }, { groups })
-          .then(() => res.send(result));
+          .then(() => res.json({ result: _id }));
+      } else {
+        res.json({ err });
       }
     });
+  },
+
+  getGroup: async (req, res) => {
+    const group = await Group.findById(req.params.id).lean().exec();
+    res.json(group);
   }
 };
 
