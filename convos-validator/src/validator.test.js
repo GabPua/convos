@@ -1,4 +1,4 @@
-const { isBlank, isValidEmail, isValidName, isValidPassword } = require('convos-validator');
+const { isBlank, isValidEmail, isValidName, isValidPassword, isValidGroupName } = require('convos-validator');
 
 describe('Tests for isBlank', () => {
     it('Input string is null', () => {
@@ -138,6 +138,44 @@ describe('Tests for isValidName', () => {
     it('Input name is less than 15 characters in length', () => {
         const input = 'name';
         const result = isValidName(input);
+        expect(result).toBe(true);
+    });
+});
+
+describe('Tests for isValidGroupName', () => {
+    it('Input group name is null', () => {
+        const input = null;
+        const result = isValidGroupName(input);
+        expect(result).toBe(false);
+    });
+
+    it('Input group name is empty', () => {
+        const input = '';
+        const result = isValidGroupName(input);
+        expect(result).toBe(false);
+    });
+
+    it('Input group name is just whitespace', () => {
+        const input = '    ';
+        const result = isValidGroupName(input);
+        expect(result).toBe(false);
+    });
+
+    it('Input group name is more than 20 characters in length', () => {
+        const input = '1234567890123456789012345';
+        const result = isValidGroupName(input);
+        expect(result).toBe(false);
+    });
+
+    it('Input group name is 20 characters in length', () => {
+        const input = '12345678901234567890';
+        const result = isValidGroupName(input);
+        expect(result).toBe(true);
+    });
+
+    it('Input group name is less than 20 characters in length', () => {
+        const input = 'name';
+        const result = isValidGroupName(input);
         expect(result).toBe(true);
     });
 });
