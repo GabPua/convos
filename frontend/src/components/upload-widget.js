@@ -1,10 +1,8 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import postRequest from '../utils/postRequest'
-import useAuth from '../utils/useAuth'
 
-export default function CloudinaryUploadWidget(props) {
-  const { user } = useAuth()
+export default function CloudinaryUploadWidget({ text, onSuccessHandler, publicId, uploadPreset, aspectRatio  }) {
 
   React.useEffect(async () => {
     const response = await fetch('/api/storage/details')
@@ -18,12 +16,11 @@ export default function CloudinaryUploadWidget(props) {
     const options = {
       cloudName: data.cloudName,
       apiKey: data.apiKey,
-      publicId: user._id,
+      publicId,
       uploadSignature: generateSignature,
-      folder: 'user_dps',
-      uploadPreset: 'user_dps',
+      uploadPreset,
       cropping: true,
-      croppingAspectRatio: 1,
+      croppingAspectRatio: aspectRatio,
       multiple: false,
       maxFiles: 1,
       sources: ['local', 'camera', 'url'],
@@ -43,7 +40,7 @@ export default function CloudinaryUploadWidget(props) {
       if (err) {
         console.log('An error has occured: ', err)
       } else if (result.event === 'success') {
-        props.onSuccessHandler(result.info)
+        onSuccessHandler(result.info)
       }
     })
     document.getElementById('upload_widget').addEventListener('click', () => myWidget.open())
@@ -51,7 +48,7 @@ export default function CloudinaryUploadWidget(props) {
 
   return (
     <button id='upload_widget' className='btn primary mt-4 text-xl h-10 w-40'>
-      {props.text}
+      {text}
     </button>
   )
 }
@@ -59,4 +56,7 @@ export default function CloudinaryUploadWidget(props) {
 CloudinaryUploadWidget.propTypes = {
   text: PropTypes.string.isRequired,
   onSuccessHandler: PropTypes.func.isRequired,
+  publicId: PropTypes.any.isRequired,
+  uploadPreset: PropTypes.string.isRequired,
+  aspectRatio: PropTypes.number.isRequired,
 }
