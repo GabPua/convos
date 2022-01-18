@@ -49,6 +49,27 @@ const group_ctrl = {
 
     res.json(groups);
   },
+
+  updateName: (req, res) => {
+    const { _id, name } = req.body;
+
+    if (!isValidGroupName(name)) {
+      res.json({ err: 'Invalid name' }); // TODO: Change error message as needed
+      return;
+    }
+
+    Group.updateOne({ _id }, { name }, (err) => res.json({ result: !err }));
+  },
+
+  updatePic: (req, res) => {
+    const { _id, picUri } = req.body;
+    Group.updateOne({ _id }, { picUri }, (err) => res.json({ result: !err }));
+  },
+
+  updateTag: (req, res) => {
+    const { _id, tag } = req.body;
+    Group.updateOne({ _id }, { tag }, (err) => res.json({ result: !err }));
+  },
 };
 
 module.exports = group_ctrl;
