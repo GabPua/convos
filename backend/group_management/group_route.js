@@ -21,4 +21,6 @@ router.post('/updatePic', ctrl.updatePic);
 
 router.post('/updateTag', ctrl.updateTag);
 
+router.post('/:id/add', ctrl.addMember);
+
 module.exports = router;
