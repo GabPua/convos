@@ -1,6 +1,6 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom'
+import { BrowserRouter as Router, Routes, Route, useNavigate, useLocation, Navigate } from 'react-router-dom'
 import './index.css'
 import useAuth, { AuthProvider } from './utils/useAuth'
 import PropTypes from 'prop-types'
@@ -12,10 +12,21 @@ import AccountDetails from './components/account-details'
 import GroupList from './components/groups/group-list'
 import reportWebVitals from './reportWebVitals'
 import GroupSettings from './routes/group-settings'
+import Members from './components/group-settings/members'
 
 function RequireAuth({ children }) {
-  const { isAuthed } = useAuth()
-  return isAuthed() ? children : <Navigate to="/" replace />
+  const { isAuthed, isLoading, setCb } = useAuth()
+  const location = useLocation()
+  const path = location.pathname
+  const navigate = useNavigate()
+
+  if (isLoading) {
+    setCb((authed) => {
+      if (authed && path != '/dashboard') navigate(path)
+    })
+  }
+
+  return isAuthed() ? children : <Navigate to="/" replace state={{ path }} />
 }
 
 RequireAuth.propTypes = {
@@ -64,6 +75,9 @@ ReactDOM.render(
               <GroupSettings />
             </RequireAuth>
           }>
+            <Route path="" />
+            <Route path="members" element={<Members />} />
+            <Route path="disband" />
           </Route>
         </Routes>
       </Router>

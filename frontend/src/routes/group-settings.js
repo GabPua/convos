@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import useAuth from '../utils/useAuth'
-import { useNavigate, useParams } from 'react-router-dom'
+import { Outlet, useNavigate, useParams, Link } from 'react-router-dom'
 
 export default function GroupSettings() {
   const { logout } = useAuth()
@@ -40,38 +40,19 @@ export default function GroupSettings() {
 
       <main className="main-content pt-16">
         <div className="fixed top-16 left-0 h-screen w-96 m-0 p-5 bg-gray-300 border border-gray border-t-0">
-          <div className="my-4">
-            <p className="text-gray-600 font-bold text-3xl text-right cursor-pointer hover:text-primary select-none">General</p>
+          <div className="my-4 text-right">
+            <Link to="." className="text-gray-600 font-bold text-3xl cursor-pointer hover:text-primary select-none">General</Link>
           </div>
 
-          <div className="my-4">
-            <p className="text-gray-600 font-bold text-3xl text-right cursor-pointer hover:text-primary select-none">Members</p>
+          <div className="my-4 text-right">
+            <Link to="members" className="text-gray-600 font-bold text-3xl cursor-pointer hover:text-primary select-none">Members</Link>
           </div>
 
-          <div className="my-4">
-            <p className="text-gray-600 font-bold text-3xl text-right cursor-pointer hover:text-primary select-none">Disband</p>
+          <div className="my-4 text-right">
+            <Link to="disband" className="text-gray-600 font-bold text-3xl cursor-pointer hover:text-primary select-none">Disband</Link>
           </div>
         </div>
-        <div className="ml-96 h-full p-14" style={{'width': 'calc(100vw - 24rem)', 'max-width': '70rem'}}>
-          <div>
-            <div className="flex justify-between mb-2">
-              <p className="text-3xl font-bold">Group Members</p>
-              <i className="fas fa-2x fa-user-plus text-primary cursor-pointer hover:text-primary-hover"></i>
-            </div>
-            <hr />
-            <div className="overflow-y-scroll px-2">
-              <div className="flex justify-between items-center hover:bg-gray-200 rounded-2xl cursor-pointer select-none my-2 p-2 group transition-colors">
-                <div>
-                  <img src="./assets/hans.png" alt="Hans dp" className="inline mr-4" />
-                  <span className="text-xl">SPADE</span>
-                </div>
-                <span className="mx-4">
-                  <i className="text-error-500 invisible group-hover:visible fas fa-times fa-lg hover:text-error-600"></i>
-                </span>
-              </div>
-            </div>
-          </div>
-        </div>
+        <Outlet />
       </main>
     </div>
   )

@@ -41,7 +41,7 @@ const group_ctrl = {
   },
 
   getGroups: async (req, res) => {
-    const { groups } = await User.findById(req.session._id, 'groups').populate('groups', 'name members picUri tag').lean().exec();
+    const { groups } = await User.findById(req.session._id, 'groups').populate('groups', 'name members picUri tag coverUri').lean().exec();
     
     for (let i = 0; i < groups.length; i++) {
       groups[i].members = groups[i].members.length;
@@ -71,19 +71,18 @@ const group_ctrl = {
     Group.updateOne({ _id }, { tag }, (err) => res.json({ result: !err }));
   },
 
-  addMember: (req, res) => {
+  addMember: async (req, res) => {
     const { userId } = req.body;
     const groupId = req.params.id;
     const group = await Group.findById(groupId).lean().exec();
     
     const members = group.members;
     if (members.includes(userId)) {
-      res.json({ result: false });
-      return;
+      return res.json({ result: false });
     }
 
     members.push(userId);
-    Group.updateOne({ _id: groupId }, { members }, (err) => {
+    Group.updateOne({ _id: groupId }, { members }, async (err) => {
       if (!err) {
         const user = await User.findById(userId).lean().exec();
         const groups = user.groups;

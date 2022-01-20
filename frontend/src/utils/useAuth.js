@@ -6,15 +6,25 @@ const authContext = React.createContext()
 
 function useAuth() {
   const [user, setUser] = useState({})
+  const [isLoading, setIsLoading] = useState(true)
+  let cb = () => {}
+
+  function setCb(cb1) {
+    cb = cb1
+  }
   
   useEffect(refreshUser, [])
 
-  const isAuthed = () => user !== undefined && Object.keys(user).length !== 0
+  const isAuthed = (user1 = user) => user1 !== undefined && Object.keys(user1).length !== 0
 
   function refreshUser() {
     fetch('/api/user/getUser')
       .then(res => res.json())
-      .then(res => setUser(res))
+      .then(res => {
+        setUser(res)
+        setIsLoading(false)
+        cb(isAuthed(res))
+      })
   }
 
   async function login(_id, password) {
@@ -31,6 +41,8 @@ function useAuth() {
 
   return {
     user,
+    isLoading,
+    setCb,
     isAuthed,
     refreshUser,
     login,

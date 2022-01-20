@@ -43,7 +43,7 @@ export default function CloudinaryUploadWidget({ text, onSuccessHandler, publicI
         onSuccessHandler(result.info)
       }
     })
-    document.getElementById('upload_widget').addEventListener('click', () => myWidget.open())
+    document.getElementById('upload_widget')?.addEventListener('click', () => myWidget.open())
   }, [])
 
   return (

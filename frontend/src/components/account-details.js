@@ -14,9 +14,16 @@ export default function AccountDetails() {
   const handleChangeClick = useOutletContext()
 
   useEffect(() => {
-    fetch('/api/contact/getContacts')
+    const controller = new AbortController()
+
+    fetch('/api/contact/getContacts', { signal: controller.signal })
       .then(res => res.json())
       .then(res => setContacts(res))
+      .catch((err) => {
+        if (err.name !== 'AbortError') console.log(err.name)
+      })
+
+    return () => controller.abort()
   }, [])
 
   function handleDpChange(result) {

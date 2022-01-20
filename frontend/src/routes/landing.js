@@ -1,4 +1,4 @@
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import React, { useEffect } from 'react'
 import { isValidEmail, isValidPassword } from 'convos-validator'
 import Loading from '../components/loading'
@@ -9,6 +9,7 @@ export default function Landing() {
   const [error, setError] = React.useState(false)
   const [loading, setLoading] = React.useState(true)
   const { login, isAuthed } = useAuth()
+  const { state } = useLocation()
 
   function handleSubmit(e) {
     e.preventDefault()
@@ -22,7 +23,7 @@ export default function Landing() {
         .then(isSuccess => {
           setError(!isSuccess)
           if (isSuccess) {
-            navigate('/dashboard')
+            navigate(state?.path || '/dashboard')
           }
         })
     }
