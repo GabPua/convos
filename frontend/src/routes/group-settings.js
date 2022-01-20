@@ -52,7 +52,9 @@ export default function GroupSettings() {
             <Link to="disband" className="text-gray-600 font-bold text-3xl cursor-pointer hover:text-primary select-none">Disband</Link>
           </div>
         </div>
-        <Outlet />
+        <div className="ml-96 h-full p-14" style={{ 'width': 'calc(100vw - 24rem)', 'max-width': '70rem' }}>
+          <Outlet />
+        </div>
       </main>
     </div>
   )
