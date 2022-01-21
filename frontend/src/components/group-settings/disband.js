@@ -1,8 +1,15 @@
 import React from 'react'
+import { useNavigate, useParams } from 'react-router-dom'
 
 export default function Disband() {
-  const handleDisandClick = () => {
-    alert('Group deleted!') // TODO: fix
+  const { groupId } = useParams()
+  const navigate = useNavigate()
+
+  const handleDisbandClick = async () => {
+    const { result } = await (await fetch(`/api/group/${groupId}`, { method: 'DELETE', })).json()
+    if (result === true) {
+      navigate('/dashboard/groups')
+    }
   }
 
   return (
@@ -19,7 +26,7 @@ export default function Disband() {
         <p className="text-2xl font-light">Are you sure you want to proceed?</p>
       </div>
       <button className="bg-red-500 hover:bg-error-600 transition-colors btn text-white py-2 px-10 text-xl m-auto tracking-wider"
-        onClick={handleDisandClick}>DISBAND</button>
+        onClick={handleDisbandClick}>DISBAND</button>
     </div>
   )
 }

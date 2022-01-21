@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const User = require('../user_management/user');
 
 // TODO: change default picture
 let groupSchema = new mongoose.Schema({
@@ -8,6 +9,14 @@ let groupSchema = new mongoose.Schema({
   admin: { type: String, trim: true, lowercase: true, required: true, ref: 'User' },
   members: [{ type: String, trim: true, lowercase: true, required: true, ref: 'User' }],
   tag: { type: String, trim: true, lowercase: true, required: true }
+});
+
+groupSchema.pre('deleteOne', function removeFromUsers(next) {
+  const { _id } = this._conditions;
+
+  User.updateMany({ groups: _id }, {
+    $pull: { groups: _id }
+  }, next);
 });
 
 module.exports = mongoose.model('Group', groupSchema, 'groups');

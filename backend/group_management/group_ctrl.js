@@ -74,26 +74,38 @@ const group_ctrl = {
   addMember: async (req, res) => {
     const { userId } = req.body;
     const groupId = req.params.id;
-    const group = await Group.findById(groupId).lean().exec();
-    
-    const members = group.members;
-    if (members.includes(userId)) {
-      return res.json({ result: false });
-    }
 
-    members.push(userId);
-    Group.updateOne({ _id: groupId }, { members }, async (err) => {
-      if (!err) {
-        const user = await User.findById(userId).lean().exec();
-        const groups = user.groups;
-        groups.push(groupId);
-
-        User.updateOne({ _id: userId }, { groups }, (err) => res.json({ result: !err }));
-        return;
+    try {
+      const result = await Group.updateOne({ _id: groupId, admin: req.session._id }, { $addToSet: { members: userId } }).exec();
+      if (result.matchedCount == 1) {
+        const user = await User.findOneAndUpdate({ _id: userId }, { $addToSet: { groups: groupId } }).exec();
+        res.json({ result: true, user });
+      } else {
+        res.json({ result: false, error: 'An error has occured!'});
       }
-      
-      res.json({ result: false });
-    });
+    } catch (error) {
+      res.json({ result: false, error });
+    }
+  },
+
+  removeMember: async (req, res) => {
+    const { userId } = req.body;
+
+    try {
+      const result = await Group.updateOne({ _id: req.params.id, admin: req.session._id }, { $pull: { members: userId } });
+
+      // make sure that person is removed from group first by admin
+      if (result.matchedCount == 1) {
+        await User.updateOne({ _id: userId }, { $pull: { groups: req.params.id } });
+        return res.json({ result: true });
+      }
+    } catch (error) {
+      res.json({ result: false, error });
+    }
+  },
+
+  deleteGroup: (req, res) => {
+    Group.deleteOne({ _id: req.params.id, admin: req.session._id }, (err) => res.json({ result: !err }));
   }
 };
 

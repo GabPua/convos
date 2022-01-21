@@ -4,7 +4,7 @@ const User = require('../user_management/user');
 const contact_ctrl = {
   getContacts: (req, res) => {
     Contact.find({ userId: req.session._id }, 'contactId').populate('contactId', 'name dpUri').exec()
-      .then(contacts => res.json(contacts.map(c => c.contactId)));
+      .then(contacts => res.json({ contacts: contacts.map(c => c.contactId) }));
   },
 
   addContact: async (req, res) => {

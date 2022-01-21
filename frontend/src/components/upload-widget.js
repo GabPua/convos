@@ -56,7 +56,7 @@ export default function CloudinaryUploadWidget({ text, onSuccessHandler, publicI
 CloudinaryUploadWidget.propTypes = {
   text: PropTypes.string.isRequired,
   onSuccessHandler: PropTypes.func.isRequired,
-  publicId: PropTypes.any.isRequired,
+  publicId: PropTypes.any,
   uploadPreset: PropTypes.string.isRequired,
   aspectRatio: PropTypes.number.isRequired,
 }

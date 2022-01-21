@@ -3,6 +3,7 @@ import useAuth from '../utils/useAuth'
 import { Outlet, useNavigate, useParams, Link, useLocation } from 'react-router-dom'
 import Modal from '../components/modal'
 import Feedback from '../components/feedback-modal'
+import postRequest from '../utils/postRequest'
 
 export default function GroupSettings() {
   const { logout, user } = useAuth()
@@ -29,8 +30,30 @@ export default function GroupSettings() {
       .catch(() => alert('An error has occured!'))
   }
 
-  function removeMember(id) {
-    console.log(id) // TODO: stuff
+  const removeMember = async userId => {
+    const { result } = await postRequest(`/api/group/${groupId}/remove`, { userId })
+
+    if (result) {
+      setGroup(Object.assign(group, { members: group.members.filter(m => m._id !== userId) }))
+      setFeedback(true, 'Member successfult removed!')
+    } else {
+      setFeedback(false, 'An error has occured!')
+    }
+  }
+
+  async function addMember(userId) {
+    // if not in contacts
+    if (group.members.find(m => m._id === userId) === undefined) {
+      const { result, user, error } = await postRequest(`/api/group/${groupId}/add`, { userId })
+      if (result) {
+        setFeedback(result, result? 'Member added!' : error)
+        setGroup(Object.assign(group, { members: group.members.concat([user]) }))
+      }
+
+      return { error }
+    }
+    
+    return { error: 'Account is already a member of the group!' }
   }
 
   const handleExitClick = () => navigate('/dashboard/groups')
@@ -73,10 +96,10 @@ export default function GroupSettings() {
           </div>
         </div>
         <div className="ml-96 h-full p-14" style={{ 'width': 'calc(100vw - 24rem)', 'maxWidth': '70rem' }}>
-          <Outlet context={{group, removeMember, setModal}} />
+          <Outlet context={{ group, removeMember, addMember, setModal }} />
         </div>
       </main>
-      <Modal component={modal} closeHandler={closeModal} setFeedback={setFeedback} changeHandler={() => {}} />
+      <Modal component={modal} closeHandler={closeModal} setFeedback={setFeedback} changeHandler={() => { }} />
     </div>
   )
 }

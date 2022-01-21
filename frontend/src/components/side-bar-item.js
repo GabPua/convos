@@ -6,12 +6,10 @@ export default function SideBarItem({ title, to, className}) {
   const loc = useLocation()
 
   return (
-    <div className={'sidebar-item' + (loc.pathname === to ? ' selected' : '') }>
+    <Link to={to} className={'sidebar-item' + (loc.pathname === to ? ' selected' : '') }>
       <span className="flex-center w-14"><i className={className}></i></span>
-      <span className="flex-center flex-grow">
-        <Link to={to}>{title}</Link>
-      </span>
-    </div>
+      <span className="flex-center flex-grow"> {title} </span>
+    </Link>
   )
 }
 

@@ -23,4 +23,8 @@ router.post('/updateTag', ctrl.updateTag);
 
 router.post('/:id/add', ctrl.addMember);
 
+router.post('/:id/remove', ctrl.removeMember);
+
+router.delete('/:id', ctrl.deleteGroup);
+
 module.exports = router;
