@@ -30,24 +30,30 @@ export default function GroupSettings() {
       .catch(() => alert('An error has occured!'))
   }
 
-  async function removeMember(userId) {
-    const { result } = await postRequest(`/api/groups/${groupId}/remove`, { userId })
-    console.log(result)
-  }
-
-  async function addMember(userId) {
-    let result = false
-
-    // if not in contacts
-    if (group.members.find(m => m._id === userId) === undefined)
-      result = (await postRequest(`/api/groups/${groupId}/add`, { userId })).result
+  const removeMember = async userId => {
+    const { result } = await postRequest(`/api/group/${groupId}/remove`, { userId })
 
     if (result) {
-      setFeedback(true, 'Member added!')
-      setGroup(Object.assign(group, { members: group.members.concat([ userId ])}))
+      setGroup(Object.assign(group, { members: group.members.filter(m => m._id !== userId) }))
+      setFeedback(true, 'Member successfult removed!')
     } else {
       setFeedback(false, 'An error has occured!')
     }
+  }
+
+  async function addMember(userId) {
+    // if not in contacts
+    if (group.members.find(m => m._id === userId) === undefined) {
+      const { result, user, error } = await postRequest(`/api/group/${groupId}/add`, { userId })
+      if (result) {
+        setFeedback(result, result? 'Member added!' : error)
+        setGroup(Object.assign(group, { members: group.members.concat([user]) }))
+      }
+
+      return { error }
+    }
+    
+    return { error: 'Account is already a member of the group!' }
   }
 
   const handleExitClick = () => navigate('/dashboard/groups')
@@ -90,10 +96,10 @@ export default function GroupSettings() {
           </div>
         </div>
         <div className="ml-96 h-full p-14" style={{ 'width': 'calc(100vw - 24rem)', 'maxWidth': '70rem' }}>
-          <Outlet context={{group, removeMember, addMember, setModal}} />
+          <Outlet context={{ group, removeMember, addMember, setModal }} />
         </div>
       </main>
-      <Modal component={modal} closeHandler={closeModal} setFeedback={setFeedback} changeHandler={() => {}} />
+      <Modal component={modal} closeHandler={closeModal} setFeedback={setFeedback} changeHandler={() => { }} />
     </div>
   )
 }

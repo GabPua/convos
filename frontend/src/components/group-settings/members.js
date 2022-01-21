@@ -2,9 +2,10 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { useOutletContext } from 'react-router-dom'
 import RemoveMember from './remove-member'
+import AddMember from './add-member'
 
 function MemberItem({ id, name, dpUri }) {
-  const { setModal } = useOutletContext()
+  const { setModal, removeMember } = useOutletContext()
 
   return (
     <div className="flex justify-between items-center hover:bg-gray-200 rounded-2xl cursor-pointer select-none my-2 p-2 group transition-colors">
@@ -14,7 +15,7 @@ function MemberItem({ id, name, dpUri }) {
       </div>
       <span className="mx-4">
         <i className="text-error-500 invisible group-hover:visible fas fa-times fa-lg hover:text-error-600" 
-          onClick={() => setModal(<RemoveMember id={id} name={name} dpUri={dpUri} />)}></i>
+          onClick={() => setModal(<RemoveMember id={id} name={name} dpUri={dpUri} removeMember={removeMember} />)}></i>
       </span>
     </div>
   )
@@ -27,11 +28,8 @@ MemberItem.propTypes = {
 }
 
 export default function Members() {
-  const { group: { members } } = useOutletContext()
-
-  const handleAddClick = () => {
-    
-  }
+  const { group: { members }, addMember, setModal } = useOutletContext()
+  const handleAddClick = () => setModal(<AddMember addMember={addMember} />)
 
   return (
     <div>
@@ -45,8 +43,4 @@ export default function Members() {
       </div>
     </div>
   )
-}
-
-Members.propTypes = {
-  setModal: PropTypes.func.isRequired,
 }

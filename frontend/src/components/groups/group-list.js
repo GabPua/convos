@@ -22,10 +22,16 @@ export default function GroupList() {
     />)
   )
 
+  if (groupItems.length) {
+    return (
+      <div className="grid gap-4 auto-cols-min mx-auto" style={{ 'gridTemplateColumns': 'repeat(auto-fit, 16rem)' }}>
+        {groupItems}
+      </div>
+    )
+  }
+
   return (
-    <div className="grid gap-4 auto-cols-min mx-auto" style={{ 'gridTemplateColumns': 'repeat(auto-fit, 16rem)' }}>
-      {groupItems}
-    </div>
+    <p>You have no groups!</p>
   )
 }
 
