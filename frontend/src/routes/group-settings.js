@@ -3,6 +3,7 @@ import useAuth from '../utils/useAuth'
 import { Outlet, useNavigate, useParams, Link, useLocation } from 'react-router-dom'
 import Modal from '../components/modal'
 import Feedback from '../components/feedback-modal'
+import postRequest from '../utils/postRequest'
 
 export default function GroupSettings() {
   const { logout, user } = useAuth()
@@ -29,8 +30,24 @@ export default function GroupSettings() {
       .catch(() => alert('An error has occured!'))
   }
 
-  function removeMember(id) {
-    console.log(id) // TODO: stuff
+  async function removeMember(userId) {
+    const { result } = await postRequest(`/api/groups/${groupId}/remove`, { userId })
+    console.log(result)
+  }
+
+  async function addMember(userId) {
+    let result = false
+
+    // if not in contacts
+    if (group.members.find(m => m._id === userId) === undefined)
+      result = (await postRequest(`/api/groups/${groupId}/add`, { userId })).result
+
+    if (result) {
+      setFeedback(true, 'Member added!')
+      setGroup(Object.assign(group, { members: group.members.concat([ userId ])}))
+    } else {
+      setFeedback(false, 'An error has occured!')
+    }
   }
 
   const handleExitClick = () => navigate('/dashboard/groups')
@@ -73,7 +90,7 @@ export default function GroupSettings() {
           </div>
         </div>
         <div className="ml-96 h-full p-14" style={{ 'width': 'calc(100vw - 24rem)', 'maxWidth': '70rem' }}>
-          <Outlet context={{group, removeMember, setModal}} />
+          <Outlet context={{group, removeMember, addMember, setModal}} />
         </div>
       </main>
       <Modal component={modal} closeHandler={closeModal} setFeedback={setFeedback} changeHandler={() => {}} />

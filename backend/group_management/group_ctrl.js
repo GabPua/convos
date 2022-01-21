@@ -74,26 +74,28 @@ const group_ctrl = {
   addMember: async (req, res) => {
     const { userId } = req.body;
     const groupId = req.params.id;
-    const group = await Group.findById(groupId).lean().exec();
-    
-    const members = group.members;
-    if (members.includes(userId)) {
-      return res.json({ result: false });
-    }
 
-    members.push(userId);
-    Group.updateOne({ _id: groupId }, { members }, async (err) => {
+    Group.updateOne({ _id: groupId }, { $addToSet: { members: userId } }, async (err) => {
       if (!err) {
-        const user = await User.findById(userId).lean().exec();
-        const groups = user.groups;
-        groups.push(groupId);
-
-        User.updateOne({ _id: userId }, { groups }, (err) => res.json({ result: !err }));
+        User.updateOne({ _id: userId }, { $addToSet: { groups: groupId } }, (err) => res.json({ result: !err }));
         return;
       }
       
       res.json({ result: false });
     });
+  },
+
+  removeMember: (req, res) => {
+    const { userId } = req.body;
+    Group.updateOne({ _id: req.params.id }, {
+      $pullAll: {
+        members: [userId]
+      }
+    }, err => res.json({ result: !err }));
+  },
+
+  deleteGroup: (req, res) => {
+    Group.deleteOne({ _id: req.params.id }, (err) => res.json({ result: !err }));
   }
 };
 
