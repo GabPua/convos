@@ -1,13 +1,22 @@
 import React, { useEffect, useState } from 'react'
 import useAuth from '../utils/useAuth'
 import { Outlet, useNavigate, useParams, Link, useLocation } from 'react-router-dom'
+import Modal from '../components/modal'
+import Feedback from '../components/feedback-modal'
 
 export default function GroupSettings() {
   const { logout, user } = useAuth()
   const { groupId } = useParams()
   const navigate = useNavigate()
   const loc = useLocation()
-  const [group, setGroup ] = useState({})
+  const [group, setGroup] = useState({})
+  const [modal, setModal] = useState(null)
+
+  const closeModal = () => setModal(null)
+
+  function setFeedback(isSuccess, feedbackText) {
+    setModal(<Feedback isSuccess={isSuccess} text={feedbackText} />)
+  }
 
   useEffect(async () => {
     const result = await (await fetch(`/api/group/${groupId}`)).json()
@@ -19,6 +28,12 @@ export default function GroupSettings() {
       .then(() => navigate('/', { replace: true }))
       .catch(() => alert('An error has occured!'))
   }
+
+  function removeMember(id) {
+    console.log(id) // TODO: stuff
+  }
+
+  const handleExitClick = () => navigate('/dashboard/groups')
 
   return (
     <div>
@@ -42,6 +57,9 @@ export default function GroupSettings() {
 
       <main className="main-content pt-16">
         <div className="fixed top-16 left-0 h-screen w-96 m-0 p-5 bg-gray-300 border border-gray border-t-0">
+          <div>
+            <i className="fas fa-times fa-lg cursor-pointer text-gray-600 hover:text-black" onClick={handleExitClick}></i>
+          </div>
           <div className="my-4 text-right">
             <Link to="." className={'font-bold text-3xl cursor-pointer hover:text-primary select-none ' + (loc.pathname.match(/^(\/[^/]+){2}$/g) ? 'text-primary' : 'text-gray-600')}>General</Link>
           </div>
@@ -55,9 +73,10 @@ export default function GroupSettings() {
           </div>
         </div>
         <div className="ml-96 h-full p-14" style={{ 'width': 'calc(100vw - 24rem)', 'maxWidth': '70rem' }}>
-          <Outlet context={group} />
+          <Outlet context={{group, removeMember, setModal}} />
         </div>
       </main>
+      <Modal component={modal} closeHandler={closeModal} setFeedback={setFeedback} changeHandler={() => {}} />
     </div>
   )
 }
