@@ -1,15 +1,17 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import useAuth from '../utils/useAuth'
-import { Outlet, useNavigate, useParams, Link } from 'react-router-dom'
+import { Outlet, useNavigate, useParams, Link, useLocation } from 'react-router-dom'
 
 export default function GroupSettings() {
-  const { logout } = useAuth()
+  const { logout, user } = useAuth()
   const { groupId } = useParams()
   const navigate = useNavigate()
+  const loc = useLocation()
+  const [group, setGroup ] = useState({})
 
   useEffect(async () => {
-    const result = await fetch(`/api/group/${groupId}`)
-    console.log(result)
+    const result = await (await fetch(`/api/group/${groupId}`)).json()
+    setGroup(result)
   }, [])
 
   function handleLogoutClick() {
@@ -28,7 +30,7 @@ export default function GroupSettings() {
           </div>
           <div className="flex justify-end flex-grow">
             <div className="group relative">
-              <img alt="Profile Picture" className="cursor-pointer h-full rounded-full" />
+              <img src={user.dpUri} alt="Profile Picture" className="cursor-pointer h-full rounded-full" />
               <div className="group-hover:block dropdown-menu absolute hidden h-auto bg-secondary p-2">
                 <button className="top-0 bg-primary text-secondary font-medium hover:bg-primary-hover p-2 w-20"
                   onClick={handleLogoutClick}>Log Out</button>
@@ -41,19 +43,19 @@ export default function GroupSettings() {
       <main className="main-content pt-16">
         <div className="fixed top-16 left-0 h-screen w-96 m-0 p-5 bg-gray-300 border border-gray border-t-0">
           <div className="my-4 text-right">
-            <Link to="." className="text-gray-600 font-bold text-3xl cursor-pointer hover:text-primary select-none">General</Link>
+            <Link to="." className={'font-bold text-3xl cursor-pointer hover:text-primary select-none ' + (loc.pathname.match(/^(\/[^/]+){2}$/g) ? 'text-primary' : 'text-gray-600')}>General</Link>
           </div>
 
           <div className="my-4 text-right">
-            <Link to="members" className="text-gray-600 font-bold text-3xl cursor-pointer hover:text-primary select-none">Members</Link>
+            <Link to="members" className={'font-bold text-3xl cursor-pointer hover:text-primary select-none ' + (loc.pathname.match(/(members)$/) ? 'text-primary' : 'text-gray-600')}>Members</Link>
           </div>
 
           <div className="my-4 text-right">
-            <Link to="disband" className="text-gray-600 font-bold text-3xl cursor-pointer hover:text-primary select-none">Disband</Link>
+            <Link to="disband" className={'font-bold text-3xl cursor-pointer hover:text-primary select-none ' + (loc.pathname.match(/(disband)$/) ? 'text-primary' : 'text-gray-600')}>Disband</Link>
           </div>
         </div>
-        <div className="ml-96 h-full p-14" style={{ 'width': 'calc(100vw - 24rem)', 'max-width': '70rem' }}>
-          <Outlet />
+        <div className="ml-96 h-full p-14" style={{ 'width': 'calc(100vw - 24rem)', 'maxWidth': '70rem' }}>
+          <Outlet context={group} />
         </div>
       </main>
     </div>

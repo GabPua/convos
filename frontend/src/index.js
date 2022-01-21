@@ -76,7 +76,7 @@ ReactDOM.render(
               <GroupSettings />
             </RequireAuth>
           }>
-            <Route path="" />
+            <Route path="." />
             <Route path="members" element={<Members />} />
             <Route path="disband" element={<Disband />}/>
           </Route>
