@@ -7,7 +7,6 @@ export default function GroupList() {
 
   useEffect(async () => {
     const result = await (await fetch('/api/group/all')).json()
-    console.log(result)
     setGroups(result)
   }, [])
 

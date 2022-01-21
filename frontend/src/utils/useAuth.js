@@ -5,14 +5,14 @@ import PropTypes from 'prop-types'
 const authContext = React.createContext()
 
 function useAuth() {
-  const [user, setUser] = useState({})
+  const [user, setUser] = useState({ contacts: [] })
   const [isLoading, setIsLoading] = useState(true)
-  let cb = () => {}
+  let cb = () => { }
 
   function setCb(cb1) {
     cb = cb1
   }
-  
+
   useEffect(refreshUser, [])
 
   const isAuthed = (user1 = user) => user1 !== undefined && Object.keys(user1).length !== 0
@@ -21,10 +21,20 @@ function useAuth() {
     fetch('/api/user/getUser')
       .then(res => res.json())
       .then(res => {
-        setUser(res)
+        setUser(Object.assign(user, res))
         setIsLoading(false)
         cb(isAuthed(res))
       })
+  }
+
+  async function refreshContacts() {
+    const res = await (await fetch('/api/contact/getContacts')).json()
+    setUser(Object.assign(user, res))
+    return
+  }
+
+  function addContact(c) {
+    setUser(Object.assign(user, { contacts: user.contacts.concat(c) }))
   }
 
   async function login(_id, password) {
@@ -45,6 +55,8 @@ function useAuth() {
     setCb,
     isAuthed,
     refreshUser,
+    refreshContacts,
+    addContact,
     login,
     logout,
   }

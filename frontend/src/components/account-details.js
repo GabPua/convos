@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import { useOutletContext } from 'react-router-dom'
 import ChangePassword from '../components/change-password'
 import EditUsername from '../components/change-username'
@@ -9,22 +9,8 @@ import CloudinaryUploadWidget from './upload-widget'
 import useAuth from '../utils/useAuth'
 
 export default function AccountDetails() {
-  const [contacts, setContacts] = useState([])
   const { user, refreshUser } = useAuth()
   const handleChangeClick = useOutletContext()
-
-  useEffect(() => {
-    const controller = new AbortController()
-
-    fetch('/api/contact/getContacts', { signal: controller.signal })
-      .then(res => res.json())
-      .then(res => setContacts(res))
-      .catch((err) => {
-        if (err.name !== 'AbortError') console.log(err.name)
-      })
-
-    return () => controller.abort()
-  }, [])
 
   function handleDpChange(result) {
     postRequest('/api/user/updateDp', { dpUri: result.url })
@@ -35,10 +21,6 @@ export default function AccountDetails() {
           console.log('An error has occured!')
         }
       })
-  }
-
-  function addContact(c) {
-    setContacts(contacts.concat(c))
   }
 
   return (
@@ -72,10 +54,10 @@ export default function AccountDetails() {
       <div className="col-span-2 xl:col-span-1 row-span-3 items-start self-start place-self-center w-3/4 min-w-min mt-4 2nxl:mt-0">
         <div className="flex justify-between items-center">
           <p className="text-3xl">Contacts</p>
-          <i className="fas fa-lg fa-user-plus text-primary cursor-pointer hover:text-primary-hover" onClick={e => handleChangeClick(<AddContact addContact={addContact} />, e)}></i>
+          <i className="fas fa-lg fa-user-plus text-primary cursor-pointer hover:text-primary-hover" onClick={e => handleChangeClick(<AddContact />, e)}></i>
         </div>
         <hr className="border-gray-300" />
-        <ContactList contacts={contacts} />
+        <ContactList />
       </div>
     </div>
   )

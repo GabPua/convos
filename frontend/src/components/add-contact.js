@@ -8,7 +8,7 @@ export default function AddContact(props) {
   const [input, setInput] = useState('')
   const [error, setError] = useState('')
 
-  const { user } = useAuth()
+  const { user, addContact } = useAuth()
 
   const handleChange = e => {
     setInput(e.target.value)
@@ -24,7 +24,7 @@ export default function AddContact(props) {
           if (res.err) {
             setError(res.err)
           } else {
-            props.addContact(res.user)
+            addContact(res.user)
             props.closeHandler()
           }
         })
@@ -57,5 +57,4 @@ export default function AddContact(props) {
 
 AddContact.propTypes = {
   closeHandler: PropTypes.func,
-  addContact: PropTypes.func.isRequired,
 }
