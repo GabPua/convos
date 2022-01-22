@@ -66,6 +66,11 @@ const group_ctrl = {
     Group.updateOne({ _id: req.params.id }, { picUri }, (err) => res.json({ result: !err }));
   },
 
+  updateCover: (req, res) => {
+    const { coverUri } = req.body;
+    Group.updateOne({ _id: req.params.id }, { coverUri }, (err) => res.json({ result: !err }));
+  },
+
   updateTag: (req, res) => {
     const { _id, tag } = req.body;
     Group.updateOne({ _id }, { tag }, (err) => res.json({ result: !err }));

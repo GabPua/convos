@@ -20,8 +20,8 @@ export default function GroupSettings() {
   }
 
   useEffect(async () => {
-    const { group } = await (await fetch(`/api/group/${groupId}`)).json()
-    setGroup(group)
+    const { group: g } = await (await fetch(`/api/group/${groupId}`)).json()
+    setGroup(g)
   }, [])
 
   function handleLogoutClick() {
@@ -32,6 +32,10 @@ export default function GroupSettings() {
 
   function updateDp(picUri) {
     setGroup(Object.assign(group, { picUri }))
+  }
+
+  function updateCover(coverUri) {
+    setGroup(Object.assign(group, { coverUri }))
   }
 
   const removeMember = async userId => {
@@ -100,7 +104,7 @@ export default function GroupSettings() {
           </div>
         </div>
         <div className="ml-96 h-full p-14" style={{ 'width': 'calc(100vw - 24rem)', 'maxWidth': '70rem' }}>
-          <Outlet context={{ group, removeMember, addMember, setModal, updateDp }} />
+          <Outlet context={{ group, removeMember, addMember, setModal, updateDp, updateCover }} />
         </div>
       </main>
       <Modal component={modal} closeHandler={closeModal} setFeedback={setFeedback} changeHandler={() => { }} />
