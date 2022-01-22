@@ -19,7 +19,7 @@ export default function AddContact(props) {
     e.preventDefault()
 
     if (isValidEmail(input)) {
-      postRequest('/api/contact/addContact', { contactId: input })
+      postRequest('/api/contact/addContact', { contactId: input.toLowerCase() })
         .then(res => {
           if (res.err) {
             setError(res.err)
