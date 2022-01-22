@@ -20,8 +20,8 @@ export default function GroupSettings() {
   }
 
   useEffect(async () => {
-    const result = await (await fetch(`/api/group/${groupId}`)).json()
-    setGroup(result)
+    const { group } = await (await fetch(`/api/group/${groupId}`)).json()
+    setGroup(group)
   }, [])
 
   function handleLogoutClick() {

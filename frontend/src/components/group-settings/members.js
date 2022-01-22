@@ -5,17 +5,28 @@ import RemoveMember from './remove-member'
 import AddMember from './add-member'
 
 function MemberItem({ id, name, dpUri }) {
-  const { setModal, removeMember } = useOutletContext()
+  const { setModal, removeMember, group: { admin } } = useOutletContext()
+
+  let elem = <></>
+  let btn = (
+    <i className="text-error-500 invisible group-hover:visible fas fa-times fa-lg hover:text-error-600"
+      onClick={() => setModal(<RemoveMember id={id} name={name} dpUri={dpUri} removeMember={removeMember} />)}></i>
+  )
+
+  if (id === admin) {
+    elem = (<span className="text-xl ml-2 text-gray-400">(Admin)</span>)
+    btn = <></>
+  }
 
   return (
     <div className="flex justify-between items-center hover:bg-gray-200 rounded-2xl cursor-pointer select-none my-2 p-2 group transition-colors">
       <div>
         <img src={dpUri} alt="dp" className="inline mr-4 w-12 rounded-full" />
         <span className="text-xl">{name}</span>
+        {elem}
       </div>
       <span className="mx-4">
-        <i className="text-error-500 invisible group-hover:visible fas fa-times fa-lg hover:text-error-600" 
-          onClick={() => setModal(<RemoveMember id={id} name={name} dpUri={dpUri} removeMember={removeMember} />)}></i>
+        {btn}
       </span>
     </div>
   )

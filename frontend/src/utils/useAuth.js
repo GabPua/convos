@@ -5,7 +5,7 @@ import PropTypes from 'prop-types'
 const authContext = React.createContext()
 
 function useAuth() {
-  const [user, setUser] = useState({ contacts: [] })
+  const [user, setUser] = useState({ contacts: [], groups: [] })
   const [isLoading, setIsLoading] = useState(true)
   let cb = () => { }
 
@@ -29,8 +29,12 @@ function useAuth() {
 
   async function refreshContacts() {
     const res = await (await fetch('/api/contact/getContacts')).json()
-    setUser(Object.assign(user, res))
-    return
+    return setUser(Object.assign(user, res))
+  }
+
+  async function refreshGroups() {
+    const res = await (await fetch('/api/group/all')).json()
+    return setUser(Object.assign(user, res))
   }
 
   function addContact(c) {
@@ -56,6 +60,7 @@ function useAuth() {
     isAuthed,
     refreshUser,
     refreshContacts,
+    refreshGroups,
     addContact,
     login,
     logout,

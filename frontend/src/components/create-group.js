@@ -44,10 +44,10 @@ export default function CreateGroup(props) {
             <label className="mb-6" htmlFor="group-tag">Tag</label>
             <div>
               <select className="w-72 p-3 text-gray-700 rounded-lg text-center text-xl cursor-pointer" id="group-tag" name="tag">
-                <option value="School">School</option>
                 <option value="Social">Social</option>
+                <option value="School">School</option>
                 <option value="Work">Work</option>
-                <option value="Gaming">Gaming</option>
+                <option value="Hobby">Hobby</option>
               </select>
             </div>
           </div>

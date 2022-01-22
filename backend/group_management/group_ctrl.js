@@ -37,7 +37,7 @@ const group_ctrl = {
 
   getGroup: async (req, res) => {
     const group = await Group.findById(req.params.id).populate('members', 'name dpUri').lean().exec();
-    res.json(group);
+    res.json({ group });
   },
 
   getGroups: async (req, res) => {
@@ -47,7 +47,7 @@ const group_ctrl = {
       groups[i].members = groups[i].members.length;
     }
 
-    res.json(groups);
+    res.json({ groups });
   },
 
   updateName: (req, res) => {

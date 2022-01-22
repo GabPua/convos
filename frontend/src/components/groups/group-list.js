@@ -1,16 +1,15 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 import PropTypes from 'prop-types'
 import GroupItem from './group-item'
+import useAuth from '../../utils/useAuth'
 
 export default function GroupList() {
-  const [groups, setGroups] = useState([])
+  const { user, refreshGroups } = useAuth()
+  const [, forceUpdate] = React.useReducer(x => x + 1, 0)
 
-  useEffect(async () => {
-    const result = await (await fetch('/api/group/all')).json()
-    setGroups(result)
-  }, [])
+  useEffect(() => refreshGroups().then(forceUpdate), [])
 
-  const groupItems = groups.map(g => (
+  const groupItems = user.groups?.map(g => (
     <GroupItem key={g._id}
       id={g._id}
       picUri={g.picUri}
