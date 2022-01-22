@@ -62,8 +62,8 @@ const group_ctrl = {
   },
 
   updatePic: (req, res) => {
-    const { _id, picUri } = req.body;
-    Group.updateOne({ _id }, { picUri }, (err) => res.json({ result: !err }));
+    const { picUri } = req.body;
+    Group.updateOne({ _id: req.params.id }, { picUri }, (err) => res.json({ result: !err }));
   },
 
   updateTag: (req, res) => {

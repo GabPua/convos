@@ -5,7 +5,7 @@ import EditUsername from '../components/change-username'
 import AddContact from '../components/add-contact'
 import postRequest from '../utils/postRequest'
 import ContactList from '../components/contacts/contact-list'
-import CloudinaryUploadWidget from './upload-widget'
+import UploadWidget from './upload-widget'
 import useAuth from '../utils/useAuth'
 
 export default function AccountDetails() {
@@ -27,7 +27,7 @@ export default function AccountDetails() {
     <div className="min-h-full grid grid-cols-3 grid-rows-5 items-center">
       <div className="col-span-1 row-span-2 flex flex-col justify-center items-center place-self-center">
         <img src={user.dpUri} alt="Profile Picture" className="w-60 rounded-full" />
-        <CloudinaryUploadWidget text="CHANGE" onSuccessHandler={handleDpChange} publicId={user._id} aspectRatio={1} uploadPreset="user_dps" />
+        <UploadWidget id="upload-widget" text="CHANGE" onSuccessHandler={handleDpChange} publicId={user._id} aspectRatio={1} uploadPreset="user_dps" />
       </div>
       <div className="col-span-2 row-span-2 w-full max-w-2xl">
         <p className="text-3xl">Account Details</p>

@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import postRequest from '../utils/postRequest'
 
-export default function CloudinaryUploadWidget({ text, onSuccessHandler, publicId, uploadPreset, aspectRatio  }) {
+export default function UploadWidget({ id, text, onSuccessHandler, publicId, uploadPreset, aspectRatio  }) {
 
   React.useEffect(async () => {
     const response = await fetch('/api/storage/details')
@@ -21,6 +21,7 @@ export default function CloudinaryUploadWidget({ text, onSuccessHandler, publicI
       uploadPreset,
       cropping: true,
       croppingAspectRatio: aspectRatio,
+      showSkipCropButton: false,
       multiple: false,
       maxFiles: 1,
       sources: ['local', 'camera', 'url'],
@@ -43,17 +44,18 @@ export default function CloudinaryUploadWidget({ text, onSuccessHandler, publicI
         onSuccessHandler(result.info)
       }
     })
-    document.getElementById('upload_widget')?.addEventListener('click', () => myWidget.open())
+    document.getElementById(id)?.addEventListener('click', () => myWidget.open())
   }, [])
 
   return (
-    <button id='upload_widget' className='btn primary mt-4 text-xl h-10 w-40'>
+    <button id={id} className='btn primary mt-4 text-xl h-10 w-40'>
       {text}
     </button>
   )
 }
 
-CloudinaryUploadWidget.propTypes = {
+UploadWidget.propTypes = {
+  id: PropTypes.string.isRequired,
   text: PropTypes.string.isRequired,
   onSuccessHandler: PropTypes.func.isRequired,
   publicId: PropTypes.any,

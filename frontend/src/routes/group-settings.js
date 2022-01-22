@@ -10,7 +10,7 @@ export default function GroupSettings() {
   const { groupId } = useParams()
   const navigate = useNavigate()
   const loc = useLocation()
-  const [group, setGroup] = useState({})
+  const [group, setGroup] = useState({ _id: groupId })
   const [modal, setModal] = useState(null)
 
   const closeModal = () => setModal(null)
@@ -28,6 +28,10 @@ export default function GroupSettings() {
     logout()
       .then(() => navigate('/', { replace: true }))
       .catch(() => alert('An error has occured!'))
+  }
+
+  function updateDp(picUri) {
+    setGroup(Object.assign(group, { picUri }))
   }
 
   const removeMember = async userId => {
@@ -96,7 +100,7 @@ export default function GroupSettings() {
           </div>
         </div>
         <div className="ml-96 h-full p-14" style={{ 'width': 'calc(100vw - 24rem)', 'maxWidth': '70rem' }}>
-          <Outlet context={{ group, removeMember, addMember, setModal }} />
+          <Outlet context={{ group, removeMember, addMember, setModal, updateDp }} />
         </div>
       </main>
       <Modal component={modal} closeHandler={closeModal} setFeedback={setFeedback} changeHandler={() => { }} />

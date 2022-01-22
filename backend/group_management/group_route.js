@@ -15,11 +15,11 @@ router.get('/all', ctrl.getGroups);
 
 router.get('/:id', ctrl.getGroup);
 
-router.post('/updateName', ctrl.updateName);
+router.post('/:id/updateName', ctrl.updateName);
 
-router.post('/updatePic', ctrl.updatePic);
+router.post('/:id/updatePic', ctrl.updatePic);
 
-router.post('/updateTag', ctrl.updateTag);
+router.post('/:id/updateTag', ctrl.updateTag);
 
 router.post('/:id/add', ctrl.addMember);
 
