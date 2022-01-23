@@ -5,7 +5,7 @@ import RemoveMember from './remove-member'
 import AddMember from './add-member'
 
 function MemberItem({ id, name, dpUri }) {
-  const { setModal, removeMember, group: { admin } } = useOutletContext()
+  const { setModal, removeMember, group: { admin, isAdmin } } = useOutletContext()
 
   let elem = <></>
   let btn = (
@@ -25,9 +25,11 @@ function MemberItem({ id, name, dpUri }) {
         <span className="text-xl">{name}</span>
         {elem}
       </div>
-      <span className="mx-4">
-        {btn}
-      </span>
+      {isAdmin ?
+        <span className="mx-4">
+          {btn}
+        </span> : <></>
+      }
     </div>
   )
 }
@@ -39,14 +41,14 @@ MemberItem.propTypes = {
 }
 
 export default function Members() {
-  const { group: { members }, addMember, setModal } = useOutletContext()
+  const { group: { members, isAdmin }, addMember, setModal } = useOutletContext()
   const handleAddClick = () => setModal(<AddMember addMember={addMember} />)
 
   return (
     <div>
       <div className="flex justify-between mb-2">
         <p className="text-3xl font-bold">Group Members</p>
-        <i className="fas fa-2x fa-user-plus text-primary cursor-pointer hover:text-primary-hover" onClick={handleAddClick}></i>
+        {isAdmin ? <i className="fas fa-2x fa-user-plus text-primary cursor-pointer hover:text-primary-hover" onClick={handleAddClick}></i> : <></>}
       </div>
       <hr />
       <div className="overflow-y-scroll px-2">
