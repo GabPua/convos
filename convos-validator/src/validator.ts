@@ -25,3 +25,5 @@ export const passwordErrorMessage = "Password must be at least 5 characters long
 export const usernameErrorMessage = "Username must not be blank nor exceed 15 characters"
 
 export const groupNameErrorMessage = "Group name must not be blank nor exceed 20 characters"
+
+export const tags = ['Social', 'School', 'Work', 'Hobby']

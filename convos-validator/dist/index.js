@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.groupNameErrorMessage = exports.usernameErrorMessage = exports.passwordErrorMessage = exports.isValidGroupName = exports.isValidEmail = exports.isValidName = exports.isValidPassword = exports.isBlank = void 0;
+exports.tags = exports.groupNameErrorMessage = exports.usernameErrorMessage = exports.passwordErrorMessage = exports.isValidGroupName = exports.isValidEmail = exports.isValidName = exports.isValidPassword = exports.isBlank = void 0;
 var validator_1 = require("./validator");
 Object.defineProperty(exports, "isBlank", { enumerable: true, get: function () { return validator_1.isBlank; } });
 Object.defineProperty(exports, "isValidPassword", { enumerable: true, get: function () { return validator_1.isValidPassword; } });
@@ -10,3 +10,4 @@ Object.defineProperty(exports, "isValidGroupName", { enumerable: true, get: func
 Object.defineProperty(exports, "passwordErrorMessage", { enumerable: true, get: function () { return validator_1.passwordErrorMessage; } });
 Object.defineProperty(exports, "usernameErrorMessage", { enumerable: true, get: function () { return validator_1.usernameErrorMessage; } });
 Object.defineProperty(exports, "groupNameErrorMessage", { enumerable: true, get: function () { return validator_1.groupNameErrorMessage; } });
+Object.defineProperty(exports, "tags", { enumerable: true, get: function () { return validator_1.tags; } });

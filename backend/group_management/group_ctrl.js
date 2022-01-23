@@ -1,7 +1,7 @@
 require('dotenv').config();
 const Group = require('./group');
 const User = require('../user_management/user');
-const { isValidGroupName } = require('convos-validator');
+const { isValidGroupName, groupNameErrorMessage } = require('convos-validator');
 
 const group_ctrl = {
   createGroup: (req, res) => {
@@ -50,15 +50,12 @@ const group_ctrl = {
     res.json({ groups });
   },
 
-  updateName: (req, res) => {
-    const { _id, name } = req.body;
-
-    if (!isValidGroupName(name)) {
-      res.json({ err: 'Invalid name' }); // TODO: Change error message as needed
-      return;
+  updateDetails: (req, res) => {
+    if (!isValidGroupName(req.body.name)) {
+      return res.json({ err: groupNameErrorMessage });
     }
 
-    Group.updateOne({ _id }, { name }, (err) => res.json({ result: !err }));
+    Group.updateOne({ _id: req.params.id }, req.body, (err) => res.json({ result: !err }));
   },
 
   updatePic: (req, res) => {
@@ -69,11 +66,6 @@ const group_ctrl = {
   updateCover: (req, res) => {
     const { coverUri } = req.body;
     Group.updateOne({ _id: req.params.id }, { coverUri }, (err) => res.json({ result: !err }));
-  },
-
-  updateTag: (req, res) => {
-    const { _id, tag } = req.body;
-    Group.updateOne({ _id }, { tag }, (err) => res.json({ result: !err }));
   },
 
   addMember: async (req, res) => {

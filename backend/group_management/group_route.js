@@ -15,11 +15,9 @@ router.get('/all', ctrl.getGroups);
 
 router.get('/:id', ctrl.getGroup);
 
-router.post('/:id/updateName', ctrl.updateName);
+router.post('/:id/updateDetails', ctrl.updateDetails);
 
 router.post('/:id/updatePic', ctrl.updatePic);
-
-router.post('/:id/updateTag', ctrl.updateTag);
 
 router.post('/:id/updateCover', ctrl.updateCover);
 

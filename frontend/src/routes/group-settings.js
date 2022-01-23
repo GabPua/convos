@@ -38,6 +38,10 @@ export default function GroupSettings() {
     setGroup(Object.assign(group, { coverUri }))
   }
 
+  function updateDetails(details) {
+    setGroup(Object.assign(group, details))
+  }
+
   const removeMember = async userId => {
     const { result } = await postRequest(`/api/group/${groupId}/remove`, { userId })
 
@@ -104,7 +108,7 @@ export default function GroupSettings() {
           </div>
         </div>
         <div className="ml-96 h-full p-14" style={{ 'width': 'calc(100vw - 24rem)', 'maxWidth': '70rem' }}>
-          <Outlet context={{ group, removeMember, addMember, setModal, updateDp, updateCover }} />
+          <Outlet context={{ group, removeMember, addMember, setModal, updateDp, updateCover, updateDetails }} />
         </div>
       </main>
       <Modal component={modal} closeHandler={closeModal} setFeedback={setFeedback} changeHandler={() => { }} />
