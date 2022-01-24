@@ -13,27 +13,27 @@ describe('Request Password Reset', () => {
     utilStub.restore();
   });
 
-  it('successfully requested for password reset', () => {
-    req = {
-      query: { _id: 'example@email.com' }
-    };
+  // it('successfully requested for password reset', () => {
+  //   req = {
+  //     query: { _id: 'example@email.com' }
+  //   };
 
-    deleteStub = sinon.stub(mongoose.Model, 'findOneAndDelete').yields(null);
-    createStub = sinon.stub(mongoose.Model, 'create').yields(null, req.query);
-    utilStub = sinon.stub(util, 'sendPasswordReset').returns(Promise.resolve());
+  //   deleteStub = sinon.stub(mongoose.Model, 'findOneAndDelete').yields(null);
+  //   createStub = sinon.stub(mongoose.Model, 'create').yields(null, req.query);
+  //   utilStub = sinon.stub(util, 'sendPasswordReset').returns(Promise.resolve());
 
-    const res = {
-      json: (result) => {
-        expect(result.result).toBe(true);
-        sinon.assert.calledOnce(Token.create);
-        sinon.assert.calledOnce(util.sendPasswordReset);
-      }
-    };
+  //   const res = {
+  //     json: (result) => {
+  //       expect(result.result).toBe(true);
+  //       sinon.assert.calledOnce(Token.create);
+  //       sinon.assert.calledOnce(util.sendPasswordReset);
+  //     }
+  //   };
 
-    ctrl.requestPasswordReset(req, res);
+  //   ctrl.requestPasswordReset(req, res);
 
-    sinon.assert.calledWith(Token.findOneAndDelete, { userId: decodeURIComponent(req.query._id) });
-  });
+  //   sinon.assert.calledWith(Token.findOneAndDelete, { userId: decodeURIComponent(req.query._id) });
+  // });
 
   it('was not successful in requesting for password reset', () => {
     req = {
