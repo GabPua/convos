@@ -15,12 +15,16 @@ router.get('/all', ctrl.getGroups);
 
 router.get('/:id', ctrl.getGroup);
 
-router.post('/updateName', ctrl.updateName);
+router.post('/:id/updateDetails', ctrl.updateDetails);
 
-router.post('/updatePic', ctrl.updatePic);
+router.post('/:id/updatePic', ctrl.updatePic);
 
-router.post('/updateTag', ctrl.updateTag);
+router.post('/:id/updateCover', ctrl.updateCover);
 
 router.post('/:id/add', ctrl.addMember);
+
+router.post('/:id/remove', ctrl.removeMember);
+
+router.delete('/:id', ctrl.deleteGroup);
 
 module.exports = router;

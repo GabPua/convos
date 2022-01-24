@@ -1,30 +1,16 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import { useOutletContext } from 'react-router-dom'
 import ChangePassword from '../components/change-password'
 import EditUsername from '../components/change-username'
 import AddContact from '../components/add-contact'
 import postRequest from '../utils/postRequest'
 import ContactList from '../components/contacts/contact-list'
-import CloudinaryUploadWidget from './upload-widget'
+import UploadWidget from './upload-widget'
 import useAuth from '../utils/useAuth'
 
 export default function AccountDetails() {
-  const [contacts, setContacts] = useState([])
   const { user, refreshUser } = useAuth()
   const handleChangeClick = useOutletContext()
-
-  useEffect(() => {
-    const controller = new AbortController()
-
-    fetch('/api/contact/getContacts', { signal: controller.signal })
-      .then(res => res.json())
-      .then(res => setContacts(res))
-      .catch((err) => {
-        if (err.name !== 'AbortError') console.log(err.name)
-      })
-
-    return () => controller.abort()
-  }, [])
 
   function handleDpChange(result) {
     postRequest('/api/user/updateDp', { dpUri: result.url })
@@ -37,15 +23,11 @@ export default function AccountDetails() {
       })
   }
 
-  function addContact(c) {
-    setContacts(contacts.concat(c))
-  }
-
   return (
     <div className="min-h-full grid grid-cols-3 grid-rows-5 items-center">
       <div className="col-span-1 row-span-2 flex flex-col justify-center items-center place-self-center">
         <img src={user.dpUri} alt="Profile Picture" className="w-60 rounded-full" />
-        <CloudinaryUploadWidget text="CHANGE" onSuccessHandler={handleDpChange} publicId={user._id} aspectRatio={1} uploadPreset="user_dps" />
+        <UploadWidget id="upload-widget" text="CHANGE" onSuccessHandler={handleDpChange} publicId={user._id} aspectRatio={1} uploadPreset="user_dps" />
       </div>
       <div className="col-span-2 row-span-2 w-full max-w-2xl">
         <p className="text-3xl">Account Details</p>
@@ -72,10 +54,10 @@ export default function AccountDetails() {
       <div className="col-span-2 xl:col-span-1 row-span-3 items-start self-start place-self-center w-3/4 min-w-min mt-4 2nxl:mt-0">
         <div className="flex justify-between items-center">
           <p className="text-3xl">Contacts</p>
-          <i className="fas fa-lg fa-user-plus text-primary cursor-pointer hover:text-primary-hover" onClick={e => handleChangeClick(<AddContact addContact={addContact} />, e)}></i>
+          <i className="fas fa-lg fa-user-plus text-primary cursor-pointer hover:text-primary-hover" onClick={e => handleChangeClick(<AddContact />, e)}></i>
         </div>
         <hr className="border-gray-300" />
-        <ContactList contacts={contacts} />
+        <ContactList />
       </div>
     </div>
   )

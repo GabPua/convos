@@ -54,9 +54,12 @@ export default function Dashboard() {
           <div>
             <SideBarItem title="Account" to="/dashboard" className="fas fa-user fa-lg" />
             <SideBarItem title="My Groups" to="/dashboard/groups" className="fas fa-users fa-lg" />
-            <SideBarItem title="Dashboard" to="/dashboard/groups" className="fas fa-chalkboard fa-lg" />
+            <SideBarItem title="Convos" to="/dashboard/convos" className="fas fa-chalkboard fa-lg" />
           </div>
-          <button className="btn primary" onClick={() => setModal(<CreateGroup closeHandler={closeModal} />)}>New Convo</button>
+          <button className="btn primary" onClick={() => setModal(<CreateGroup closeHandler={closeModal} />)}>
+            <i className="fas fa-plus mr-2"></i>
+            New Group
+          </button>
         </div>
         <div className="ml-60 h-full p-5" style={{'width': 'calc(100vw - 15rem)'}}>
           <Outlet context={handleChangeClick} />

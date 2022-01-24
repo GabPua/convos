@@ -14,6 +14,7 @@ import reportWebVitals from './reportWebVitals'
 import GroupSettings from './routes/group-settings'
 import Members from './components/group-settings/members'
 import Disband from './components/group-settings/disband'
+import Overview from './components/group-settings/overview'
 
 function RequireAuth({ children }) {
   const { isAuthed, isLoading, setCb } = useAuth()
@@ -76,7 +77,7 @@ ReactDOM.render(
               <GroupSettings />
             </RequireAuth>
           }>
-            <Route path="." />
+            <Route path="" element={<Overview />} />
             <Route path="members" element={<Members />} />
             <Route path="disband" element={<Disband />}/>
           </Route>

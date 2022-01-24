@@ -9,7 +9,7 @@ export default function GroupItem({ id, name, count, coverUri, picUri }) {
         <img src={picUri} className="rounded-full w-14 border-4 border-white" alt="Group Picture" />
         <p>{name}</p>
         <span>
-          <i className="fas fa-user"></i>
+          <i className="fas fa-user mr-2"></i>
           {count}
         </span>
       </div>

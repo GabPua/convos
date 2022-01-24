@@ -2,20 +2,34 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { useOutletContext } from 'react-router-dom'
 import RemoveMember from './remove-member'
+import AddMember from './add-member'
 
 function MemberItem({ id, name, dpUri }) {
-  const { setModal } = useOutletContext()
+  const { setModal, removeMember, group: { admin, isAdmin } } = useOutletContext()
+
+  let elem = <></>
+  let btn = (
+    <i className="text-error-500 invisible group-hover:visible fas fa-times fa-lg hover:text-error-600"
+      onClick={() => setModal(<RemoveMember id={id} name={name} dpUri={dpUri} removeMember={removeMember} />)}></i>
+  )
+
+  if (id === admin) {
+    elem = (<span className="text-xl ml-2 text-gray-400">(Admin)</span>)
+    btn = <></>
+  }
 
   return (
     <div className="flex justify-between items-center hover:bg-gray-200 rounded-2xl cursor-pointer select-none my-2 p-2 group transition-colors">
       <div>
         <img src={dpUri} alt="dp" className="inline mr-4 w-12 rounded-full" />
         <span className="text-xl">{name}</span>
+        {elem}
       </div>
-      <span className="mx-4">
-        <i className="text-error-500 invisible group-hover:visible fas fa-times fa-lg hover:text-error-600" 
-          onClick={() => setModal(<RemoveMember id={id} name={name} dpUri={dpUri} />)}></i>
-      </span>
+      {isAdmin ?
+        <span className="mx-4">
+          {btn}
+        </span> : <></>
+      }
     </div>
   )
 }
@@ -27,17 +41,14 @@ MemberItem.propTypes = {
 }
 
 export default function Members() {
-  const { group: { members } } = useOutletContext()
-
-  const handleAddClick = () => {
-    
-  }
+  const { group: { members, isAdmin }, addMember, setModal } = useOutletContext()
+  const handleAddClick = () => setModal(<AddMember addMember={addMember} />)
 
   return (
     <div>
       <div className="flex justify-between mb-2">
         <p className="text-3xl font-bold">Group Members</p>
-        <i className="fas fa-2x fa-user-plus text-primary cursor-pointer hover:text-primary-hover" onClick={handleAddClick}></i>
+        {isAdmin ? <i className="fas fa-2x fa-user-plus text-primary cursor-pointer hover:text-primary-hover" onClick={handleAddClick}></i> : <></>}
       </div>
       <hr />
       <div className="overflow-y-scroll px-2">
@@ -45,8 +56,4 @@ export default function Members() {
       </div>
     </div>
   )
-}
-
-Members.propTypes = {
-  setModal: PropTypes.func.isRequired,
 }

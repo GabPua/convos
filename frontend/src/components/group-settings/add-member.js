@@ -1,33 +1,25 @@
 import React, { useState } from 'react'
 import PropTypes from 'prop-types'
-import postRequest from '../utils/postRequest'
 import { isValidEmail } from 'convos-validator'
-import useAuth from '../utils/useAuth'
+import useAuth from '../../utils/useAuth'
 
-export default function AddContact(props) {
+export default function AddMember({ addMember, closeHandler }) {
   const [input, setInput] = useState('')
   const [error, setError] = useState('')
 
-  const { user, addContact } = useAuth()
+  const { user } = useAuth()
 
   const handleChange = e => {
     setInput(e.target.value)
     setError('')
   }
 
-  const handleFormSubmit = e => {
+  const handleFormSubmit = async e => {
     e.preventDefault()
 
     if (isValidEmail(input)) {
-      postRequest('/api/contact/addContact', { contactId: input })
-        .then(res => {
-          if (res.err) {
-            setError(res.err)
-          } else {
-            addContact(res.user)
-            props.closeHandler()
-          }
-        })
+      const { error } = await addMember(input)
+      if (error) setError(error)
     } else {
       setError('Invalid email!')
     }
@@ -36,7 +28,7 @@ export default function AddContact(props) {
   return (
     <div>
       <div className="text-secondary">
-        <p className="font-keep-calm text-3xl text-center mt-3 mb-5">Add Contact</p>
+        <p className="font-keep-calm text-3xl text-center mt-3 mb-5">Add Member</p>
 
         <form onSubmit={handleFormSubmit}>
           <div className="field">
@@ -47,7 +39,7 @@ export default function AddContact(props) {
           </div>
           <div className="p-3  mt-2 text-center space-x-4 md:block">
             <input type="submit" value="Add" disabled={input.toLowerCase() === user._id.toLowerCase()} />
-            <button type="button" className="mb-2 md:mb-0 bg-error-500 px-5 py-2 text-sm shadow-sm font-medium tracking-wider text-secondary rounded-full hover:shadow-lg hover:bg-error-600" onClick={props.closeHandler}>Cancel</button>
+            <button type="button" className="mb-2 md:mb-0 bg-error-500 px-5 py-2 text-sm shadow-sm font-medium tracking-wider text-secondary rounded-full hover:shadow-lg hover:bg-error-600" onClick={closeHandler}>Cancel</button>
           </div>
         </form>
       </div>
@@ -55,6 +47,7 @@ export default function AddContact(props) {
   )
 }
 
-AddContact.propTypes = {
+AddMember.propTypes = {
   closeHandler: PropTypes.func,
+  addMember: PropTypes.func.isRequired,
 }

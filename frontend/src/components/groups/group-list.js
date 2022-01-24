@@ -1,17 +1,15 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 import PropTypes from 'prop-types'
 import GroupItem from './group-item'
+import useAuth from '../../utils/useAuth'
 
 export default function GroupList() {
-  const [groups, setGroups] = useState([])
+  const { user, refreshGroups } = useAuth()
+  const [, forceUpdate] = React.useReducer(x => x + 1, 0)
 
-  useEffect(async () => {
-    const result = await (await fetch('/api/group/all')).json()
-    console.log(result)
-    setGroups(result)
-  }, [])
+  useEffect(() => refreshGroups().then(forceUpdate), [])
 
-  const groupItems = groups.map(g => (
+  const groupItems = user.groups?.map(g => (
     <GroupItem key={g._id}
       id={g._id}
       picUri={g.picUri}
@@ -22,10 +20,16 @@ export default function GroupList() {
     />)
   )
 
+  if (groupItems.length) {
+    return (
+      <div className="grid gap-4 auto-cols-min mx-auto" style={{ 'gridTemplateColumns': 'repeat(auto-fit, 16rem)' }}>
+        {groupItems}
+      </div>
+    )
+  }
+
   return (
-    <div className="grid gap-4 auto-cols-min mx-auto" style={{ 'gridTemplateColumns': 'repeat(auto-fit, 16rem)' }}>
-      {groupItems}
-    </div>
+    <p>You have no groups!</p>
   )
 }
 

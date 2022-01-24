@@ -7,4 +7,5 @@ export {
   passwordErrorMessage,
   usernameErrorMessage,
   groupNameErrorMessage,
+  tags,
 } from './validator'
