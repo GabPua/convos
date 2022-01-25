@@ -7,7 +7,7 @@ const group_ctrl = {
   createGroup: (req, res) => {
     const { name, tag } = req.body;
     const userId = req.session._id;
-    
+
     if (!isValidGroupName(name)) {
       res.json({ result: false });
       return;
@@ -45,7 +45,7 @@ const group_ctrl = {
       .populate('groups', 'name members picUri tag coverUri admin')
       .populate('invitations', 'name picUri')
       .lean().exec();
-    
+
     for (let i = 0; i < groups.length; i++) {
       groups[i].members = groups[i].members.length;
     }
@@ -78,20 +78,20 @@ const group_ctrl = {
     try {
       // check if not in group already
       const { members, admin } = await Group.findById(groupId, 'members admin').lean().exec();
-      
+
       if (req.session._id !== admin) {
         res.status(401);
-        return res.json({ result: false, error: 'Current user is unauthorized!'});
+        return res.json({ result: false, error: 'Current user is unauthorized!' });
       }
 
       if (members.includes(userId)) {
-        res.json({ result: false, err: 'User already in the group!'} );
+        res.json({ result: false, err: 'User already in the group!' });
       } else {
         const { matchedCount } = await User.updateOne({ _id: userId }, { $addToSet: { invitations: groupId } }).exec();
         if (matchedCount) {
           res.json({ result: true });
         } else {
-          res.json({ result: false, error: 'User does not exist!'});
+          res.json({ result: false, error: 'User does not exist!' });
         }
       }
     } catch (err) {
@@ -104,15 +104,15 @@ const group_ctrl = {
     const groupId = req.params.id;
 
     try {
-      const result = await User.updateOne({ _id: req.session._id, invitations: groupId }, 
+      const result = await User.updateOne({ _id: req.session._id, invitations: groupId },
         { $pull: { invitations: groupId }, $push: { groups: groupId } }).exec();
-      
+
       // if the user is invited to the group
       if (result.modifiedCount == 1) {
         await Group.findByIdAndUpdate(groupId, { $addToSet: { members: req.session._id } }).lean().exec();
         res.json({ result: true });
       } else {
-        res.json({ result: false, error: 'An error has occured!'});
+        res.json({ result: false, error: 'An error has occured!' });
       }
     } catch (error) {
       res.json({ result: false, error });
@@ -123,13 +123,20 @@ const group_ctrl = {
     const { userId } = req.body;
 
     try {
-      const result = await Group.updateOne({ _id: req.params.id, admin: req.session._id }, { $pull: { members: userId } });
+      const result = await Group.findOne({ _id: req.params.id, members: userId }, 'admin').lean().exec();
 
-      // make sure that person is removed from group first by admin
-      if (result.matchedCount == 1) {
-        await User.updateOne({ _id: userId }, { $pull: { groups: req.params.id } });
-        return res.json({ result: true });
+      // if user is part of group and not an admin removing himself
+      if (result && userId !== result.admin) {
+        // if logged in user is admin or user removing himself
+        if (req.session._id === result.admin || req.session._id === userId) {
+          await Group.updateOne({ _id: result._id }, { $pull: { members: userId } });
+          await User.updateOne({ _id: userId }, { $pull: { groups: req.params.id } });
+          return res.json({ result: true });
+        }
       }
+
+      res.status(401);
+      res.json({ result: false, error: 'Unauthorized' });
     } catch (error) {
       res.json({ result: false, error });
     }

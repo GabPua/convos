@@ -16,6 +16,7 @@ import Members from './components/group-settings/members'
 import Disband from './components/group-settings/disband'
 import Overview from './components/group-settings/overview'
 import MainView from './components/main-view'
+import Leave from './components/group-settings/leave'
 
 function RequireAuth({ children }) {
   const { isAuthed, isLoading, setCb } = useAuth()
@@ -81,6 +82,7 @@ ReactDOM.render(
             <Route path="" element={<Overview />} />
             <Route path="members" element={<Members />} />
             <Route path="disband" element={<Disband />}/>
+            <Route path="leave" element={<Leave />}/>
           </Route>
         </Routes>
       </Router>

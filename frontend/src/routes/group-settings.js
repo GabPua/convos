@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react'
+import PropTypes from 'prop-types'
 import useAuth from '../utils/useAuth'
 import { Outlet, useNavigate, useParams, Link, useLocation } from 'react-router-dom'
 import Modal from '../components/modal'
@@ -6,11 +7,25 @@ import Feedback from '../components/feedback-modal'
 import Loading from '../components/loading'
 import app from '../utils/axiosConfig'
 
+function SideBarItem({ to, text, patt }) {
+  const loc = useLocation()
+  return (
+    <div className="my-4 text-right">
+      <Link to={to} className={'font-bold text-3xl cursor-pointer hover:text-primary select-none ' + (loc.pathname.match(patt) ? 'text-primary' : 'text-gray-600')}>{text}</Link>
+    </div>
+  )
+}
+
+SideBarItem.propTypes = {
+  to: PropTypes.string.isRequired,
+  text: PropTypes.string.isRequired,
+  patt: PropTypes.instanceOf(RegExp).isRequired,
+}
+
 export default function GroupSettings() {
   const { user } = useAuth()
   const { groupId } = useParams()
   const navigate = useNavigate()
-  const loc = useLocation()
   const [group, setGroup] = useState({ _id: groupId })
   const [modal, setModal] = useState(null)
 
@@ -45,7 +60,7 @@ export default function GroupSettings() {
 
     if (result) {
       setGroup(Object.assign(group, { members: group.members.filter(m => m._id !== userId) }))
-      setFeedback(true, 'Member successfult removed!')
+      setFeedback(true, 'Member successfully removed!')
     } else {
       setFeedback(false, 'An error has occured!')
     }
@@ -83,20 +98,15 @@ export default function GroupSettings() {
           <div>
             <i className="fas fa-times fa-lg cursor-pointer text-gray-600 hover:text-black" onClick={handleExitClick}></i>
           </div>
-          <div className="my-4 text-right">
-            <Link to="." className={'font-bold text-3xl cursor-pointer hover:text-primary select-none ' + (loc.pathname.match(/^(\/[^/]+){2}$/g) ? 'text-primary' : 'text-gray-600')}>General</Link>
-          </div>
 
-          <div className="my-4 text-right">
-            <Link to="members" className={'font-bold text-3xl cursor-pointer hover:text-primary select-none ' + (loc.pathname.match(/(members)$/) ? 'text-primary' : 'text-gray-600')}>Members</Link>
-          </div>
-
+          <SideBarItem to="." text="General" patt={/^(\/[^/]+){2}$/g} />
+          <SideBarItem to="members" text="Members" patt={/(members)$/} />
           {group.isAdmin ?
-            <div className="my-4 text-right">
-              <Link to="disband" className={'font-bold text-3xl cursor-pointer hover:text-primary select-none ' + (loc.pathname.match(/(disband)$/) ? 'text-primary' : 'text-gray-600')}>Disband</Link>
-            </div> : <></>
+            <SideBarItem to="disband" text="Disband" patt={/(disband)$/} /> :
+            <SideBarItem to="leave" text="Leave" patt={/(leave)$/} />
           }
         </div>
+
         <div className="ml-96 h-full p-14" style={{ 'width': 'calc(100vw - 24rem)', 'maxWidth': '70rem' }}>
           <Outlet context={{ group, removeMember, inviteMember, setModal, updateDp, updateCover, updateDetails }} />
         </div>
