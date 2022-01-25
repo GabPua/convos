@@ -77,12 +77,22 @@ const group_ctrl = {
 
     try {
       // check if not in group already
-      const { members } = await Group.findById(groupId, 'members').lean().exec();
+      const { members, admin } = await Group.findById(groupId, 'members admin').lean().exec();
+      
+      if (req.session._id !== admin) {
+        res.status(401);
+        return res.json({ result: false, error: 'Current user is unauthorized!'});
+      }
+
       if (members.includes(userId)) {
-        res.json({ result: false, err: 'User already in the grouP!'} );
+        res.json({ result: false, err: 'User already in the group!'} );
       } else {
-        await User.updateOne({ _id: userId }, { $addToSet: { invitations: groupId } });
-        res.json({ result: true });
+        const { matchedCount } = await User.updateOne({ _id: userId }, { $addToSet: { invitations: groupId } }).exec();
+        if (matchedCount) {
+          res.json({ result: true });
+        } else {
+          res.json({ result: false, error: 'User does not exist!'});
+        }
       }
     } catch (err) {
       console.log(err);
