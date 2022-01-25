@@ -1,6 +1,8 @@
 const express = require('express');
 const path = require('path');
 const mongoose = require('mongoose');
+const cors = require('cors');
+const inProduction = process.env.NODE_ENV === 'production';
 
 // session dependencies
 const cookieParser = require('cookie-parser');
@@ -34,6 +36,12 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(cookieParser());
 app.use('/', express.static(path.join(__dirname, 'public')));
+
+// configure cors
+app.use(cors({
+  origin: inProduction ? '' : 'http://localhost:3000',
+  credentials: true,
+}));
 
 // configure user session
 app.use(session({

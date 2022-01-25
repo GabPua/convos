@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import PropTypes from 'prop-types'
-import postRequest from '../../utils/postRequest'
 import { isValidGroupName, groupNameErrorMessage, tags } from 'convos-validator'
+import app from '../../utils/axiosConfig'
 
 export default function EditGroupDetails({ id, name, tag, closeHandler, updateDetails }) {
   const [error, setError] = useState('')
@@ -14,7 +14,7 @@ export default function EditGroupDetails({ id, name, tag, closeHandler, updateDe
     const { groupName: name, tag } = Object.fromEntries(new FormData(e.target))
 
     if (isValidGroupName(name)) {
-      const { result, err } = await postRequest(`/api/group/${id}/updateDetails`, { name, tag })
+      const { result, err } = await app.post(`group/${id}/updateDetails`, { name, tag })
       if (result) {
         updateDetails({ name, tag })
         closeHandler()

@@ -1,7 +1,7 @@
 import React from 'react'
 import { isValidPassword, passwordErrorMessage } from 'convos-validator'
-import postRequest from '../utils/postRequest'
 import PropTypes from 'prop-types'
+import app from '../utils/axiosConfig'
 
 function ChangePassword(props) {
   const [error, setError] = React.useState({})
@@ -22,7 +22,7 @@ function ChangePassword(props) {
     setError(errors)
 
     if (!errors.new) {
-      postRequest('/api/user/changePassword', { oldPassword, newPassword })
+      app.post('user/changePassword', { oldPassword, newPassword })
         .then(res => {
           if (res.result) {
             props.setFeedback(true, 'Password was changed successfully!')

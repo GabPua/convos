@@ -24,12 +24,12 @@ function RequireAuth({ children }) {
   const navigate = useNavigate()
 
   if (isLoading) {
-    setCb((authed) => {
-      if (authed && path != '/dashboard') navigate(path)
-    })
+    setCb((authed) => { if (authed && path != '/dashboard') navigate(path) })
+  } else {
+    return isAuthed() ? <MainView>{children}</MainView> : <Navigate to="/" replace state={{ path }} />
   }
 
-  return isAuthed() ? <MainView>{children}</MainView> : <Navigate to="/" replace state={{ path }} />
+  return <></>
 }
 
 RequireAuth.propTypes = {

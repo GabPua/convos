@@ -4,7 +4,7 @@ import { Outlet, useNavigate, useParams, Link, useLocation } from 'react-router-
 import Modal from '../components/modal'
 import Feedback from '../components/feedback-modal'
 import Loading from '../components/loading'
-import postRequest from '../utils/postRequest'
+import app from '../utils/axiosConfig'
 
 export default function GroupSettings() {
   const { user } = useAuth()
@@ -21,7 +21,7 @@ export default function GroupSettings() {
   }
 
   useEffect(async () => {
-    const { group: g } = await (await fetch(`/api/group/${groupId}`)).json()
+    const { group: g } = await app.get(`group/${groupId}`)
     if (g != null) {
       g.isAdmin = user._id === g?.admin
     }
@@ -41,7 +41,7 @@ export default function GroupSettings() {
   }
 
   const removeMember = async userId => {
-    const { result } = await postRequest(`/api/group/${groupId}/remove`, { userId })
+    const { result } = await app.post(`group/${groupId}/remove`, { userId })
 
     if (result) {
       setGroup(Object.assign(group, { members: group.members.filter(m => m._id !== userId) }))
@@ -54,7 +54,7 @@ export default function GroupSettings() {
   async function inviteMember(userId) {
     // if not in contacts
     if (group.members.find(m => m._id === userId) === undefined) {
-      const { result, error } = await postRequest(`/api/group/${groupId}/invite`, { userId })
+      const { result, error } = await app.post(`group/${groupId}/invite`, { userId })
       if (result) {
         setFeedback(result, result ? 'Member invited!' : error)
       }

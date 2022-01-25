@@ -1,15 +1,14 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import postRequest from '../utils/postRequest'
+import app from '../utils/axiosConfig'
 
 export default function UploadWidget({ id, text, onSuccessHandler, publicId, uploadPreset, aspectRatio  }) {
 
   React.useEffect(async () => {
-    const response = await fetch('/api/storage/details')
-    const data = await response.json()
+    const data = await app.post('storage/details')
 
     function generateSignature(callback, paramsToSign) {
-      postRequest('/api/storage/sign', paramsToSign)
+      app.post('storage/sign', paramsToSign)
         .then(signature => callback(signature))
     }
 

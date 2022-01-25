@@ -1,8 +1,8 @@
 import React, { useState } from 'react'
 import PropTypes from 'prop-types'
-import postRequest from '../utils/postRequest'
 import { isValidEmail } from 'convos-validator'
 import useAuth from '../utils/useAuth'
+import app from '../utils/axiosConfig'
 
 export default function AddContact(props) {
   const [input, setInput] = useState('')
@@ -19,7 +19,7 @@ export default function AddContact(props) {
     e.preventDefault()
 
     if (isValidEmail(input)) {
-      postRequest('/api/contact/addContact', { contactId: input.toLowerCase() })
+      app.post('contact/addContact', { contactId: input.toLowerCase() })
         .then(res => {
           if (res.err) {
             setError(res.err)

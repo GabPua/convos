@@ -138,6 +138,15 @@ const user_ctrl = {
     });
   },
 
+  rejectInvitation: async (req, res) => {
+    try {
+      await User.updateOne({ _id: req.session._id }, { $pull: { invitations: req.params.groupId } });
+      res.json({ result: true });
+    } catch (error) {
+      res.json({ result: false, error });
+    }
+  },
+
   logout: (req, res) => {
     res.clearCookie('sid');
     req.session.destroy((err) => {

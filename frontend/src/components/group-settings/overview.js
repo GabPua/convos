@@ -2,8 +2,8 @@ import React from 'react'
 import { useOutletContext } from 'react-router-dom'
 import PropTypes from 'prop-types'
 import UploadWidget from '../../components/upload-widget'
-import postRequest from '../../utils/postRequest'
 import EditGroupDetails from './edit-group-details'
+import app from '../../utils/axiosConfig'
 
 export default function Overview() {
   const { group, updateDp, updateCover, updateDetails, setModal } = useOutletContext()
@@ -12,7 +12,7 @@ export default function Overview() {
   const handleChangeDetailsClick = () => setModal(<EditGroupDetails id={group._id} name={group.name} tag={group.tag} updateDetails={updateDetails} />)
 
   function handleDpChange({ url }) {
-    postRequest(`/api/group/${group._id}/updatePic`, { picUri: url })
+    app.post(`group/${group._id}/updatePic`, { picUri: url })
       .then(res => {
         if (res) {
           updateDp(url)
@@ -24,7 +24,7 @@ export default function Overview() {
   }
 
   function handleCoverChange({ url }) {
-    postRequest(`/api/group/${group._id}/updateCover`, { coverUri: url })
+    app.post(`group/${group._id}/updateCover`, { coverUri: url })
       .then(res => {
         if (res) {
           updateCover(url)

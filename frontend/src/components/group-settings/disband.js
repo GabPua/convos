@@ -1,5 +1,6 @@
 import React from 'react'
 import { useNavigate, useOutletContext, useParams } from 'react-router-dom'
+import app from '../../utils/axiosConfig'
 
 export default function Disband() {
   const { groupId } = useParams()
@@ -12,7 +13,7 @@ export default function Disband() {
   }
 
   const handleDisbandClick = async () => {
-    const { result } = await (await fetch(`/api/group/${groupId}`, { method: 'DELETE', })).json()
+    const { result } = await app.delete(`group/${groupId}`)
     if (result === true) {
       navigate('/dashboard/groups')
     }

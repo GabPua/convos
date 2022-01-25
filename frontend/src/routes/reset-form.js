@@ -2,7 +2,7 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 import PropTypes from 'prop-types'
 import { isValidEmail, isValidPassword, passwordErrorMessage } from 'convos-validator'
-import postRequest from '../utils/postRequest'
+import app from '../utils/axiosConfig'
 
 function SubmitButton(props) {
   if (props.loading) {
@@ -75,8 +75,7 @@ class ResetForm extends React.Component {
       const id = params.get('id')
 
       if (token && id) {
-        fetch(`/api/password/checkToken?token=${token}&id=${id}`)
-          .then(res => res.json())
+        app.get(`password/checkToken?token=${token}&id=${id}`)
           .then(res => {
             if (res.result) {
               this.setState({ status: 'get password', submitHandler: this.onPasswordSubmit, _id: res.email })
@@ -96,8 +95,7 @@ class ResetForm extends React.Component {
 
   sendEmail = (email) => {
     this.setState({ loading: true, error: null })
-    fetch(`/api/password/requestPasswordReset?_id=${encodeURIComponent(email.toLowerCase())}`)
-      .then(res => res.json())
+    app.get(`password/requestPasswordReset?_id=${encodeURIComponent(email.toLowerCase())}`)
       .then(res => {
         if (res.result) {
           this.setState({ status: 'email sent' })
@@ -118,8 +116,7 @@ class ResetForm extends React.Component {
     if (!isValidEmail(email)) {
       this.setState({ status: 'get email', submitHandler: this.onEmailSubmit, error: 'Invalid email' })
     } else {
-      fetch(`/api/user/checkEmail?_id=${encodeURIComponent(email.toString().trim().toLowerCase())}`)
-        .then(res => res.json())
+      app.get(`user/checkEmail?_id=${encodeURIComponent(email.toString().trim().toLowerCase())}`)
         .then(res => {
           if (res.result) {
             this.setState({
@@ -136,7 +133,6 @@ class ResetForm extends React.Component {
 
   onPasswordSubmit = (e) => {
     e.preventDefault()
-    // TODO: front end check, update backend password
     const { password, confirm } = Object.fromEntries(new FormData(e.target))
     const _id = this.state._id
 
@@ -155,12 +151,11 @@ class ResetForm extends React.Component {
         error: 'Password does not match'
       })
     } else {
-      postRequest('/api/user/forgotPassword', { _id, password })
+      app.post('user/forgotPassword', { _id, password })
         .then(res => {
           if (res.result) {
             this.setState({ status: 'password updated' })
             window.history.replaceState(null, '', '/reset')
-            console.log('SUCCESS!')
           } else {
             alert('An error was encountered!')
           }

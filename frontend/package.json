@@ -7,6 +7,7 @@
     "@testing-library/jest-dom": "^5.15.0",
     "@testing-library/react": "^11.2.7",
     "@testing-library/user-event": "^12.8.3",
+    "axios": "^0.25.0",
     "convos-validator": "file:../convos-validator",
     "http-proxy-middleware": "^0.19.1",
     "prop-types": "^15.7.2",
@@ -47,6 +48,5 @@
     "eslint-plugin-react": "^7.27.1",
     "postcss": "^7.0.39",
     "tailwindcss": "npm:@tailwindcss/postcss7-compat@^2.2.17"
-  },
-  "proxy": "http://localhost:3001"
+  }
 }

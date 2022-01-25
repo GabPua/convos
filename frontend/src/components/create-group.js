@@ -1,8 +1,8 @@
 import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 import { useNavigate } from 'react-router-dom'
-import postRequest from '../utils/postRequest'
 import { isValidGroupName, groupNameErrorMessage, tags } from 'convos-validator'
+import app from '../utils/axiosConfig'
 
 export default function CreateGroup(props) {
   const [error, setError] = useState('')
@@ -16,7 +16,7 @@ export default function CreateGroup(props) {
     const { groupName: name, tag } = Object.fromEntries(new FormData(e.target))
 
     if (isValidGroupName(name)) {
-      const { result } = await postRequest('/api/group/createGroup', { name, tag })
+      const { result } = await app.post('group/createGroup', { name, tag })
       if (result) {
         navigate(`/groups/${result}`)
       } else {

@@ -1,7 +1,7 @@
 import React from 'react'
 import { isValidName, usernameErrorMessage } from 'convos-validator'
 import PropTypes from 'prop-types'
-import postRequest from '../utils/postRequest'
+import app from '../utils/axiosConfig'
 
 function ChangeUsername(props) {
   const [username, setUsername] =  React.useState(props.username)
@@ -11,7 +11,7 @@ function ChangeUsername(props) {
     e.preventDefault()
     const { username } = Object.fromEntries(new FormData(e.target))
     if (isValidName(username)) {
-      postRequest('/api/user/updateName', { name: username })
+      app.post('user/updateName', { name: username })
         .then(() => {
           props.setFeedback(true, 'Changed username successfully!')
           props.changeHandler()

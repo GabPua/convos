@@ -3,18 +3,18 @@ import { useOutletContext } from 'react-router-dom'
 import ChangePassword from '../components/change-password'
 import EditUsername from '../components/change-username'
 import AddContact from '../components/add-contact'
-import postRequest from '../utils/postRequest'
 import ContactList from '../components/contacts/contact-list'
 import UploadWidget from './upload-widget'
 import useAuth from '../utils/useAuth'
 import Loading from '../components/loading'
+import app from '../utils/axiosConfig'
 
 export default function AccountDetails() {
   const { user, refreshUser, isLoading } = useAuth()
   const handleChangeClick = useOutletContext()
 
   function handleDpChange(result) {
-    postRequest('/api/user/updateDp', { dpUri: result.url })
+    app.post('user/updateDp', { dpUri: result.url })
       .then(res => {
         if (res) {
           refreshUser()

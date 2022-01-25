@@ -19,4 +19,6 @@ router.post('/updateDp', ctrl.updateDp);
 
 router.post('/logout', ctrl.logout);
 
+router.delete('/reject/:groupId', ctrl.rejectInvitation);
+
 module.exports = router;

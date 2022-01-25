@@ -1,6 +1,6 @@
 import React, { useEffect, useReducer, useState } from 'react'
-import postRequest from './postRequest'
 import PropTypes from 'prop-types'
+import app from './axiosConfig'
 
 const authContext = React.createContext()
 
@@ -20,8 +20,7 @@ function useAuth() {
 
   function refreshUser() {
     setIsLoading(true)
-    fetch('/api/user/getUser')
-      .then(res => res.json())
+    app.get('user/getUser')
       .then(res => {
         setUser(Object.assign(user, res))
         forceUpdate()
@@ -31,12 +30,12 @@ function useAuth() {
   }
 
   async function refreshContacts() {
-    const res = await (await fetch('/api/contact/getContacts')).json()
+    const res = await app.get('contact/getContacts')
     return setUser(Object.assign(user, res))
   }
 
   async function refreshGroups() {
-    const res = await (await fetch('/api/group/all')).json()
+    const res = await app.get('group/all')
     const groups = [], myGroups = []
 
     for (let i = 0; i < res.groups.length; i++) {
@@ -51,13 +50,13 @@ function useAuth() {
   }
 
   async function login(_id, password) {
-    const res = await postRequest('/api/user/login', { _id, password })
+    const res = await app.post('user/login', { _id, password })
     setUser(res)
     return Object.keys(res).length !== 0
   }
 
   async function logout() {
-    const res = await postRequest('/api/user/logout')
+    const res = await app.post('user/logout')
     setUser({})
     return res
   }
