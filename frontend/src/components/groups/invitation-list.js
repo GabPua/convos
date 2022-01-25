@@ -64,16 +64,18 @@ export default function InvitationList() {
     <div>
       <p className="text-2xl">Invitations</p>
       <hr className="mb-2" />
-      <div className="overflow-y-scroll max-h-[250px]">
-        {invitations?.map(i => <Invitation
-          key={i._id}
-          id={i._id}
-          name={i.name}
-          picUri={i.picUri}
-          acceptInvitation={acceptInvitation}
-          rejectInvitation={rejectInvitation}
-        />)}
-      </div>
+      { invitations?.length ?
+        <div className="overflow-y-scroll max-h-[250px]">
+          {invitations?.map(i => <Invitation
+            key={i._id}
+            id={i._id}
+            name={i.name}
+            picUri={i.picUri}
+            acceptInvitation={acceptInvitation}
+            rejectInvitation={rejectInvitation}
+          />)}
+        </div> : <p>No invitations here!</p>
+      }
     </div>
   )
 }
