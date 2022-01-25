@@ -16,14 +16,14 @@ export default function MainView({ children }) {
   return (
     <div>
       <header className="bg-primary fixed w-full z-50">
-        <nav className="max-w-screen-2xl p-2 flex items-stretch h-16 m-auto">
+        <nav className="max-w-screen-2xl p-2 flex justify-between h-16 m-auto">
           <Link className="flex flex-shrink-0 items-center" to="/dashboard">
             <img src="/assets/logo-white.png" alt="Convos Logo" className="w-[50px] inline-block mr-3" />
             <span className="heavy text-secondary text-3xl font-keep-calm align-middle select-none">CONVOS</span>
           </Link>
-          <div className="flex justify-end flex-grow">
-            <div className="group relative">
-              <img src={user.dpUri} alt="Profile Picture" className="cursor-pointer h-full rounded-full w-min" />
+          <div className="flex justify-end">
+            <div className="group relative w-12">
+              <img src={user.dpUri} alt="Profile Picture" className="cursor-pointer rounded-full" />
               <div className="group-hover:block dropdown-menu absolute hidden h-auto bg-secondary p-2">
                 <button className="top-0 bg-primary text-secondary font-medium hover:bg-primary-hover p-2 w-20"
                   onClick={handleLogoutClick}>Log Out</button>
