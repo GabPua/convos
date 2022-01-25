@@ -50,7 +50,14 @@ export default function InvitationList() {
   }
 
   function rejectInvitation(id) {
-    console.log(id)
+    app.delete(`user/reject/${id}`)
+      .then(res => {
+        if (res.result) {
+          refreshGroups()
+        } else {
+          console.log(res.error)
+        }
+      })
   }
 
   return (
