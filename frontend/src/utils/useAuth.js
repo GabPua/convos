@@ -42,7 +42,8 @@ function useAuth() {
       (res.groups[i].admin === user._id ? myGroups : groups ).push(res.groups[i])
     }
 
-    return setUser(Object.assign(user, { groups, myGroups, invitations: res.invitations }))
+    setUser(Object.assign(user, { groups, myGroups, invitations: res.invitations }))
+    return forceUpdate()
   }
 
   function addContact(c) {

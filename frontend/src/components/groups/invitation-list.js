@@ -1,6 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import useAuth from '../../utils/useAuth'
+import app from '../../utils/axiosConfig'
 
 function Invitation({ acceptInvitation, rejectInvitation, id, name, picUri }) {
   const handleAcceptClick = () => acceptInvitation(id)
@@ -35,10 +36,17 @@ Invitation.propTypes = {
 }
 
 export default function InvitationList() {
-  const { user: { invitations } } = useAuth()
+  const { user: { invitations }, refreshGroups } = useAuth()
 
   function acceptInvitation(id) {
-    console.log(id)
+    app.post(`group/${id}/add`)
+      .then(res => {
+        if (res.result) {
+          refreshGroups()
+        } else {
+          console.log(res.error)
+        }
+      })
   }
 
   function rejectInvitation(id) {

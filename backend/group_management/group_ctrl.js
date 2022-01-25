@@ -101,14 +101,16 @@ const group_ctrl = {
   },
 
   addMember: async (req, res) => {
-    const { userId } = req.body;
     const groupId = req.params.id;
 
     try {
-      const result = await Group.updateOne({ _id: groupId, admin: req.session._id }, { $addToSet: { members: userId } }).exec();
-      if (result.matchedCount == 1) {
-        const user = await User.findOneAndUpdate({ _id: userId }, { $addToSet: { groups: groupId } }).exec();
-        res.json({ result: true, user });
+      const result = await User.updateOne({ _id: req.session._id, invitations: groupId }, 
+        { $pull: { invitations: groupId }, $push: { groups: groupId } }).exec();
+      
+      // if the user is invited to the group
+      if (result.modifiedCount == 1) {
+        await Group.findByIdAndUpdate(groupId, { $addToSet: { members: req.session._id } }).lean().exec();
+        res.json({ result: true });
       } else {
         res.json({ result: false, error: 'An error has occured!'});
       }
