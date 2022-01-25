@@ -1,12 +1,13 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useReducer, useState } from 'react'
 import postRequest from './postRequest'
 import PropTypes from 'prop-types'
 
 const authContext = React.createContext()
 
 function useAuth() {
-  const [user, setUser] = useState({ contacts: [], groups: [] })
+  const [user, setUser] = useState({ contacts: [], invitations: [], groups: [], myGroups: [] })
   const [isLoading, setIsLoading] = useState(true)
+  const [, forceUpdate] = useReducer(x => x + 1, 0)
   let cb = () => { }
 
   function setCb(cb1) {
@@ -15,15 +16,17 @@ function useAuth() {
 
   useEffect(refreshUser, [])
 
-  const isAuthed = (user1 = user) => user1 !== undefined && Object.keys(user1).length !== 0
+  const isAuthed = (user1 = user) => !!user1?._id
 
   function refreshUser() {
+    setIsLoading(true)
     fetch('/api/user/getUser')
       .then(res => res.json())
       .then(res => {
         setUser(Object.assign(user, res))
-        setIsLoading(false)
+        forceUpdate()
         cb(isAuthed(res))
+        setIsLoading(false)
       })
   }
 
@@ -34,7 +37,13 @@ function useAuth() {
 
   async function refreshGroups() {
     const res = await (await fetch('/api/group/all')).json()
-    return setUser(Object.assign(user, res))
+    const groups = [], myGroups = []
+
+    for (let i = 0; i < res.groups.length; i++) {
+      (res.groups[i].admin === user._id ? myGroups : groups ).push(res.groups[i])
+    }
+
+    return setUser(Object.assign(user, { groups, myGroups, invitations: res.invitations }))
   }
 
   function addContact(c) {

@@ -1,15 +1,10 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
 import GroupItem from './group-item'
-import useAuth from '../../utils/useAuth'
 
-export default function GroupList() {
-  const { user, refreshGroups } = useAuth()
-  const [, forceUpdate] = React.useReducer(x => x + 1, 0)
+export default function GroupList({ groups }) {
 
-  useEffect(() => refreshGroups().then(forceUpdate), [])
-
-  const groupItems = user.groups?.map(g => (
+  const groupItems = groups?.map(g => (
     <GroupItem key={g._id}
       id={g._id}
       picUri={g.picUri}
@@ -19,20 +14,14 @@ export default function GroupList() {
       count={g.members}
     />)
   )
-
-  if (groupItems.length) {
-    return (
-      <div className="grid gap-4 auto-cols-min mx-auto" style={{ 'gridTemplateColumns': 'repeat(auto-fit, 16rem)' }}>
-        {groupItems}
-      </div>
-    )
-  }
-
+  
   return (
-    <p>You have no groups!</p>
+    <div className="grid gap-4 auto-cols-min mx-auto 2xl:grid-rows-2 w-full" style={{ 'gridTemplateColumns': 'repeat(auto-fit, 16rem)' }}>
+      {groupItems?.length ? groupItems : <p>You are not part of any external groups!</p>}
+    </div>
   )
 }
 
 GroupList.propTypes = {
-  handleChangeClick: PropTypes.func,
+  groups: PropTypes.array,
 }

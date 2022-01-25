@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { isValidEmail } from 'convos-validator'
 import useAuth from '../../utils/useAuth'
 
-export default function AddMember({ addMember, closeHandler }) {
+export default function InviteMember({ inviteMember, closeHandler }) {
   const [input, setInput] = useState('')
   const [error, setError] = useState('')
 
@@ -18,7 +18,7 @@ export default function AddMember({ addMember, closeHandler }) {
     e.preventDefault()
 
     if (isValidEmail(input)) {
-      const { error } = await addMember(input)
+      const { error } = await inviteMember(input)
       if (error) setError(error)
     } else {
       setError('Invalid email!')
@@ -38,7 +38,7 @@ export default function AddMember({ addMember, closeHandler }) {
             </div>
           </div>
           <div className="p-3  mt-2 text-center space-x-4 md:block">
-            <input type="submit" value="Add" disabled={input.toLowerCase() === user._id.toLowerCase()} />
+            <input type="submit" value="Invite" disabled={input.toLowerCase() === user._id.toLowerCase()} />
             <button type="button" className="mb-2 md:mb-0 bg-error-500 px-5 py-2 text-sm shadow-sm font-medium tracking-wider text-secondary rounded-full hover:shadow-lg hover:bg-error-600" onClick={closeHandler}>Cancel</button>
           </div>
         </form>
@@ -47,7 +47,7 @@ export default function AddMember({ addMember, closeHandler }) {
   )
 }
 
-AddMember.propTypes = {
+InviteMember.propTypes = {
   closeHandler: PropTypes.func,
-  addMember: PropTypes.func.isRequired,
+  inviteMember: PropTypes.func.isRequired,
 }

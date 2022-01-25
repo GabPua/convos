@@ -7,9 +7,10 @@ import postRequest from '../utils/postRequest'
 import ContactList from '../components/contacts/contact-list'
 import UploadWidget from './upload-widget'
 import useAuth from '../utils/useAuth'
+import Loading from '../components/loading'
 
 export default function AccountDetails() {
-  const { user, refreshUser } = useAuth()
+  const { user, refreshUser, isLoading } = useAuth()
   const handleChangeClick = useOutletContext()
 
   function handleDpChange(result) {
@@ -26,7 +27,10 @@ export default function AccountDetails() {
   return (
     <div className="min-h-full grid grid-cols-3 grid-rows-5 items-center">
       <div className="col-span-1 row-span-2 flex flex-col justify-center items-center place-self-center">
-        <img src={user.dpUri} alt="Profile Picture" className="w-60 rounded-full" />
+        <div className="relative">
+          <img src={user.dpUri} alt="Profile Picture" className="w-60 rounded-full" />
+          <Loading show={isLoading} />
+        </div>
         <UploadWidget id="upload-widget" text="CHANGE" onSuccessHandler={handleDpChange} publicId={user._id} aspectRatio={1} uploadPreset="user_dps" />
       </div>
       <div className="col-span-2 row-span-2 w-full max-w-2xl">

@@ -36,18 +36,21 @@ const group_ctrl = {
   },
 
   getGroup: async (req, res) => {
-    const group = await Group.findById(req.params.id).populate('members', 'name dpUri').lean().exec();
+    const group = await Group.findOne({ _id: req.params.id, members: req.session._id }).populate('members', 'name dpUri').lean().exec();
     res.json({ group });
   },
 
   getGroups: async (req, res) => {
-    const { groups } = await User.findById(req.session._id, 'groups').populate('groups', 'name members picUri tag coverUri').lean().exec();
+    const { groups, invitations } = await User.findById(req.session._id, 'groups invitations')
+      .populate('groups', 'name members picUri tag coverUri admin')
+      .populate('invitations', 'name picUri')
+      .lean().exec();
     
     for (let i = 0; i < groups.length; i++) {
       groups[i].members = groups[i].members.length;
     }
 
-    res.json({ groups });
+    res.json({ groups, invitations });
   },
 
   updateDetails: (req, res) => {
@@ -66,6 +69,25 @@ const group_ctrl = {
   updateCover: (req, res) => {
     const { coverUri } = req.body;
     Group.updateOne({ _id: req.params.id }, { coverUri }, (err) => res.json({ result: !err }));
+  },
+
+  inviteMember: async (req, res) => {
+    const { userId } = req.body;
+    const groupId = req.params.id;
+
+    try {
+      // check if not in group already
+      const { members } = await Group.findById(groupId, 'members').lean().exec();
+      if (members.includes(userId)) {
+        res.json({ result: false, err: 'User already in the grouP!'} );
+      } else {
+        await User.updateOne({ _id: userId }, { $addToSet: { invitations: groupId } });
+        res.json({ result: true });
+      }
+    } catch (err) {
+      console.log(err);
+      res.json({ result: false, err });
+    }
   },
 
   addMember: async (req, res) => {

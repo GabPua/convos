@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { useOutletContext } from 'react-router-dom'
 import RemoveMember from './remove-member'
-import AddMember from './add-member'
+import InviteMember from './invite-member'
 
 function MemberItem({ id, name, dpUri }) {
   const { setModal, removeMember, group: { admin, isAdmin } } = useOutletContext()
@@ -41,8 +41,8 @@ MemberItem.propTypes = {
 }
 
 export default function Members() {
-  const { group: { members, isAdmin }, addMember, setModal } = useOutletContext()
-  const handleAddClick = () => setModal(<AddMember addMember={addMember} />)
+  const { group: { members, isAdmin }, inviteMember, setModal } = useOutletContext()
+  const handleAddClick = () => setModal(<InviteMember inviteMember={inviteMember} />)
 
   return (
     <div>

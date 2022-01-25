@@ -21,6 +21,8 @@ router.post('/:id/updatePic', ctrl.updatePic);
 
 router.post('/:id/updateCover', ctrl.updateCover);
 
+router.post('/:id/invite', ctrl.inviteMember);
+
 router.post('/:id/add', ctrl.addMember);
 
 router.post('/:id/remove', ctrl.removeMember);

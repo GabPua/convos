@@ -9,12 +9,13 @@ import Register from './routes/register'
 import ResetForm from './routes/reset-form'
 import Dashboard from './routes/dashboard'
 import AccountDetails from './components/account-details'
-import GroupList from './components/groups/group-list'
+import Groups from './components/groups'
 import reportWebVitals from './reportWebVitals'
 import GroupSettings from './routes/group-settings'
 import Members from './components/group-settings/members'
 import Disband from './components/group-settings/disband'
 import Overview from './components/group-settings/overview'
+import MainView from './components/main-view'
 
 function RequireAuth({ children }) {
   const { isAuthed, isLoading, setCb } = useAuth()
@@ -28,7 +29,7 @@ function RequireAuth({ children }) {
     })
   }
 
-  return isAuthed() ? children : <Navigate to="/" replace state={{ path }} />
+  return isAuthed() ? <MainView>{children}</MainView> : <Navigate to="/" replace state={{ path }} />
 }
 
 RequireAuth.propTypes = {
@@ -70,7 +71,7 @@ ReactDOM.render(
             </RequireAuth>
           } >
             <Route path="" element={<AccountDetails />} />
-            <Route path="groups" element={<GroupList />} />
+            <Route path="groups" element={<Groups />} />
           </Route>
           <Route path="/groups/:groupId" element={
             <RequireAuth>
