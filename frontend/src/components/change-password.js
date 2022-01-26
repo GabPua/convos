@@ -40,7 +40,7 @@ function ChangePassword(props) {
         <div className="field">
           <label htmlFor="old-password" className="mb-6">Old Password</label>
           <div className="w-72">
-            <input className="input" type="text" id="old-password" name="oldPassword" />
+            <input className="input" type="password" id="old-password" name="oldPassword" />
             <p className="help-text">{error.old}</p>
           </div>
         </div>
