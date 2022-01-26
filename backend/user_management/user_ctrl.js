@@ -26,7 +26,7 @@ const user_ctrl = {
     isUniqueEmail(_id)
       .then(result => {
         if (isValid && result) {
-          const user = { _id, name, groups: [], ...hashPassword(password) };
+          const user = { _id, name, groups: [], invitations: [], ...hashPassword(password) };
           User.create(user, (err, result) => {
             if (!err) {
               req.session._id = _id;
