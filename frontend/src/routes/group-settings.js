@@ -35,13 +35,15 @@ export default function GroupSettings() {
     setModal(<Feedback isSuccess={isSuccess} text={feedbackText} />)
   }
 
-  useEffect(async () => {
+  async function refreshGroup() {
     const { group: g } = await app.get(`group/${groupId}`)
     if (g != null) {
       g.isAdmin = user._id === g?.admin
     }
     setGroup(g)
-  }, [])
+  }
+
+  useEffect(refreshGroup, [])
 
   function updateDp(picUri) {
     setGroup(Object.assign(group, { picUri }))
@@ -55,12 +57,13 @@ export default function GroupSettings() {
     setGroup(Object.assign(group, details))
   }
 
-  const removeMember = async userId => {
+  const removeMember = async (userId, isInvited) => {
     const { result } = await app.post(`group/${groupId}/remove`, { userId })
 
     if (result) {
-      setGroup(Object.assign(group, { members: group.members.filter(m => m._id !== userId) }))
-      setFeedback(true, 'Member successfully removed!')
+      if (isInvited) setGroup(Object.assign(group, { invitations: group.invitations.filter(m => m._id !== userId) }))
+      else setGroup(Object.assign(group, { members: group.members.filter(m => m._id !== userId), }))
+      setFeedback(true, 'User successfully removed!')
     } else {
       setFeedback(false, 'An error has occured!')
     }
@@ -69,6 +72,7 @@ export default function GroupSettings() {
   async function inviteMembers(userIds) {
     const { result, error } = await app.put(`group/${groupId}/invite`, { userIds })
     if (result) {
+      refreshGroup()
       setFeedback(result, result ? 'Users have been invited!' : error)
     }
     return { error }

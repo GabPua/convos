@@ -28,21 +28,19 @@ export default function InviteMember({ members, inviteMembers, closeHandler }) {
   const handleFormSubmit = async e => {
     e.preventDefault()
 
-    if (isValidEmail(email)) {
-      if (members.find(m => m._id == email) == undefined) {
-        const user = await app.get(`user/getUser/${email}`)
-        if (user._id) {
-          setContacts(contacts.filter(c => c._id !== user._id))
-          setToAdd(toAdd.concat(user))
-          setEmailInput('')
-        } else {
-          setError('User does not exist!')
-        }
-      } else {
-        setError('User already part of the group!')
-      }
+    if (!isValidEmail(email)) {
+      return setError('Invalid email format!')
+    } else if (members.find(m => m._id == email)) {
+      return setError('User already invited to or part of the group!')
+    }
+
+    const user = await app.get(`user/getUser/${email}`)
+    if (user._id) {
+      setContacts(contacts.filter(c => c._id !== user._id))
+      setToAdd(toAdd.concat(user))
+      setEmailInput('')
     } else {
-      setError('Invalid email format!')
+      setError('User does not exist!')
     }
   }
 

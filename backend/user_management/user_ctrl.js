@@ -1,5 +1,6 @@
 require('dotenv').config();
 const User = require('./user');
+const Group = require('../group_management/group');
 const { isValidEmail, isValidName, isValidPassword, passwordErrorMessage } = require('convos-validator');
 const { hashPassword, matchPassword } = require('../utils/hashPassword');
 const Token = require('../forgot_password/token');
@@ -138,6 +139,7 @@ const user_ctrl = {
   rejectInvitation: async (req, res) => {
     try {
       await User.updateOne({ _id: req.session._id }, { $pull: { invitations: req.params.groupId } });
+      await Group.updateOne({ _id: req.params.groupId }, { $pull: { invitations: req.session._id } });
       res.json({ result: true });
     } catch (error) {
       res.json({ result: false, error });
