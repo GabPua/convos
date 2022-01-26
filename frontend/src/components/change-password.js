@@ -34,7 +34,7 @@ function ChangePassword(props) {
   }
 
   return (
-    <div className="text-secondary">
+    <div className="text-secondary w-xl">
       <p className="font-keep-calm text-3xl text-center mt-3 mb-10">Change Password</p>
       <form onSubmit={handleSubmit}>
         <div className="field">
@@ -57,9 +57,9 @@ function ChangePassword(props) {
             <p className="help-text">{error.new}</p>
           </div>
         </div>
-        <div className="p-3  mt-2 text-center space-x-4 md:block">
+        <div className="p-3 mt-2 text-center space-x-4 md:block">
           <input type="submit" value="Change Password" className="mb-2 md:mb-0 bg-white px-5 py-2 text-sm shadow-sm font-medium tracking-wider text-gray-600 rounded-full hover:shadow-lg hover:text-gray-900" />
-          <button type="button" className="mb-2 md:mb-0 bg-error-500 px-5 py-2 text-sm shadow-sm font-medium tracking-wider text-secondary rounded-full hover:shadow-lg hover:bg-error-600" onClick={props.closeHandler}>Cancel</button>
+          <button type="button" className="cancel" onClick={props.closeHandler}>Cancel</button>
         </div>
       </form>
     </div>

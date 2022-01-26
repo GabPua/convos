@@ -27,9 +27,9 @@ export default function EditGroupDetails({ id, name, tag, closeHandler, updateDe
   }
 
   return (
-    <div>
+    <div className="w-96">
       <div className="text-secondary">
-        <p className="font-keep-calm text-3xl text-center mt-3 mb-5">Create Group</p>
+        <p className="font-keep-calm text-3xl text-center mt-3 mb-5">Update Group</p>
 
         <form onSubmit={handleFormSubmit}>
           <div className="field">
@@ -49,7 +49,7 @@ export default function EditGroupDetails({ id, name, tag, closeHandler, updateDe
           </div>
           <div className="p-3 mt-4 text-center space-x-4 md:block">
             <input type="submit" value="Update" />
-            <button type="button" className="mb-2 md:mb-0 bg-error-500 px-5 py-2 text-sm shadow-sm font-medium tracking-wider text-secondary rounded-full hover:shadow-lg hover:bg-error-600" onClick={closeHandler}>Cancel</button>
+            <button type="button" className="cancel" onClick={closeHandler}>Cancel</button>
           </div>
         </form>
       </div>

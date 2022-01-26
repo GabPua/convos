@@ -13,8 +13,8 @@
     @apply text-xl font-light
   }
 
-  .modal .input {
-    @apply text-black flex-1
+  .modal .input, .modal select {
+    @apply text-gray-800 flex-1
   }
 
   .modal .field .input+.help-text {
@@ -22,14 +22,18 @@
   }
 
   .modal .btn {
-    @apply py-2 px-4 border border-secondary rounded-full font-light font-roboto
+    @apply py-2 px-4 rounded-full font-light font-roboto
   }
 
   .modal input[type="submit"] {
-    @apply bg-white mb-2 md:mb-0 px-5 py-2 text-sm shadow-sm font-medium tracking-wider border text-gray-600 rounded-full hover:shadow-lg hover:bg-gray-100
+    @apply bg-blue-500 mb-2 md:mb-0 px-5 py-2 text-sm shadow-sm font-medium tracking-wider text-white rounded-full hover:shadow-lg hover:bg-blue-600
   }
 
   .modal input[type="submit"]:disabled {
-    @apply cursor-not-allowed opacity-50 hover:bg-white hover:shadow-none
+    @apply cursor-not-allowed opacity-50 hover:shadow-none hover:bg-blue-500
+  }
+
+  .modal .cancel {
+    @apply mb-2 md:mb-0 text-error-500 px-5 py-2 text-sm shadow-sm font-medium tracking-wider rounded-full hover:shadow-lg bg-gray-100 hover:text-red-600
   }
 }
