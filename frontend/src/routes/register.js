@@ -1,7 +1,6 @@
 import { Link, useNavigate } from 'react-router-dom'
 import React from 'react'
 import { isValidEmail, isValidName, isValidPassword, passwordErrorMessage, usernameErrorMessage } from 'convos-validator'
-import axios from 'axios'
 import app from '../utils/axiosConfig'
 
 export default function Register() {
@@ -25,7 +24,7 @@ export default function Register() {
       tempError.email = 'Invalid email'
       setError(tempError)
     } else {
-      axios.get(`user/checkEmail?_id=${encodeURIComponent(email.toString().toLowerCase())}`)
+      app.get(`user/checkEmail?_id=${encodeURIComponent(email.toString().toLowerCase())}`)
         .then(res => {
           if (!res.result) tempError.email = 'Email is taken'
 
