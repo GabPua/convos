@@ -4,13 +4,15 @@ import { useOutletContext } from 'react-router-dom'
 import RemoveMember from './remove-member'
 import InviteMember from './invite-member'
 
-function MemberItem({ id, name, dpUri }) {
+function MemberItem({ id, name, dpUri, isInvited }) {
   const { setModal, removeMember, group: { admin, isAdmin } } = useOutletContext()
+
+  const handleRemoveMemberClick = () => removeMember(id, isInvited)
 
   let elem = <></>
   let btn = (
     <i className="text-error-500 invisible group-hover:visible fas fa-times fa-lg hover:text-error-600"
-      onClick={() => setModal(<RemoveMember id={id} name={name} dpUri={dpUri} removeMember={removeMember} />)}></i>
+      onClick={() => setModal(<RemoveMember name={name} dpUri={dpUri} removeMember={handleRemoveMemberClick} />)}></i>
   )
 
   if (id === admin) {
@@ -19,10 +21,10 @@ function MemberItem({ id, name, dpUri }) {
   }
 
   return (
-    <div className="flex justify-between items-center hover:bg-gray-200 rounded-2xl cursor-pointer select-none my-2 p-2 group transition-colors">
+    <div className={(isInvited ? 'opacity-50 ' : '') + 'flex justify-between items-center hover:bg-gray-200 rounded-2xl cursor-pointer select-none my-2 p-2 group transition-colors'}>
       <div>
         <img src={dpUri} alt="dp" className="inline mr-4 w-12 rounded-full" />
-        <span className="text-xl">{name}</span>
+        <span className="text-xl">{name + (isInvited ? ' (Invited)' : '')}</span>
         {elem}
       </div>
       {isAdmin ?
@@ -38,11 +40,12 @@ MemberItem.propTypes = {
   id: PropTypes.string.isRequired,
   name: PropTypes.string.isRequired,
   dpUri: PropTypes.string.isRequired,
+  isInvited: PropTypes.bool.isRequired,
 }
 
 export default function Members() {
-  const { group: { members, isAdmin }, inviteMember, setModal } = useOutletContext()
-  const handleAddClick = () => setModal(<InviteMember inviteMember={inviteMember} />)
+  const { group: { members, isAdmin, invitations }, inviteMembers, setModal } = useOutletContext()
+  const handleAddClick = () => setModal(<InviteMember inviteMembers={inviteMembers} members={members.concat(invitations)} />)
 
   return (
     <div>
@@ -52,7 +55,8 @@ export default function Members() {
       </div>
       <hr />
       <div className="overflow-y-scroll px-2">
-        {members?.map(m => <MemberItem key={m._id} id={m._id} name={m.name} dpUri={m.dpUri} />)}
+        {members?.map(m => <MemberItem key={m._id} id={m._id} name={m.name} dpUri={m.dpUri} isInvited={false} />)}
+        {invitations?.map(m => <MemberItem key={m._id} id={m._id} name={m.name} dpUri={m.dpUri} isInvited={true} />)}
       </div>
     </div>
   )

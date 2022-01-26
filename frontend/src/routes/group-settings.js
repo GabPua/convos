@@ -35,13 +35,15 @@ export default function GroupSettings() {
     setModal(<Feedback isSuccess={isSuccess} text={feedbackText} />)
   }
 
-  useEffect(async () => {
+  async function refreshGroup() {
     const { group: g } = await app.get(`group/${groupId}`)
     if (g != null) {
       g.isAdmin = user._id === g?.admin
     }
     setGroup(g)
-  }, [])
+  }
+
+  useEffect(refreshGroup, [])
 
   function updateDp(picUri) {
     setGroup(Object.assign(group, { picUri }))
@@ -55,29 +57,25 @@ export default function GroupSettings() {
     setGroup(Object.assign(group, details))
   }
 
-  const removeMember = async userId => {
+  const removeMember = async (userId, isInvited) => {
     const { result } = await app.post(`group/${groupId}/remove`, { userId })
 
     if (result) {
-      setGroup(Object.assign(group, { members: group.members.filter(m => m._id !== userId) }))
-      setFeedback(true, 'Member successfully removed!')
+      if (isInvited) setGroup(Object.assign(group, { invitations: group.invitations.filter(m => m._id !== userId) }))
+      else setGroup(Object.assign(group, { members: group.members.filter(m => m._id !== userId), }))
+      setFeedback(true, 'User successfully removed!')
     } else {
       setFeedback(false, 'An error has occured!')
     }
   }
 
-  async function inviteMember(userId) {
-    // if not in contacts
-    if (group.members.find(m => m._id === userId) === undefined) {
-      const { result, error } = await app.post(`group/${groupId}/invite`, { userId })
-      if (result) {
-        setFeedback(result, result ? 'Member invited!' : error)
-      }
-
-      return { error }
+  async function inviteMembers(userIds) {
+    const { result, error } = await app.put(`group/${groupId}/invite`, { userIds })
+    if (result) {
+      refreshGroup()
+      setFeedback(result, result ? 'Users have been invited!' : error)
     }
-
-    return { error: 'Account is already a member of the group!' }
+    return { error }
   }
 
   const handleExitClick = () => navigate('/dashboard/groups')
@@ -108,7 +106,7 @@ export default function GroupSettings() {
         </div>
 
         <div className="ml-96 h-full p-14" style={{ 'width': 'calc(100vw - 24rem)', 'maxWidth': '70rem' }}>
-          <Outlet context={{ group, removeMember, inviteMember, setModal, updateDp, updateCover, updateDetails }} />
+          <Outlet context={{ group, removeMember, inviteMembers, setModal, updateDp, updateCover, updateDetails }} />
         </div>
         <Modal component={modal} closeHandler={closeModal} setFeedback={setFeedback} changeHandler={() => { }} />
       </div>

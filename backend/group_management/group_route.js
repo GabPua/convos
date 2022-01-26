@@ -21,7 +21,7 @@ router.post('/:id/updatePic', ctrl.updatePic);
 
 router.post('/:id/updateCover', ctrl.updateCover);
 
-router.post('/:id/invite', ctrl.inviteMember);
+router.put('/:id/invite', ctrl.inviteMembers);
 
 router.post('/:id/add', ctrl.addMember);
 

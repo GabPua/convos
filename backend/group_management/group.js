@@ -8,6 +8,7 @@ let groupSchema = new mongoose.Schema({
   coverUri: { type: String, trim: true, required: true, default: 'https://res.cloudinary.com/convos456/image/upload/v1642591871/gc_covers/gc-dp_inkitq.png' },
   admin: { type: String, trim: true, lowercase: true, required: true, ref: 'User' },
   members: [{ type: String, trim: true, lowercase: true, required: true, ref: 'User' }],
+  invitations: [{ type: String, trim: true, lowercase: true, required: true, ref: 'User'}],
   tag: { type: String, trim: true, lowercase: true, required: true }
 });
 

@@ -17,6 +17,7 @@ const group_ctrl = {
       name,
       admin: userId,
       members: [userId],
+      invitations: [],
       tag
     };
 
@@ -36,7 +37,10 @@ const group_ctrl = {
   },
 
   getGroup: async (req, res) => {
-    const group = await Group.findOne({ _id: req.params.id, members: req.session._id }).populate('members', 'name dpUri').lean().exec();
+    const group = await Group.findOne({ _id: req.params.id, members: req.session._id })
+      .populate('members', 'name dpUri')
+      .populate('invitations', 'name dpUri')
+      .lean().exec();
     res.json({ group });
   },
 
@@ -71,28 +75,29 @@ const group_ctrl = {
     Group.updateOne({ _id: req.params.id }, { coverUri }, (err) => res.json({ result: !err }));
   },
 
-  inviteMember: async (req, res) => {
-    const { userId } = req.body;
+  inviteMembers: async (req, res) => {
+    const { userIds } = req.body;
     const groupId = req.params.id;
 
     try {
-      // check if not in group already
+      // get group admin and members
       const { members, admin } = await Group.findById(groupId, 'members admin').lean().exec();
 
+      // verify current user is admin
       if (req.session._id !== admin) {
         res.status(401);
         return res.json({ result: false, error: 'Current user is unauthorized!' });
       }
 
-      if (members.includes(userId)) {
-        res.json({ result: false, err: 'User already in the group!' });
+      // filter members not included in the group
+      const filteredIds = userIds.filter(id => !members.includes(id));
+
+      const { matchedCount } = await User.updateMany({ _id: { $in: filteredIds } }, { $addToSet: { invitations: groupId } }).exec();
+      if (matchedCount) {
+        await Group.updateOne({ _id: groupId }, { $push: { invitations: filteredIds } });
+        res.json({ result: true });
       } else {
-        const { matchedCount } = await User.updateOne({ _id: userId }, { $addToSet: { invitations: groupId } }).exec();
-        if (matchedCount) {
-          res.json({ result: true });
-        } else {
-          res.json({ result: false, error: 'User does not exist!' });
-        }
+        res.json({ result: false, error: 'No users were invited!' });
       }
     } catch (err) {
       console.log(err);
@@ -109,7 +114,9 @@ const group_ctrl = {
 
       // if the user is invited to the group
       if (result.modifiedCount == 1) {
-        await Group.findByIdAndUpdate(groupId, { $addToSet: { members: req.session._id } }).lean().exec();
+        await Group.findByIdAndUpdate(groupId, { 
+          $addToSet: { members: req.session._id }, 
+          $pull: { invitations: req.session._id } }).lean().exec();
         res.json({ result: true });
       } else {
         res.json({ result: false, error: 'An error has occured!' });
@@ -123,14 +130,14 @@ const group_ctrl = {
     const { userId } = req.body;
 
     try {
-      const result = await Group.findOne({ _id: req.params.id, members: userId }, 'admin').lean().exec();
+      const result = await Group.findOne({ _id: req.params.id, $or: [{members: userId}, { invitations: userId }] }, 'admin').lean().exec();
 
       // if user is part of group and not an admin removing himself
       if (result && userId !== result.admin) {
         // if logged in user is admin or user removing himself
         if (req.session._id === result.admin || req.session._id === userId) {
-          await Group.updateOne({ _id: result._id }, { $pull: { members: userId } });
-          await User.updateOne({ _id: userId }, { $pull: { groups: req.params.id } });
+          await Group.updateOne({ _id: result._id }, { $pull: { members: userId, invitations: userId }, });
+          await User.updateOne({ _id: userId }, { $pull: { groups: req.params.id, invitations: req.params.id }, });
           return res.json({ result: true });
         }
       }

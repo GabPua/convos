@@ -19,6 +19,13 @@ module.exports = {
       white: colors.white,
       red: colors.red,
       green: colors.green,
+      blue: colors.blue,
+    },
+    extend: {
+      width: {
+        'xl': '36rem',
+        '2xl': '42rem',
+      }
     }
   },
   variants: {
