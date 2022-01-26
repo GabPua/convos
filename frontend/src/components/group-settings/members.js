@@ -41,8 +41,8 @@ MemberItem.propTypes = {
 }
 
 export default function Members() {
-  const { group: { members, isAdmin }, inviteMember, setModal } = useOutletContext()
-  const handleAddClick = () => setModal(<InviteMember inviteMember={inviteMember} />)
+  const { group: { members, isAdmin }, inviteMembers, setModal } = useOutletContext()
+  const handleAddClick = () => setModal(<InviteMember inviteMembers={inviteMembers} members={members} />)
 
   return (
     <div>

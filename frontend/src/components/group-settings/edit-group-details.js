@@ -48,8 +48,8 @@ export default function EditGroupDetails({ id, name, tag, closeHandler, updateDe
             </div>
           </div>
           <div className="p-3 mt-4 text-center space-x-4 md:block">
-            <input type="submit" value="Update" />
             <button type="button" className="cancel" onClick={closeHandler}>Cancel</button>
+            <input type="submit" value="Update" />
           </div>
         </form>
       </div>

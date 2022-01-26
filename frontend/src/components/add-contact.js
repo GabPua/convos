@@ -46,8 +46,8 @@ export default function AddContact(props) {
             </div>
           </div>
           <div className="p-3 mt-2 text-center space-x-4 md:block">
-            <input type="submit" value="Add" disabled={input.toLowerCase() === user._id.toLowerCase()} />
             <button type="button" className="cancel" onClick={props.closeHandler}>Cancel</button>
+            <input type="submit" value="Add" disabled={input.toLowerCase() === user._id.toLowerCase()} />
           </div>
         </form>
       </div>

@@ -40,8 +40,8 @@ function ChangeUsername(props) {
             </div>
           </div>
           <div className="p-3  mt-2 text-center space-x-4 md:block">
-            <input type="submit" value="Change Username" disabled={username === props.username} />
             <button type="button" className="cancel" onClick={props.closeHandler}>Cancel</button>
+            <input type="submit" value="Change Username" disabled={username === props.username} />
           </div>
         </form>
       </div>

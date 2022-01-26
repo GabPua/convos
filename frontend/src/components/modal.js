@@ -22,7 +22,7 @@ export default function Modal(props) {
   const node = useRef()
 
   const handleClick = e => {
-    if (node.current?.contains(e.target)) {
+    if (node.current?.contains(e.target) || e.target.classList.contains('disappearing')) {
       return
     }
     props.closeHandler()

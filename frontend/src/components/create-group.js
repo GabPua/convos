@@ -49,8 +49,8 @@ export default function CreateGroup(props) {
             </div>
           </div>
           <div className="p-3 mt-4 text-center space-x-4 md:block">
-            <input type="submit" value="Create" />
             <button type="button" className="cancel" onClick={props.closeHandler}>Cancel</button>
+            <input type="submit" value="Create" />
           </div>
         </form>
       </div>

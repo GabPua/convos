@@ -66,18 +66,12 @@ export default function GroupSettings() {
     }
   }
 
-  async function inviteMember(userId) {
-    // if not in contacts
-    if (group.members.find(m => m._id === userId) === undefined) {
-      const { result, error } = await app.post(`group/${groupId}/invite`, { userId })
-      if (result) {
-        setFeedback(result, result ? 'Member invited!' : error)
-      }
-
-      return { error }
+  async function inviteMembers(userIds) {
+    const { result, error } = await app.put(`group/${groupId}/invite`, { userIds })
+    if (result) {
+      setFeedback(result, result ? 'Users have been invited!' : error)
     }
-
-    return { error: 'Account is already a member of the group!' }
+    return { error }
   }
 
   const handleExitClick = () => navigate('/dashboard/groups')
@@ -108,7 +102,7 @@ export default function GroupSettings() {
         </div>
 
         <div className="ml-96 h-full p-14" style={{ 'width': 'calc(100vw - 24rem)', 'maxWidth': '70rem' }}>
-          <Outlet context={{ group, removeMember, inviteMember, setModal, updateDp, updateCover, updateDetails }} />
+          <Outlet context={{ group, removeMember, inviteMembers, setModal, updateDp, updateCover, updateDetails }} />
         </div>
         <Modal component={modal} closeHandler={closeModal} setFeedback={setFeedback} changeHandler={() => { }} />
       </div>

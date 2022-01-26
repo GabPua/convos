@@ -69,17 +69,14 @@ const user_ctrl = {
   },
 
   getUser: (req, res) => {
-    getUser(req.session._id).then(user => {
-      if (user) {
-        res.json({
+    getUser(req.params.id ? req.params.id : req.session._id)
+      .then(user => {
+        res.json(user ? {
           _id: user._id,
           name: user.name,
           dpUri: user.dpUri,
-        });
-      } else {
-        res.json({});
-      }
-    });
+        } : {});
+      });
   },
 
   forgotPassword: (req, res) => {

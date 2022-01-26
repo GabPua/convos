@@ -13,7 +13,7 @@
     @apply text-xl font-light
   }
 
-  .modal .input, .modal select {
+  .modal input, .modal select {
     @apply text-gray-800 flex-1
   }
 

@@ -72,27 +72,27 @@ const group_ctrl = {
   },
 
   inviteMember: async (req, res) => {
-    const { userId } = req.body;
+    const { userIds } = req.body;
     const groupId = req.params.id;
 
     try {
-      // check if not in group already
+      // get group admin and members
       const { members, admin } = await Group.findById(groupId, 'members admin').lean().exec();
 
+      // verify current user is admin
       if (req.session._id !== admin) {
         res.status(401);
         return res.json({ result: false, error: 'Current user is unauthorized!' });
       }
 
-      if (members.includes(userId)) {
-        res.json({ result: false, err: 'User already in the group!' });
+      // filter members not included in the group
+      const filteredIds = userIds.filter(id => !members.includes(id));
+
+      const { matchedCount } = await User.updateMany({ _id: { $in: filteredIds } }, { $addToSet: { invitations: groupId } }).exec();
+      if (matchedCount) {
+        res.json({ result: true });
       } else {
-        const { matchedCount } = await User.updateOne({ _id: userId }, { $addToSet: { invitations: groupId } }).exec();
-        if (matchedCount) {
-          res.json({ result: true });
-        } else {
-          res.json({ result: false, error: 'User does not exist!' });
-        }
+        res.json({ result: false, error: 'No users were invited!' });
       }
     } catch (err) {
       console.log(err);
