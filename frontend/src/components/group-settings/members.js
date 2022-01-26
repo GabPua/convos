@@ -21,8 +21,8 @@ function MemberItem({ id, name, dpUri, isInvited }) {
   }
 
   return (
-    <div className={(isInvited ? 'opacity-50 ' : '') + 'flex justify-between items-center hover:bg-gray-200 rounded-2xl cursor-pointer select-none my-2 p-2 group transition-colors'}>
-      <div>
+    <div className={'flex justify-between items-center hover:bg-gray-200 rounded-2xl cursor-pointer select-none my-2 p-2 group transition-colors'}>
+      <div className={isInvited ? 'opacity-50 ' : ''}>
         <img src={dpUri} alt="dp" className="inline mr-4 w-12 rounded-full" />
         <span className="text-xl">{name + (isInvited ? ' (Invited)' : '')}</span>
         {elem}

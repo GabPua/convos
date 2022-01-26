@@ -54,11 +54,7 @@ export default function Overview() {
           <p className="text-2xl font-medium">{ group.isAdmin ? 'Preview' : '' }</p>
           <div className="shadow-lg rounded-lg flex flex-col items-center justify-end h-60 relative bg-no-repeat bg-contain hover:cursor-pointer pb-5 w-64" style={{ 'backgroundImage': `url(${group.coverUri})` }}>
             <img src={group.picUri} className="rounded-full w-14 border-4 border-white" alt="Group Picture" />
-            <p>{group.name}</p>
-            <span>
-              <i className="fas fa-cog mr-1"></i>
-              Settings
-            </span>
+            <p className="mb-7">{group.name}</p>
           </div>
         </div>
 

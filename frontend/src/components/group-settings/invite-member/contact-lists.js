@@ -36,7 +36,7 @@ export function Contacts({ contacts, onClick }) {
         value={search} onChange={e => setSearch(e.target.value)} placeholder="Name of contact" />
       <div className="mt-2">
         {contacts
-          .filter(c => { return !search ? true : (c.name.toLowerCase().includes(search) || c._id.includes(search) )})
+          .filter(c => { return !search ? true : c.name.toLowerCase().includes(search) })
           .map(c => <ContactItem key={c._id} _id={c._id} name={c.name} dpUri={c.dpUri} isAdded={false} clickHandler={onClick} />)}
       </div>
     </div>
