@@ -14,9 +14,10 @@ export default function Disband() {
     setInput(e.target.value)
   }
 
-  const handleDisbandClick = async () => {
+  const handleDisbandClick = async (e) => {
+    e.preventDefault()
     const { result } = await app.delete(`group/${groupId}`)
-    if (result === true) {
+    if (result) {
       navigate('/dashboard/groups')
     }
   }

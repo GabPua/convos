@@ -16,7 +16,7 @@ export default function GroupList({ groups }) {
   )
   
   return (
-    <div className="grid gap-4 auto-cols-min mx-auto 2xl:grid-rows-2 w-full" style={{ 'gridTemplateColumns': 'repeat(auto-fit, 16rem)' }}>
+    <div className="grid gap-4 auto-cols-min mx-auto 2xl:grid-rows-2 w-full min-h-[240px]" style={{ 'gridTemplateColumns': 'repeat(auto-fit, 16rem)' }}>
       {groupItems?.length ? groupItems : <p>You are not part of any external groups!</p>}
     </div>
   )
