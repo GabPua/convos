@@ -17,7 +17,6 @@ export default function InviteMember({ members, inviteMembers, closeHandler }) {
       await refreshContacts()
     }
     setContacts(user.contacts.filter(x => !members.find(y => y._id == x._id)))
-    console.log('Hello World')
   }, [])
 
   const handleChange = e => {

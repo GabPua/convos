@@ -34,7 +34,7 @@ export function Contacts({ contacts, onClick }) {
     <div className="h-full bg-white rounded-lg w-full p-2">
       <input className="font-light w-full p-2 border-gray-300 border rounded-lg focus:outline-none" type="search"
         value={search} onChange={e => setSearch(e.target.value)} placeholder="Name of contact" />
-      <div className="mt-2">
+      <div className="mt-2 h-44 overflow-y-scroll">
         {contacts
           .filter(c => { return !search ? true : (c.name.toLowerCase().includes(search) || c._id.includes(search) )})
           .map(c => <ContactItem key={c._id} _id={c._id} name={c.name} dpUri={c.dpUri} isAdded={false} clickHandler={onClick} />)}
@@ -50,7 +50,7 @@ Contacts.propTypes = {
 
 export function ToAdd({ contacts, onClick }) {
   return (
-    <div className="h-full bg-white rounded-lg w-full p-2">
+    <div className="h-full bg-white rounded-lg w-full p-2 overflow-y-scroll">
       {contacts.map(c => <ContactItem key={c._id} _id={c._id} name={c.name} dpUri={c.dpUri} isAdded={true} clickHandler={onClick} />)}
     </div>
   )

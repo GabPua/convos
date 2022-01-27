@@ -13,7 +13,7 @@ export default function ContactList() {
   const list = user.contacts?.map(c => <ContactItem key={c._id} name={c.name} dpUri={c.dpUri} />)
 
   return (
-    <div className="p-5">
+    <div className="p-5 max-h-96 overflow-y-scroll">
       {list}
     </div>
   )

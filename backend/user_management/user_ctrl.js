@@ -63,7 +63,6 @@ const user_ctrl = {
             dpUri: user.dpUri,
           });
         } else {
-          res.status(401);
           res.json({});
         }
       });
