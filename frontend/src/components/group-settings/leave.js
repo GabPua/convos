@@ -16,11 +16,8 @@ export default function Leave() {
 
   const handleFormSubmit = async (e) => {
     e.preventDefault()
-    const { result } = await app.post(`group/${groupId}/remove`, { userId: user._id })
-    console.log(result)
-    if (result === true) {
-      navigate('/dashboard/groups')
-    }
+    await app.post(`group/${groupId}/remove`, { userId: user._id })
+    navigate('/dashboard/groups')
   }
 
   React.useEffect(() => { if (user._id === group.admin) navigate('..') }, [])

@@ -8,12 +8,12 @@ export default function RemoveMember({ closeHandler, name, dpUri, removeMember }
       <img src={dpUri} className="rounded-full w-28 my-4" />
       <p className="text-xl font-light">{name}</p>
       <div className="p-3 mt-4 text-center space-x-4 md:block">
-        <input type="submit" onClick={removeMember} value="Yes" />
         <button type="button" className="cancel" onClick={closeHandler}>No</button>
+        <input type="submit" onClick={removeMember} value="Yes" />
       </div>
     </div>
   )
-} 
+}
 
 RemoveMember.propTypes = {
   closeHandler: PropTypes.func,
