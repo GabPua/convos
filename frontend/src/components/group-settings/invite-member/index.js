@@ -27,13 +27,17 @@ export default function InviteMember({ members, inviteMembers, closeHandler }) {
   const handleFormSubmit = async e => {
     e.preventDefault()
 
-    if (!isValidEmail(email)) {
+    const value = email.toLowerCase()
+
+    if (!isValidEmail(value)) {
       return setError('Invalid email format!')
-    } else if (members.find(m => m._id == email)) {
+    } else if (members.find(m => m._id == value)) {
       return setError('User already invited to or part of the group!')
+    } else if (toAdd.find(m => m._id == value)) {
+      return setError('User already in list to invite!')
     }
 
-    const user = await app.get(`user/getUser/${email}`)
+    const user = await app.get(`user/getUser/${value}`)
     if (user._id) {
       setContacts(contacts.filter(c => c._id !== user._id))
       setToAdd(toAdd.concat(user))
