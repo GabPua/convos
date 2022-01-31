@@ -2,12 +2,14 @@ const sinon = require('sinon');
 const Token = require('../../forgot_password/token');
 const mongoose = require('mongoose');
 const ctrl = require('../../forgot_password/password_ctrl');
+const util = require('../../utils/email/sendEmail');
 
 describe('Request Password Reset', () => {
-  let req, updateStub;
+  let req, updateStub, utilStub;
 
   afterEach(() => {
     updateStub.restore();
+    utilStub.restore();
   });
 
   it('successfully requested for password reset', (done) => {
@@ -19,12 +21,15 @@ describe('Request Password Reset', () => {
       token: 'token',
       userId: decodeURIComponent(req.query._id)
     };
+
     updateStub = sinon.stub(mongoose.Model, 'findOneAndUpdate').yields(null, token);
+    utilStub = sinon.stub(util, 'sendPasswordReset').returns(null);
 
     const res = {
       json: (result) => {
         try {
           expect(result.result).toBe(true);
+          sinon.assert.calledOnce(util.sendPasswordReset);
           done();
         } catch (error) {
           done(error);
@@ -43,11 +48,13 @@ describe('Request Password Reset', () => {
     };
     const error = new Error();
     updateStub = sinon.stub(mongoose.Model, 'findOneAndUpdate').yields(error, null);
+    utilStub = sinon.stub(util, 'sendPasswordReset').returns(null);
 
     const res = {
       json: (result) => {
         expect(result.result).toBe(false);
         expect(result.error).toBe(error);
+        sinon.assert.notCalled(util.sendPasswordReset);
       }
     };
 

@@ -1,7 +1,7 @@
 const dotenv = require('dotenv');
 const { randomBytes } = require('crypto');
 const Token = require('./token');
-const { sendPasswordReset } = require('../utils/email/sendEmail');
+const util = require('../utils/email/sendEmail');
 const ObjectId = require('mongoose').Types.ObjectId;
 
 dotenv.config();
@@ -15,7 +15,7 @@ const password_ctrl = {
       try {
         if (err) throw err;
         
-        await sendPasswordReset(email, `http://localhost:3000/reset?token=${token}&id=${doc._id}`);
+        await util.sendPasswordReset(email, `http://localhost:3000/reset?token=${token}&id=${doc._id}`);
         res.json({ result: true });
       } catch (error) {
         res.json({ result: false, error });
