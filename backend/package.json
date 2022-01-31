@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "jest --color --forceExit",
+    "test": "jest --color",
     "start": "node server.js",
     "dev": "nodemon server.js"
   },
