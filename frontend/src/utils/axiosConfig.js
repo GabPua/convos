@@ -1,9 +1,7 @@
 import axios from 'axios'
 
-const inDev = process.env.NODE_ENV === 'development'
-
 const app = axios.create({
-  baseURL: inDev ? 'http://localhost:3001/api/' : 'http://localhost:3001/api/',
+  baseURL: process.env.REACT_APP_BACKEND_SERVER + 'api/',
   withCredentials: true,
 })
 

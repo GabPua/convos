@@ -1,11 +1,13 @@
 import React, { useEffect, useReducer, useState } from 'react'
 import PropTypes from 'prop-types'
 import app from './axiosConfig'
+import { io } from 'socket.io-client'
 
 const authContext = React.createContext()
 
 function useAuth() {
   const [user, setUser] = useState({ contacts: [], invitations: [], groups: [], myGroups: [] })
+  const [socket, setSocket] = useState(null)
   const [isLoading, setIsLoading] = useState(true)
   const [, forceUpdate] = useReducer(x => x + 1, 0)
   let cb = () => { }
@@ -18,6 +20,17 @@ function useAuth() {
 
   const isAuthed = (user1 = user) => !!user1?._id
 
+  const createSocketConnection = (_id) => {
+    const socket = io(process.env.REACT_APP_BACKEND_SERVER, {
+      auth: { _id },
+      withCredentials: true,
+    })
+    socket.on('connect', () => console.log(socket.id))
+    socket.on('connect_error', (err) => console.log(err))
+    socket.on('invite', refreshGroups)
+    setSocket(socket)
+  }
+
   function refreshUser() {
     setIsLoading(true)
     app.get('user/getUser')
@@ -26,6 +39,7 @@ function useAuth() {
         forceUpdate()
         cb(isAuthed(res))
         setIsLoading(false)
+        if (Object.keys(res).length && socket == null) createSocketConnection(res._id)
       })
   }
 
@@ -35,6 +49,7 @@ function useAuth() {
   }
 
   async function refreshGroups() {
+    console.log('refreshing gorupsss')
     const res = await app.get('group/all')
     const groups = [], myGroups = []
 
@@ -53,17 +68,21 @@ function useAuth() {
   async function login(_id, password) {
     const res = await app.post('user/login', { _id, password })
     setUser(res)
+    if (Object.keys(res).length && socket == null) createSocketConnection(res._id)
     return Object.keys(res).length !== 0
   }
 
   async function logout() {
     const res = await app.post('user/logout')
     setUser({})
+    socket?.disconnect()
+    setSocket(null)
     return res
   }
 
   return {
     user,
+    socket,
     isLoading,
     setCb,
     isAuthed,

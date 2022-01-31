@@ -23,7 +23,7 @@ SideBarItem.propTypes = {
 }
 
 export default function GroupSettings() {
-  const { user } = useAuth()
+  const { user, socket } = useAuth()
   const { groupId } = useParams()
   const navigate = useNavigate()
   const [group, setGroup] = useState({ _id: groupId })
@@ -43,7 +43,15 @@ export default function GroupSettings() {
     setGroup(g)
   }
 
-  useEffect(refreshGroup, [])
+  useEffect(async () => {
+    await refreshGroup()
+    socket.on('update group', refreshGroup)
+    socket.emit('join room', group._id)
+    return () => { 
+      socket.off('update group')
+      socket.emit('leave room', group._id)
+    }
+  }, [])
 
   function updateDp(picUri) {
     setGroup(Object.assign(group, { picUri }))

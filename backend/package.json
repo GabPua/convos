@@ -12,6 +12,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "bidirectional-map": "^1.1.1",
     "cloudinary": "^1.27.1",
     "connect-mongodb-session": "^3.1.1",
     "convos-validator": "file:../convos-validator",
@@ -23,7 +24,8 @@
     "jest": "^27.4.4",
     "mongoose": "^6.0.12",
     "nodemailer": "^6.7.1",
-    "sinon": "^12.0.1"
+    "sinon": "^12.0.1",
+    "socket.io": "^4.4.1"
   },
   "devDependencies": {
     "eslint": "^8.3.0",
