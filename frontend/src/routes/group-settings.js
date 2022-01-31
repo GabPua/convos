@@ -92,7 +92,7 @@ export default function GroupSettings() {
   } else if (group.picUri) {
     return (
       <div>
-        <div className="fixed top-16 left-0 h-screen w-96 m-0 p-5 bg-gray-300 border border-gray border-t-0">
+        <div className="fixed top-16 left-0 h-screen w-60 m-0 p-5 border border-gray border-t-0">
           <div>
             <i className="fas fa-times fa-lg cursor-pointer text-gray-600 hover:text-black" onClick={handleExitClick}></i>
           </div>
@@ -105,7 +105,7 @@ export default function GroupSettings() {
           }
         </div>
 
-        <div className="ml-96 h-full p-14" style={{ 'width': 'calc(100vw - 24rem)', 'maxWidth': '70rem' }}>
+        <div className="ml-72 h-full p-14" style={{ 'width': 'calc(100vw - 24rem)', 'maxWidth': '70rem' }}>
           <Outlet context={{ group, removeMember, inviteMembers, setModal, updateDp, updateCover, updateDetails }} />
         </div>
         <Modal component={modal} closeHandler={closeModal} setFeedback={setFeedback} changeHandler={() => { }} />
