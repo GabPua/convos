@@ -24,11 +24,7 @@ const group_ctrl = {
     Group.create(group, async (err, result) => {
       if (!err) {
         const _id = result._id;
-        const user = await User.findById(userId).lean().exec();
-        const groups = user.groups;
-        groups.push(_id);
-
-        User.updateOne({ _id: userId }, { groups })
+        User.updateOne({ _id: userId }, { $push: { groups: _id } })
           .then(() => res.json({ result: _id }));
       } else {
         res.json({ err });
