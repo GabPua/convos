@@ -43,15 +43,18 @@ export default function GroupSettings() {
     setGroup(g)
   }
 
-  useEffect(async () => {
-    await refreshGroup()
-    socket.on('update group', refreshGroup)
-    socket.emit('join room', group._id)
-    return () => { 
-      socket.off('update group')
-      socket.emit('leave room', group._id)
+  useEffect(refreshGroup, [])
+
+  useEffect(() => {
+    if (socket) {
+      socket.on('update group', refreshGroup)
+      socket.emit('join room', group._id)
+      return () => {
+        socket.off('update group')
+        socket.emit('leave room', group._id)
+      }
     }
-  }, [])
+  }, [socket])
 
   function updateDp(picUri) {
     setGroup(Object.assign(group, { picUri }))

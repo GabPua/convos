@@ -165,6 +165,7 @@ module.exports = (io, users) => {
 
     deleteGroup: (req, res) => {
       Group.deleteOne({ _id: req.params.id, admin: req.session._id }, (err) => res.json({ result: !err }));
+      io.to(req.params.id).emit('delete group');
     }
   };
 };
