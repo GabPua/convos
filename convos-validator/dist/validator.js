@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.tags = exports.groupNameErrorMessage = exports.usernameErrorMessage = exports.passwordErrorMessage = exports.isValidEmail = exports.isValidName = exports.isValidGroupName = exports.isValidPassword = exports.isBlank = void 0;
+exports.tags = exports.groupNameErrorMessage = exports.usernameErrorMessage = exports.passwordErrorMessage = exports.isValidEmail = exports.isValidName = exports.isValidTopicName = exports.isValidGroupName = exports.isValidPassword = exports.isBlank = void 0;
 function isBlank(str) {
     return str === null || !str.trim();
 }
@@ -14,6 +14,10 @@ function isValidGroupName(name) {
     return !isBlank(name) && name.length <= 20;
 }
 exports.isValidGroupName = isValidGroupName;
+function isValidTopicName(name) {
+    return isValidGroupName(name);
+}
+exports.isValidTopicName = isValidTopicName;
 function isValidName(name) {
     return !isBlank(name) && name.length <= 15;
 }
