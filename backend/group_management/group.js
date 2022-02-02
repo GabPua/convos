@@ -9,6 +9,7 @@ let groupSchema = new mongoose.Schema({
   admin: { type: String, trim: true, lowercase: true, required: true, ref: 'User' },
   members: [{ type: String, trim: true, lowercase: true, required: true, ref: 'User' }],
   invitations: [{ type: String, trim: true, lowercase: true, required: true, ref: 'User'}],
+  convos: [{ type: mongoose.ObjectId, required: true, ref: 'Convo' }],
   tag: { type: String, trim: true, lowercase: true, required: true }
 });
 

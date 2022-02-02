@@ -31,6 +31,7 @@ describe('Create Group', () => {
       admin: req.session._id,
       members: [req.session._id],
       invitations: [],
+      convos: [],
       tag: req.body.tag
     };
     createStub = sinon.stub(mongoose.Model, 'create').yields(null, group);

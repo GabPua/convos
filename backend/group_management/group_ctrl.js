@@ -18,6 +18,7 @@ const group_ctrl = {
       admin: userId,
       members: [userId],
       invitations: [],
+      convos: [],
       tag
     };
 
