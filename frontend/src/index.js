@@ -17,6 +17,7 @@ import Disband from './components/group-settings/disband'
 import Overview from './components/group-settings/overview'
 import MainView from './components/main-view'
 import Leave from './components/group-settings/leave'
+import Convos from './components/convos'
 
 function RequireAuth({ children }) {
   const { isAuthed, isLoading, setCb } = useAuth()
@@ -73,6 +74,7 @@ ReactDOM.render(
           } >
             <Route path="" element={<AccountDetails />} />
             <Route path="groups" element={<Groups />} />
+            <Route path="convos" element={<Convos />} />
           </Route>
           <Route path="/groups/:groupId" element={
             <RequireAuth>

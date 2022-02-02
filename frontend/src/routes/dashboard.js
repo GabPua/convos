@@ -2,15 +2,17 @@ import React, { useState } from 'react'
 // eslint-disable-next-line no-unused-vars
 import styles from '../dashboard.css'
 import Modal from '../components/modal'
-import { Outlet } from 'react-router-dom'
+import { Outlet, useLocation } from 'react-router-dom'
 import Feedback from '../components/feedback-modal'
 import useAuth from '../utils/useAuth'
 import SideBarItem from '../components/side-bar-item'
 import CreateGroup from '../components/create-group'
+import CreateConvo from '../components/create-convo'
 
 export default function Dashboard() {
   const [modal, setModal] = useState(null)
   const { refreshUser } = useAuth()
+  const location = useLocation()
 
   function handleChangeClick(component, event) {
     event.preventDefault()
@@ -31,10 +33,17 @@ export default function Dashboard() {
           <SideBarItem title="My Groups" to="/dashboard/groups" className="fas fa-users fa-lg" />
           <SideBarItem title="Convos" to="/dashboard/convos" className="fas fa-chalkboard fa-lg" />
         </div>
-        <button className="btn primary" onClick={() => setModal(<CreateGroup closeHandler={closeModal} />)}>
-          <i className="fas fa-plus mr-2"></i>
-          New Group
-        </button>
+        {location.pathname.endsWith('convos') ?
+          <button className="btn primary" onClick={() => setModal(<CreateConvo closeHandler={closeModal} />)}>
+            <i className="fas fa-plus mr-2"></i>
+            New Convo
+          </button>
+          :
+          <button className="btn primary" onClick={() => setModal(<CreateGroup closeHandler={closeModal} />)}>
+            <i className="fas fa-plus mr-2"></i>
+            New Group
+          </button>
+        }
       </div>
       <div className="ml-60 h-full p-5" style={{ 'width': 'calc(100vw - 15rem)' }}>
         <Outlet context={handleChangeClick} />
