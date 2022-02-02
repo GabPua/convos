@@ -11,6 +11,10 @@ export function isValidGroupName(name: string): boolean {
   return !isBlank(name) && name.length <= 20
 }
 
+export function isValidTopicName(name: string): boolean {
+  return isValidGroupName(name)
+}
+
 export function isValidName(name: string): boolean {
   return !isBlank(name) && name.length <= 15
 }
