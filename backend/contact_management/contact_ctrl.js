@@ -24,7 +24,6 @@ const contact_ctrl = {
     }
 
     if (!user) {
-      res.status(400);
       return res.json({ err: 'User does not exist!' });
     }
 
