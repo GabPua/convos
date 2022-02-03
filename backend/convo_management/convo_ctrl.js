@@ -32,10 +32,23 @@ const convo_ctrl = {
     });
   },
 
-  joinConvo: (req, res) => {
-    Convo.findByIdAndUpdate(req.params.convoId, { $addToSet: { users: req.session._id } })
-      .then(() => { res.json({ result: true }) })
-      .catch(() => { res.json({ result: false }) });
+  joinConvo: async (req, res) => {
+    const userId = req.session._id;
+    const { convoId } = req.params;
+
+    try {
+      const convo = await Convo.findById(convoId).lean().exec();
+      const group = await Group.findById(convo.group).lean().exec();
+
+      if (userId in group.users) {
+        await Convo.findByIdAndUpdate(convoId, { $addToSet: { users: userId } })
+        return res.json({ result: true });
+      }
+
+      res.json({ result: false });
+    } catch (err) {
+      res.json({ err });
+    }
   }
 };
 
