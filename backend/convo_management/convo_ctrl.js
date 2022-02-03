@@ -30,6 +30,12 @@ const convo_ctrl = {
         res.json({ err });
       }
     });
+  },
+
+  joinConvo: (req, res) => {
+    Convo.findByIdAndUpdate(req.params.convoId, { $addToSet: { users: req.session._id } })
+      .then(() => { res.json({ result: true }) })
+      .catch(() => { res.json({ result: false }) });
   }
 };
 
