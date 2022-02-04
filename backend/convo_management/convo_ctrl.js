@@ -28,7 +28,6 @@ const convo_ctrl = {
     const groups = await Member.find({ user: req.session._id, accepted: true }, '-_id group').exec();
     const temp = groups.map(g => g.group);
     const convos = await Convo.find({ group: { $in: temp } }).populate('group', 'name picUri coverUri').lean().exec();
-    console.log(convos);
     res.json({ result: true, convos });
   },
 

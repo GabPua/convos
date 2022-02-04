@@ -45,15 +45,18 @@ const group_ctrl = {
 
   getGroups: async (req, res) => {
     const groups = await Member.find({ user: req.session._id }, '-_id group accepted')
-      .populate('group', 'name picUri tag coverUri admin')
-      .lean().exec();
-
-    // for (let i = 0; i < groups.length; i++) {
-    //   groups[i].members = groups[i].members.length;
-    // }
+      .populate({
+        path: 'group', 
+        populate: {
+          path: 'memCount'
+        },
+        select: '-__v'
+      })
+      .lean({ virtuals: true }).exec();
 
     const temp = groups.map(g => {
       g.group.accepted = g.accepted;
+      delete g.id;
       return g.group;
     });
 

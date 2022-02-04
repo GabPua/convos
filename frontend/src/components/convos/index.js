@@ -42,15 +42,17 @@ export default function Convos() {
 
       <div className="grid gap-4 auto-cols-min mx-auto 2xl:grid-rows-2 w-full"
         style={{ gridTemplateColumns: 'repeat(auto-fit, 16rem)' }}>
-        {convos?.map(c => <ConvoItem
-          key={c._id}
-          topic={c.topic}
-          link={c.link}
-          creator={c.creator}
-          name={c.group.name}
-          picUri={c.group.picUri}
-          coverUri={c.group.coverUri}
-        />)}
+        {convos?.length ?
+          convos.map(c => <ConvoItem
+            key={c._id}
+            topic={c.topic}
+            link={c.link}
+            creator={c.creator}
+            name={c.group.name}
+            picUri={c.group.picUri}
+            coverUri={c.group.coverUri}
+          />) :
+          <p>You have no convos yet!</p>}
       </div>
     </div>
   )

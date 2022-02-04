@@ -36,7 +36,7 @@ Invitation.propTypes = {
 }
 
 export default function InvitationList() {
-  const { user: { groups }, refreshGroups } = useAuth()
+  const { user: { _id, groups }, refreshGroups } = useAuth()
   const [invitations, setInvitations] = useState()
 
   useEffect(() => setInvitations(groups?.filter(g => !g.accepted)), [groups])
@@ -53,7 +53,7 @@ export default function InvitationList() {
   }
 
   function rejectInvitation(id) {
-    app.delete(`user/reject/${id}`)
+    app.post(`group/${id}/remove`, { userId: _id })
       .then(res => {
         if (res.result) {
           refreshGroups()

@@ -9,7 +9,7 @@ export default function MyGroupList({ groups }) {
       <hr className="mb-2" />
       {groups?.length ?
         <div className="grid auto-cols-min grid-flow-col gap-4 w-full overflow-x-scroll h-72 p-2" style={{ 'gridTemplateColumns': 'repeat(auto-fit, 16rem)' }}>
-          {groups?.map(g => <GroupItem key={g._id} id={g._id} name={g.name} count={g.members} picUri={g.picUri} coverUri={g.coverUri} />)}
+          {groups?.map(g => <GroupItem key={g._id} id={g._id} name={g.name} count={g.memCount} picUri={g.picUri} coverUri={g.coverUri} />)}
         </div> : <p>You have no created groups yet!</p>
       }
     </div>

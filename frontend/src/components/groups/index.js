@@ -18,7 +18,7 @@ export default function Groups() {
           <InvitationList />
         </div>
         <div className="col-span-2">
-          <MyGroupList groups={user.myGroups} />
+          <MyGroupList groups={user.myGroups || []} />
         </div>
       </div>
     </div>

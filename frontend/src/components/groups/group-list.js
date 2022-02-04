@@ -11,7 +11,7 @@ export default function GroupList({ groups }) {
       coverUri={g.coverUri}
       name={g.name}
       tag={g.tag}
-      count={g.members}
+      count={g.memCount}
     />)
   )
   
