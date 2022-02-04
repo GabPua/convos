@@ -2,6 +2,7 @@ require('dotenv').config();
 const Convo = require('./convo');
 const Group = require('../group_management/group');
 const { isValidTopicName } = require('convos-validator');
+const Member = require('../group_management/member');
 
 const convo_ctrl = {
   startConvo: (req, res) => {
@@ -9,8 +10,7 @@ const convo_ctrl = {
     const { groupId } = req.params;
 
     if (!isValidTopicName(topic)) {
-      res.json({ result: false });
-      return;
+      return res.json({ result: false });
     }
 
     let convo = {
@@ -22,6 +22,14 @@ const convo_ctrl = {
     };
 
     Convo.create(convo, (err) => res.json({ result: !err, err }));
+  },
+
+  getConvos: async (req, res) => {
+    const groups = await Member.find({ user: req.session._id, accepted: true }, '-_id group').exec();
+    const temp = groups.map(g => g.group);
+    const convos = await Convo.find({ group: { $in: temp } }).populate('group', 'name picUri coverUri').lean().exec();
+    console.log(convos);
+    res.json({ result: true, convos });
   },
 
   joinConvo: async (req, res) => {

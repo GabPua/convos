@@ -4,6 +4,7 @@ export {
   isValidName,
   isValidEmail,
   isValidGroupName,
+  isValidTopicName,
   passwordErrorMessage,
   usernameErrorMessage,
   groupNameErrorMessage,

@@ -1,7 +1,7 @@
 const router = require('express')();
 const ctrl = require('./convo_ctrl');
 
-// router.get('/all', ctrl.getConvos);
+router.get('/all', ctrl.getConvos);
 
 router.post('/:groupId/startConvo', ctrl.startConvo);
 
