@@ -12,7 +12,7 @@ export default function Groups() {
 
   return (
     <div>
-      <GroupList groups={user?.groups.filter(g => g.accepted)} />
+      <GroupList groups={user?.groups?.filter(g => g.accepted)} />
       <div className="grid grid-cols-3 mt-6 gap-8">
         <div className="col-span-1">
           <InvitationList />

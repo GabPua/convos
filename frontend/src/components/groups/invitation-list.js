@@ -39,7 +39,7 @@ export default function InvitationList() {
   const { user: { groups }, refreshGroups } = useAuth()
   const [invitations, setInvitations] = useState()
 
-  useEffect(() => setInvitations(groups.filter(g => !g.accepted)), [groups])
+  useEffect(() => setInvitations(groups?.filter(g => !g.accepted)), [groups])
 
   function acceptInvitation(id) {
     app.post(`group/${id}/add`)
