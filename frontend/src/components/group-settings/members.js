@@ -4,10 +4,10 @@ import { useOutletContext } from 'react-router-dom'
 import RemoveMember from './remove-member'
 import InviteMember from './invite-member'
 
-function MemberItem({ id, name, dpUri, isInvited }) {
+function MemberItem({ id, name, dpUri, accepted }) {
   const { setModal, removeMember, group: { admin, isAdmin } } = useOutletContext()
 
-  const handleRemoveMemberClick = () => removeMember(id, isInvited)
+  const handleRemoveMemberClick = () => removeMember(id, accepted)
 
   let elem = <></>
   let btn = (
@@ -22,9 +22,9 @@ function MemberItem({ id, name, dpUri, isInvited }) {
 
   return (
     <div className={'flex justify-between items-center hover:bg-gray-200 rounded-2xl cursor-pointer select-none my-2 p-2 group transition-colors'}>
-      <div className={isInvited ? 'opacity-50 ' : ''}>
+      <div className={accepted ? '' : 'opacity-50 '}>
         <img src={dpUri} alt="dp" className="inline mr-4 w-12 rounded-full" />
-        <span className="text-xl">{name + (isInvited ? ' (Invited)' : '')}</span>
+        <span className="text-xl">{name + (accepted ?  '' : ' (Invited)')}</span>
         {elem}
       </div>
       {isAdmin ?
@@ -40,12 +40,12 @@ MemberItem.propTypes = {
   id: PropTypes.string.isRequired,
   name: PropTypes.string.isRequired,
   dpUri: PropTypes.string.isRequired,
-  isInvited: PropTypes.bool.isRequired,
+  accepted: PropTypes.bool.isRequired,
 }
 
 export default function Members() {
-  const { group: { members, isAdmin, invitations }, inviteMembers, setModal } = useOutletContext()
-  const handleAddClick = () => setModal(<InviteMember inviteMembers={inviteMembers} members={members.concat(invitations)} />)
+  const { group: { members, isAdmin }, inviteMembers, setModal } = useOutletContext()
+  const handleAddClick = () => setModal(<InviteMember inviteMembers={inviteMembers} members={members} />)
 
   return (
     <div>
@@ -55,8 +55,7 @@ export default function Members() {
       </div>
       <hr />
       <div className="overflow-y-scroll px-2">
-        {members?.map(m => <MemberItem key={m._id} id={m._id} name={m.name} dpUri={m.dpUri} isInvited={false} />)}
-        {invitations?.map(m => <MemberItem key={m._id} id={m._id} name={m.name} dpUri={m.dpUri} isInvited={true} />)}
+        {members?.map(m => <MemberItem key={m._id} id={m._id} name={m.name} dpUri={m.dpUri} accepted={m.accepted} />)}
       </div>
     </div>
   )

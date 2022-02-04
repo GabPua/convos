@@ -5,7 +5,7 @@ import app from './axiosConfig'
 const authContext = React.createContext()
 
 function useAuth() {
-  const [user, setUser] = useState({ contacts: [], invitations: [], groups: [], myGroups: [] })
+  const [user, setUser] = useState({ contacts: [], groups: [], myGroups: [] })
   const [isLoading, setIsLoading] = useState(true)
   const [, forceUpdate] = useReducer(x => x + 1, 0)
   let cb = () => { }

@@ -21,15 +21,7 @@ const convo_ctrl = {
       users: []
     };
 
-    Convo.create(convo, (err, result) => {
-      if (!err) {
-        const _id = result._id;
-        Group.updateOne({ _id: groupId }, { $push: { convos: _id } })
-          .then(() => { res.json({ result: _id }) });
-      } else {
-        res.json({ err });
-      }
-    });
+    Convo.create(convo, (err) => res.json({ result: !err, err }));
   },
 
   joinConvo: async (req, res) => {
@@ -38,18 +30,27 @@ const convo_ctrl = {
 
     try {
       const convo = await Convo.findById(convoId).lean().exec();
-      const group = await Group.findById(convo.group).lean().exec();
+      const group = await Group.findOne({ _id: convo.group, users: userId }).lean().exec();
 
-      if (userId in group.users) {
-        await Convo.findByIdAndUpdate(convoId, { $addToSet: { users: userId } })
+      if (group) {
+        await Convo.findByIdAndUpdate(convoId, { $addToSet: { users: userId } });
         return res.json({ result: true });
       }
 
-      res.json({ result: false });
+      res.json({ result: false, err: 'User not part of group!' });
     } catch (err) {
       res.json({ err });
     }
-  }
+  },
+
+  deleteConvo: async (req, res) => {
+    try {
+      await Convo.deleteOne({ _id: req.params.convoId, creator: req.session._id });
+      res.json({ result: true });
+    } catch (err) {
+      res.json({ result: false, err });
+    }
+  },
 };
 
 module.exports = convo_ctrl;

@@ -1,75 +1,70 @@
 require('dotenv').config();
 const Group = require('./group');
-const User = require('../user_management/user');
+const Member = require('./member');
 const { isValidGroupName, groupNameErrorMessage } = require('convos-validator');
 
 const group_ctrl = {
-  createGroup: (req, res) => {
+  createGroup: async (req, res) => {
     const { name, tag } = req.body;
     const userId = req.session._id;
 
     if (!isValidGroupName(name)) {
-      res.json({ result: false });
-      return;
+      return res.json({ result: false });
     }
 
-    let group = {
-      name,
-      admin: userId,
-      members: [userId],
-      invitations: [],
-      convos: [],
-      tag
-    };
-
-    Group.create(group, async (err, result) => {
-      if (!err) {
-        const _id = result._id;
-        User.updateOne({ _id: userId }, { $push: { groups: _id } })
-          .then(() => res.json({ result: _id }));
-      } else {
-        res.json({ err });
-      }
-    });
+    try {
+      const { _id } = await Group.create({ name, admin: userId, tag });
+      await Member.create({ group: _id, user: userId, accepted: true });
+      res.json({ result: _id });
+    } catch (err) {
+      res.json({ err });
+    }
   },
 
   getGroup: async (req, res) => {
-    const group = await Group.findOne({ _id: req.params.id, members: req.session._id })
-      .populate('members', 'name dpUri')
-      .populate('invitations', 'name dpUri')
-      .lean().exec();
-    res.json({ group });
+    const groupId = req.params.id;
+    try {
+      const record = await Member.findOne({ group: groupId, user: req.session._id });
+
+      if (!record) {
+        throw new Error('User is not part of group!');
+      }
+
+      const group = await Group.findById(groupId).lean().exec();
+      const members = await Member.find({ group: groupId }, '-_id user accepted').populate('user', 'name dpUri').lean().exec();
+      group.members = members.map(m => {
+        m.user.accepted = m.accepted;
+        return m.user;
+      });
+
+      res.json({ result: true, group });
+    } catch (err) {
+      res.json({ result: false, err });
+    }
   },
 
   getGroups: async (req, res) => {
-    const { groups, invitations } = await User.findById(req.session._id, 'groups invitations')
-      .populate('groups', 'name members picUri tag coverUri admin')
-      .populate('invitations', 'name picUri')
+    const groups = await Member.find({ user: req.session._id }, '-_id group accepted')
+      .populate('group', 'name picUri tag coverUri admin')
       .lean().exec();
 
-    for (let i = 0; i < groups.length; i++) {
-      groups[i].members = groups[i].members.length;
-    }
+    // for (let i = 0; i < groups.length; i++) {
+    //   groups[i].members = groups[i].members.length;
+    // }
 
-    res.json({ groups, invitations });
+    const temp = groups.map(g => {
+      g.group.accepted = g.accepted;
+      return g.group;
+    });
+
+    res.json({ groups: temp });
   },
 
   updateDetails: (req, res) => {
-    if (!isValidGroupName(req.body.name)) {
+    if (req.body?.name && !isValidGroupName(req.body.name)) {
       return res.json({ err: groupNameErrorMessage });
     }
-
     Group.updateOne({ _id: req.params.id }, req.body, (err) => res.json({ result: !err }));
-  },
-
-  updatePic: (req, res) => {
-    const { picUri } = req.body;
-    Group.updateOne({ _id: req.params.id }, { picUri }, (err) => res.json({ result: !err }));
-  },
-
-  updateCover: (req, res) => {
-    const { coverUri } = req.body;
-    Group.updateOne({ _id: req.params.id }, { coverUri }, (err) => res.json({ result: !err }));
   },
 
   inviteMembers: async (req, res) => {
@@ -77,8 +72,8 @@ const group_ctrl = {
     const groupId = req.params.id;
 
     try {
-      // get group admin and members
-      const { members, admin } = await Group.findById(groupId, 'members admin').lean().exec();
+      // get group admin
+      const { admin } = await Group.findById(groupId, 'admin').lean().exec();
 
       // verify current user is admin
       if (req.session._id !== admin) {
@@ -86,15 +81,21 @@ const group_ctrl = {
         return res.json({ result: false, error: 'Current user is unauthorized!' });
       }
 
-      // filter members not included in the group
-      const filteredIds = userIds.filter(id => !members.includes(id));
+      const bulkOp = userIds.map(id => {
+        return {
+          updateOne: {
+            filter: { group: groupId, user: id },
+            update: { $set: { group: groupId, user: id, accepted: false } },
+            upsert: true,
+          }
+        };
+      });
 
-      const { matchedCount } = await User.updateMany({ _id: { $in: filteredIds } }, { $addToSet: { invitations: groupId } }).exec();
-      if (matchedCount) {
-        await Group.updateOne({ _id: groupId }, { $push: { invitations: filteredIds } });
+      const { ok } = await Member.bulkWrite(bulkOp);
+      if (ok) {
         res.json({ result: true });
       } else {
-        res.json({ result: false, error: 'No users were invited!' });
+        throw new Error('No users were invited!');
       }
     } catch (err) {
       console.log(err);
@@ -106,17 +107,11 @@ const group_ctrl = {
     const groupId = req.params.id;
 
     try {
-      const result = await User.updateOne({ _id: req.session._id, invitations: groupId },
-        { $pull: { invitations: groupId }, $push: { groups: groupId } }).exec();
-
-      // if the user is invited to the group
-      if (result.modifiedCount == 1) {
-        await Group.findByIdAndUpdate(groupId, { 
-          $addToSet: { members: req.session._id }, 
-          $pull: { invitations: req.session._id } }).lean().exec();
+      const { modifiedCount } = await Member.updateOne({ group: groupId, user: req.session._id }, { accepted: true });
+      if (modifiedCount) {
         res.json({ result: true });
       } else {
-        res.json({ result: false, error: 'An error has occured!' });
+        throw new Error('An error has occured! No document was modified.');
       }
     } catch (error) {
       res.json({ result: false, error });
@@ -125,22 +120,23 @@ const group_ctrl = {
 
   removeMember: async (req, res) => {
     const { userId } = req.body;
+    const groupId = req.params.id;
 
     try {
-      const result = await Group.findOne({ _id: req.params.id, $or: [{members: userId}, { invitations: userId }] }, 'admin').lean().exec();
+      const result = await Group.findById(groupId, 'admin').lean().exec();
+      const inGroup = await Member.findOne({ group: groupId, user: userId });
 
-      // if user is part of group and not an admin removing himself
-      if (result && userId !== result.admin) {
+      // if user to be removed is part of group and not an admin
+      if (inGroup && userId !== result.admin) {
         // if logged in user is admin or user removing himself
         if (req.session._id === result.admin || req.session._id === userId) {
-          await Group.updateOne({ _id: result._id }, { $pull: { members: userId, invitations: userId }, });
-          await User.updateOne({ _id: userId }, { $pull: { groups: req.params.id, invitations: req.params.id }, });
+          await Member.deleteOne({ group: groupId, user: userId });
           return res.json({ result: true });
         }
       }
 
       res.status(401);
-      res.json({ result: false, error: 'Unauthorized' });
+      throw Error('Unauthorized!');
     } catch (error) {
       res.json({ result: false, error });
     }

@@ -17,9 +17,9 @@ router.get('/:id', ctrl.getGroup);
 
 router.post('/:id/updateDetails', ctrl.updateDetails);
 
-router.post('/:id/updatePic', ctrl.updatePic);
+router.post('/:id/updatePic', ctrl.updateDetails);
 
-router.post('/:id/updateCover', ctrl.updateCover);
+router.post('/:id/updateCover', ctrl.updateDetails);
 
 router.put('/:id/invite', ctrl.inviteMembers);
 

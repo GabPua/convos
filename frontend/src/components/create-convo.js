@@ -2,16 +2,18 @@ import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 import { isBlank } from 'convos-validator'
 import app from '../utils/axiosConfig'
+import useAuth from '../utils/useAuth'
 
 export default function CreateConvo(props) {
   const [error, setError] = useState('')
+  const { user: { groups, myGroups } } = useAuth()
 
   const handleChange = () => setError({})
 
   const handleFormSubmit = async e => {
     e.preventDefault()
 
-    const { groupName: name, topic, link } = Object.fromEntries(new FormData(e.target))
+    const { groupName: groupId, topic, link } = Object.fromEntries(new FormData(e.target))
     const error = {}
 
     if (isBlank(topic)) {
@@ -19,13 +21,12 @@ export default function CreateConvo(props) {
     }
     
     if (isBlank(link)) {
-      error.link = 'Link cannot be blank!'
+      error.url = 'Link cannot be blank!'
     }
 
     setError(error)
-    name
     if (!Object.keys(error).length) {
-      app.post('')
+      app.post(`/convos/${groupId}/startConvo`, { topic, link })
       props.closeHandler()
     }
   }
@@ -40,22 +41,22 @@ export default function CreateConvo(props) {
             <label className="mb-3" htmlFor="group-name">Group</label>
             <div className="w-72">
               <select className="input w-full text-center" onChange={handleChange} type="text" id="group-name" name="groupName">
-
+                {groups.concat(myGroups).map(g => <option key={g._id} value={g._id}>{g.name}</option>)}
               </select>
             </div>
           </div>
           <div className="field">
             <label className="mb-6" htmlFor="convo-topic">Topic</label>
             <div className="w-72">
-              <input className="input w-full text-gray-700 text-center" id="convo-topic" name="topic" />
+              <input type="text" className="input w-full text-gray-700 text-center" id="convo-topic" name="topic" />
               <p className="help-text">{error.topic}</p>
             </div>
           </div>
           <div className="field">
             <label className="mb-6" htmlFor="convo-link">Link</label>
             <div className="w-72">
-              <input className="input w-full text-gray-700 text-center" id="convo-link" name="link" />
-              <p className="help-text">{error.link}</p>
+              <input type="url" className="input w-full text-gray-700 text-center" id="convo-link" name="link" />
+              <p className="help-text">{error.url}</p>
             </div>
           </div>
           <div className="p-3 mt-4 text-center space-x-4 md:block">

@@ -89,7 +89,7 @@ export default function GroupSettings() {
         </div>
       </div>
     )
-  } else if (group.picUri) {
+  } else if (group?.picUri) {
     return (
       <div>
         <div className="fixed top-16 left-0 h-screen w-60 m-0 p-5 border border-gray border-t-0">

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
 import useAuth from '../../utils/useAuth'
 import app from '../../utils/axiosConfig'
@@ -36,7 +36,10 @@ Invitation.propTypes = {
 }
 
 export default function InvitationList() {
-  const { user: { invitations }, refreshGroups } = useAuth()
+  const { user: { groups }, refreshGroups } = useAuth()
+  const [invitations, setInvitations] = useState()
+
+  useEffect(() => setInvitations(groups.filter(g => !g.accepted)), [groups])
 
   function acceptInvitation(id) {
     app.post(`group/${id}/add`)
