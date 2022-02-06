@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
 import app from '../../utils/axiosConfig'
 import NavBar from './navbar'
@@ -9,7 +9,7 @@ function ConvoItem({ id, topic, link, name, creator, coverUri, count, picUri, de
 
   const handleLinkClick = async () => {
     const { result, count } = await app.post(`convo/join/${id}`)
-    
+
     if (result) {
       updateConvoCount(id, count)
     }
@@ -56,33 +56,43 @@ ConvoItem.propTypes = {
 
 export default function Convos() {
   const { user, refreshConvos } = useAuth()
+  const [tag, setTag] = useState('')
+  const [search, setSearch] = useState('')
 
   const deleteConvo = async id => {
     await app.delete(`convo/${id}`)
     refreshConvos()
   }
 
+  const handleNavClick = tag => setTag(tag.toLowerCase())
+  const handleSearch = e => setSearch(e.target.value.toLowerCase())
+
   useEffect(refreshConvos, [])
+
+  let convos = user?.convos
+
+  if (convos) {
+    if (tag) convos = convos.filter(c => c.group.tag === tag)
+    if (search) convos = convos.filter(c => c.group.name.toLowerCase().includes(search) || c.topic.toLowerCase().includes(search))
+  }
 
   return (
     <div>
-      <NavBar />
+      <NavBar handleNavClick={handleNavClick} selectedTag={tag} onSearchChange={handleSearch} />
       <div className="grid gap-4 auto-cols-min mx-auto 2xl:grid-rows-2 w-full"
         style={{ gridTemplateColumns: 'repeat(auto-fit, 16rem)' }}>
-        {user.convos?.length ?
-          user.convos.map(c => <ConvoItem
-            key={c._id}
-            id={c._id}
-            topic={c.topic}
-            link={c.link}
-            creator={c.creator}
-            name={c.group.name}
-            picUri={c.group.picUri}
-            coverUri={c.group.coverUri}
-            count={c.count}
-            deleteConvo={deleteConvo}
-          />) :
-          <p>You have no convos yet!</p>}
+        {convos?.length ? convos.map(c => <ConvoItem
+          key={c._id}
+          id={c._id}
+          topic={c.topic}
+          link={c.link}
+          creator={c.creator}
+          name={c.group.name}
+          picUri={c.group.picUri}
+          coverUri={c.group.coverUri}
+          count={c.count}
+          deleteConvo={deleteConvo}
+        />) : <p>No convos found!</p>}
       </div>
     </div>
   )

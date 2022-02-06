@@ -25,9 +25,9 @@ const convo_ctrl = {
   },
 
   getConvos: async (req, res) => {
-    const groups = await Member.find({ user: req.session._id, accepted: true }, '-_id group').exec();
+    const groups = await Member.find({ user: req.session._id, accepted: true }, '-_id group').lean().exec();
     const temp = groups.map(g => g.group);
-    const convos = await Convo.find({ group: { $in: temp } }).populate('group', 'name picUri coverUri count').lean({ virtuals: true }).exec();
+    const convos = await Convo.find({ group: { $in: temp } }, '-__v').populate('group', 'name picUri coverUri tag count').lean({ virtuals: true }).exec();
     res.json({ result: true, convos });
   },
 
