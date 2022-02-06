@@ -1,11 +1,11 @@
 const sinon = require('sinon');
 const Group = require('../../group_management/group');
-const User = require('../../user_management/user');
-const mongoose = require('mongoose');
+const Member = require('../../group_management/member');
 const ctrl = require('../../group_management/group_ctrl');
+const mongoose = require('mongoose');
 
 describe('Create Group', () => {
-  let req, createStub, updateStub;
+  let req, groupCreateStub, memberCreateStub;
 
   beforeEach(() => {
     req = {
@@ -15,8 +15,8 @@ describe('Create Group', () => {
   });
 
   afterEach(() => {
-    createStub.restore();
-    updateStub.restore();
+    groupCreateStub.restore();
+    memberCreateStub.restore();
   });
 
   it('successfully created group', (done) => {
@@ -26,23 +26,24 @@ describe('Create Group', () => {
     };
     req.session._id = 'example@email.com';
     const group = {
-      _id: '4eb6e7e7e9b7f4194e000001',
       name: req.body.name,
       admin: req.session._id,
-      members: [req.session._id],
-      invitations: [],
-      convos: [],
       tag: req.body.tag
     };
-    createStub = sinon.stub(mongoose.Model, 'create').yields(null, group);
-    const mock = Promise.resolve();
-    updateStub = sinon.stub(mongoose.Model, 'updateOne').returns(mock);
+    const groupId = '4eb6e7e7e9b7f4194e000001';
+    const member = {
+      group: groupId,
+      user: req.session._id,
+      accepted: true
+    };
+    groupCreateStub = sinon.stub(Group, 'create').resolves({ _id: groupId });
+    memberCreateStub = sinon.stub(Member, 'create').resolves();
 
     const res = {
       json: (result) => {
         try {
-          expect(result.result).toBe(group._id);
-          sinon.assert.calledOnce(User.updateOne);
+          expect(result.result).toBe(groupId);
+          sinon.assert.calledWith(Member.create, member);
           done();
         } catch (error) {
           done(error);
@@ -52,26 +53,29 @@ describe('Create Group', () => {
 
     ctrl.createGroup(req, res);
 
-    sinon.assert.calledOnce(Group.create);
+    sinon.assert.calledWith(Group.create, group);
   });
 
-  it('encountered an error in creating a group', (done) => {
+  it('encountered an error in creating group', (done) => {
     req.body = {
       name: 'group',
       tag: 'social' 
     };
     req.session._id = 'example@email.com';
-
+    const group = {
+      name: req.body.name,
+      admin: req.session._id,
+      tag: req.body.tag
+    };
     const error = new Error();
-    createStub = sinon.stub(mongoose.Model, 'create').yields(error, null);
-    const mock = Promise.resolve();
-    updateStub = sinon.stub(mongoose.Model, 'updateOne').returns(mock);
+    groupCreateStub = sinon.stub(Group, 'create').throws(error);
+    memberCreateStub = sinon.stub(Member, 'create');
 
     const res = {
       json: (result) => {
         try {
           expect(result.err).toBe(error);
-          sinon.assert.notCalled(User.updateOne);
+          sinon.assert.notCalled(Member.create);
           done();
         } catch (error) {
           done(error);
@@ -81,25 +85,24 @@ describe('Create Group', () => {
 
     ctrl.createGroup(req, res);
 
-    sinon.assert.calledOnce(Group.create);
+    sinon.assert.calledWith(Group.create, group);
   });
 
   it('does not have a valid group name', (done) => {
     req.body = {
-      name: '',
+      name: ' ',
       tag: 'social' 
     };
     req.session._id = 'example@email.com';
-
-    createStub = sinon.stub(mongoose.Model, 'create').yields(null);
-    const mock = Promise.resolve();
-    updateStub = sinon.stub(mongoose.Model, 'updateOne').returns(mock);
+    
+    groupCreateStub = sinon.stub(Group, 'create');
+    memberCreateStub = sinon.stub(Member, 'create');
 
     const res = {
       json: (result) => {
         try {
           expect(result.result).toBe(false);
-          sinon.assert.notCalled(User.updateOne);
+          sinon.assert.notCalled(Member.create);
           done();
         } catch (error) {
           done(error);

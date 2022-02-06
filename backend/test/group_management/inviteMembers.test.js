@@ -1,11 +1,11 @@
 const sinon = require('sinon');
 const Group = require('../../group_management/group');
-const User = require('../../user_management/user');
+const Member = require('../../group_management/member');
 const mongoose = require('mongoose');
 const ctrl = require('../../group_management/group_ctrl');
 
 describe('Invite Members', () => {
-  let req, findStub, updateManyStub, updateOneStub;
+  let req, findStub, updateStub;
 
   beforeEach(() => {
     req = {
@@ -17,27 +17,24 @@ describe('Invite Members', () => {
 
   afterEach(() => {
     findStub.restore();
-    updateManyStub.restore();
-    updateOneStub.restore();
+    updateStub.restore();
   });
 
-  it('encountered an error in finding group', (done) => {
+  it('encountered an error in inviting users', (done) => {
     req.body.userIds = ['example@email.com', 'another@email.com'];
     req.params.id = '4eb6e7e7e9b7f4194e000001';
     req.session._id = 'member@email.com';
     
     const error = new Error();
-    findStub = sinon.stub(mongoose.Model, 'findById').throws(error);
-    updateManyStub = sinon.stub(mongoose.Model, 'updateMany').returns(null);
-    updateOneStub = sinon.stub(mongoose.Model, 'updateOne').returns(null);
+    findStub = sinon.stub(Group, 'findById').throws(error);
+    updateStub = sinon.stub(Member, 'bulkWrite');
 
     const res = {
       json: (result) => {
         try {
           expect(result.result).toBe(false);
           expect(result.err).toBe(error);
-          sinon.assert.notCalled(User.updateMany);
-          sinon.assert.notCalled(Group.updateOne);
+          sinon.assert.notCalled(Member.bulkWrite);
           done();
         } catch (error) {
           done(error);
@@ -47,7 +44,7 @@ describe('Invite Members', () => {
 
     ctrl.inviteMembers(req, res);
 
-    sinon.assert.calledWith(Group.findById, req.params.id, 'members admin');
+    sinon.assert.calledWith(Group.findById, req.params.id, 'admin');
   });
 
   it('is not the group admin that is logged in', (done) => {
@@ -59,25 +56,20 @@ describe('Invite Members', () => {
       lean: () => {
         return {
           exec: () => {
-            return {
-              members: [],
-              admin: 'admin@email.com'
-            };
+            return { admin: 'admin@email.com' };
           }
         };
       }
     };
-    findStub = sinon.stub(mongoose.Model, 'findById').returns(mock);
-    updateManyStub = sinon.stub(mongoose.Model, 'updateMany').returns(null);
-    updateOneStub = sinon.stub(mongoose.Model, 'updateOne').returns(null);
+    findStub = sinon.stub(Group, 'findById').returns(mock);
+    updateStub = sinon.stub(Member, 'bulkWrite');
 
     const res = {
       json: (result) => {
         try {
           expect(result.result).toBe(false);
           expect(result.error).toBe('Current user is unauthorized!');
-          sinon.assert.notCalled(User.updateMany);
-          sinon.assert.notCalled(Group.updateOne);
+          sinon.assert.notCalled(Member.bulkWrite);
           done();
         } catch (error) {
           done(error);
@@ -91,38 +83,42 @@ describe('Invite Members', () => {
 
     ctrl.inviteMembers(req, res);
 
-    sinon.assert.calledWith(Group.findById, req.params.id, 'members admin');
+    sinon.assert.calledWith(Group.findById, req.params.id, 'admin');
   });
 
-  it('encountered an error in updating users', (done) => {
+  it('did not invite any users', (done) => {
     req.body.userIds = ['example@email.com', 'another@email.com'];
     req.params.id = '4eb6e7e7e9b7f4194e000001';
     req.session._id = 'admin@email.com';
     
+    const groupId = req.params.id;
     const mock = {
       lean: () => {
         return {
           exec: () => {
-            return {
-              members: [],
-              admin: 'admin@email.com'
-            };
+            return { admin: 'admin@email.com' };
           }
         };
       }
     };
-    const error = new Error();
-    findStub = sinon.stub(mongoose.Model, 'findById').returns(mock);
-    updateManyStub = sinon.stub(mongoose.Model, 'updateMany').throws(error);
-    updateOneStub = sinon.stub(mongoose.Model, 'updateOne').returns(null);
+    const bulkOp = req.body.userIds.map(id => {
+      return {
+        updateOne: {
+          filter: { group: groupId, user: id },
+          update: { $setOnInsert: { group: groupId, user: id, accepted: false } },
+          upsert: true,
+        }
+      };
+    });
+    findStub = sinon.stub(Group, 'findById').returns(mock);
+    updateStub = sinon.stub(Member, 'bulkWrite').resolves({ ok: 0 });
 
     const res = {
       json: (result) => {
         try {
           expect(result.result).toBe(false);
-          expect(result.err).toBe(error);
-          sinon.assert.calledOnce(User.updateMany);
-          sinon.assert.notCalled(Group.updateOne);
+          expect(result.err.message).toBe('No users were invited!');
+          sinon.assert.calledWith(Member.bulkWrite, bulkOp);
           done();
         } catch (error) {
           done(error);
@@ -132,78 +128,41 @@ describe('Invite Members', () => {
 
     ctrl.inviteMembers(req, res);
 
-    sinon.assert.calledWith(Group.findById, req.params.id, 'members admin');
+    sinon.assert.calledWith(Group.findById, req.params.id, 'admin');
   });
 
-  it('did not update any users', (done) => {
+  it('successfully invited several users', (done) => {
     req.body.userIds = ['example@email.com', 'another@email.com'];
     req.params.id = '4eb6e7e7e9b7f4194e000001';
     req.session._id = 'admin@email.com';
     
-    const findMock = {
+    const groupId = req.params.id;
+    const mock = {
       lean: () => {
         return {
           exec: () => {
-            return {
-              members: ['example@email.com', 'another@email.com'],
-              admin: 'admin@email.com'
-            };
+            return { admin: 'admin@email.com' };
           }
         };
       }
     };
-    const updateMock = { exec: () => { return { matchedCount: 0 }; } };
-    findStub = sinon.stub(mongoose.Model, 'findById').returns(findMock);
-    updateManyStub = sinon.stub(mongoose.Model, 'updateMany').returns(updateMock);
-    updateOneStub = sinon.stub(mongoose.Model, 'updateOne').returns(null);
-
-    const res = {
-      json: (result) => {
-        try {
-          expect(result.result).toBe(false);
-          expect(result.error).toBe('No users were invited!');
-          sinon.assert.calledOnce(User.updateMany);
-          sinon.assert.notCalled(Group.updateOne);
-          done();
-        } catch (error) {
-          done(error);
+    const bulkOp = req.body.userIds.map(id => {
+      return {
+        updateOne: {
+          filter: { group: groupId, user: id },
+          update: { $setOnInsert: { group: groupId, user: id, accepted: false } },
+          upsert: true,
         }
-      }
-    };
-
-    ctrl.inviteMembers(req, res);
-
-    sinon.assert.calledWith(Group.findById, req.params.id, 'members admin');
-  });
-
-  it('successfully updated several users', (done) => {
-    req.body.userIds = ['example@email.com', 'another@email.com'];
-    req.params.id = '4eb6e7e7e9b7f4194e000001';
-    req.session._id = 'admin@email.com';
-    
-    const findMock = {
-      lean: () => {
-        return {
-          exec: () => {
-            return {
-              members: [],
-              admin: 'admin@email.com'
-            };
-          }
-        };
-      }
-    };
-    const updateMock = { exec: () => { return { matchedCount: 2 }; } };
-    findStub = sinon.stub(mongoose.Model, 'findById').returns(findMock);
-    updateManyStub = sinon.stub(mongoose.Model, 'updateMany').returns(updateMock);
-    updateOneStub = sinon.stub(mongoose.Model, 'updateOne').returns(null);
+      };
+    });
+    findStub = sinon.stub(Group, 'findById').returns(mock);
+    updateStub = sinon.stub(Member, 'bulkWrite').resolves({ ok: 2 });
 
     const res = {
       json: (result) => {
         try {
           expect(result.result).toBe(true);
-          sinon.assert.calledOnce(User.updateMany);
-          sinon.assert.calledOnce(Group.updateOne);
+          sinon.assert.calledWith(Member.bulkWrite, bulkOp);
           done();
         } catch (error) {
           done(error);
@@ -213,6 +172,6 @@ describe('Invite Members', () => {
 
     ctrl.inviteMembers(req, res);
 
-    sinon.assert.calledWith(Group.findById, req.params.id, 'members admin');
+    sinon.assert.calledWith(Group.findById, req.params.id, 'admin');
   });
 });

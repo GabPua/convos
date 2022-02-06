@@ -1,6 +1,5 @@
 const sinon = require('sinon');
 const Group = require('../../group_management/group');
-const User = require('../../user_management/user');
 const mongoose = require('mongoose');
 const ctrl = require('../../group_management/group_ctrl');
 const { groupNameErrorMessage } = require('convos-validator');
@@ -12,9 +11,29 @@ describe('Update Details', () => {
     updateStub.restore();
   });
 
-  it('successfully changed group name', () => {
+  it('encountered an error in updating group details', () => {
     req = {
-      body: { name: 'group' },
+      body: { coverUri: 'sample' },
+      params: { id: '4eb6e7e7e9b7f4194e000001' }
+    };
+
+    const error = new Error();
+    updateStub = sinon.stub(mongoose.Model, 'updateOne').yields(error);
+
+    const res = {
+      json: (result) => {
+        expect(result.result).toBe(false);
+      }
+    };
+
+    ctrl.updateDetails(req, res);
+
+    sinon.assert.calledOnce(Group.updateOne);
+  });
+
+  it('successfully changed group coverUri', () => {
+    req = {
+      body: { coverUri: 'sample' },
       params: { id: '4eb6e7e7e9b7f4194e000001' }
     };
 
@@ -31,18 +50,36 @@ describe('Update Details', () => {
     sinon.assert.calledOnce(Group.updateOne);
   });
 
-  it('encountered an error in changing group name', () => {
+  it('successfully changed group picUri', () => {
+    req = {
+      body: { picUri: 'sample' },
+      params: { id: '4eb6e7e7e9b7f4194e000001' }
+    };
+
+    updateStub = sinon.stub(mongoose.Model, 'updateOne').yields(null);
+
+    const res = {
+      json: (result) => {
+        expect(result.result).toBe(true);
+      }
+    };
+
+    ctrl.updateDetails(req, res);
+
+    sinon.assert.calledOnce(Group.updateOne);
+  });
+
+  it('successfully changed group name', () => {
     req = {
       body: { name: 'group' },
       params: { id: '4eb6e7e7e9b7f4194e000001' }
     };
 
-    const error = new Error();
-    updateStub = sinon.stub(mongoose.Model, 'updateOne').yields(error);
+    updateStub = sinon.stub(mongoose.Model, 'updateOne').yields(null);
 
     const res = {
       json: (result) => {
-        expect(result.result).toBe(false);
+        expect(result.result).toBe(true);
       }
     };
 

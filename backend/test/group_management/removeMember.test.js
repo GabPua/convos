@@ -1,11 +1,10 @@
 const sinon = require('sinon');
 const Group = require('../../group_management/group');
-const User = require('../../user_management/user');
-const mongoose = require('mongoose');
+const Member = require('../../group_management/member');
 const ctrl = require('../../group_management/group_ctrl');
 
 describe('Remove Member', () => {
-  let req, findStub, groupUpdateStub, userUpdateStub;
+  let req, groupFindStub, memberFindStub, deleteStub;
 
   beforeEach(() => {
     req = {
@@ -16,28 +15,28 @@ describe('Remove Member', () => {
   });
 
   afterEach(() => {
-    findStub.restore();
-    groupUpdateStub.restore();
-    userUpdateStub.restore();
+    groupFindStub.restore();
+    memberFindStub.restore();
+    deleteStub.restore();
   });
 
-  it('encountered an error in finding group', (done) => {
+  it('encountered an error in removing member', (done) => {
     req.body.userId = 'admin@email.com';
     req.params.id = '4eb6e7e7e9b7f4194e000001';
     req.session._id = 'admin@email.com';
     
     const error = new Error();
-    findStub = sinon.stub(mongoose.Model, 'findOne').throws(error);
-    groupUpdateStub = sinon.stub(Group, 'updateOne').returns(null);
-    userUpdateStub = sinon.stub(User, 'updateOne').returns(null);
+    groupFindStub = sinon.stub(Group, 'findById').throws(error);
+    memberFindStub = sinon.stub(Member, 'findOne');
+    deleteStub = sinon.stub(Member, 'deleteOne');
 
     const res = {
       json: (result) => {
         try {
           expect(result.result).toBe(false);
           expect(result.error).toBe(error);
-          sinon.assert.notCalled(Group.updateOne);
-          sinon.assert.notCalled(User.updateOne);
+          sinon.assert.notCalled(Member.findOne);
+          sinon.assert.notCalled(Member.deleteOne);
           done();
         } catch (error) {
           done(error);
@@ -47,32 +46,36 @@ describe('Remove Member', () => {
 
     ctrl.removeMember(req, res);
 
-    sinon.assert.calledOnce(Group.findOne);
+    sinon.assert.calledWith(Group.findById, req.params.id, 'admin');
   });
 
-  it('did not find the group', (done) => {
+  it('did not find the group or membership status', (done) => {
     req.body.userId = 'admin@email.com';
     req.params.id = '4eb6e7e7e9b7f4194e000001';
     req.session._id = 'admin@email.com';
     
-    const findMock = {
+    const mock = {
       lean: () => {
         return {
           exec: () => { return null; }
         };
       }
     };
-    findStub = sinon.stub(mongoose.Model, 'findOne').returns(findMock);
-    groupUpdateStub = sinon.stub(Group, 'updateOne').returns(null);
-    userUpdateStub = sinon.stub(User, 'updateOne').returns(null);
+    const member = {
+      group: req.params.id,
+      user: req.body.userId
+    };
+    groupFindStub = sinon.stub(Group, 'findById').returns(mock);
+    memberFindStub = sinon.stub(Member, 'findOne').resolves(null);
+    deleteStub = sinon.stub(Member, 'deleteOne');
 
     const res = {
       json: (result) => {
         try {
           expect(result.result).toBe(false);
-          expect(result.error).toBe('Unauthorized');
-          sinon.assert.notCalled(Group.updateOne);
-          sinon.assert.notCalled(User.updateOne);
+          expect(result.error.message).toBe('Unauthorized!');
+          sinon.assert.calledWith(Member.findOne, member);
+          sinon.assert.notCalled(Member.deleteOne);
           done();
         } catch (error) {
           done(error);
@@ -86,7 +89,7 @@ describe('Remove Member', () => {
 
     ctrl.removeMember(req, res);
 
-    sinon.assert.calledOnce(Group.findOne);
+    sinon.assert.calledWith(Group.findById, req.params.id, 'admin');
   });
 
   it('is trying to remove the admin', (done) => {
@@ -94,24 +97,28 @@ describe('Remove Member', () => {
     req.params.id = '4eb6e7e7e9b7f4194e000001';
     req.session._id = 'admin@email.com';
     
-    const findMock = {
+    const mock = {
       lean: () => {
         return {
           exec: () => { return { admin: 'admin@email.com' }; }
         };
       }
     };
-    findStub = sinon.stub(mongoose.Model, 'findOne').returns(findMock);
-    groupUpdateStub = sinon.stub(Group, 'updateOne').returns(null);
-    userUpdateStub = sinon.stub(User, 'updateOne').returns(null);
+    const member = {
+      group: req.params.id,
+      user: req.body.userId
+    };
+    groupFindStub = sinon.stub(Group, 'findById').returns(mock);
+    memberFindStub = sinon.stub(Member, 'findOne').resolves(true);
+    deleteStub = sinon.stub(Member, 'deleteOne');
 
     const res = {
       json: (result) => {
         try {
           expect(result.result).toBe(false);
-          expect(result.error).toBe('Unauthorized');
-          sinon.assert.notCalled(Group.updateOne);
-          sinon.assert.notCalled(User.updateOne);
+          expect(result.error.message).toBe('Unauthorized!');
+          sinon.assert.calledWith(Member.findOne, member);
+          sinon.assert.notCalled(Member.deleteOne);
           done();
         } catch (error) {
           done(error);
@@ -125,7 +132,7 @@ describe('Remove Member', () => {
 
     ctrl.removeMember(req, res);
 
-    sinon.assert.calledOnce(Group.findOne);
+    sinon.assert.calledWith(Group.findById, req.params.id, 'admin');
   });
 
   it('is trying to remove another member as a member', (done) => {
@@ -133,24 +140,28 @@ describe('Remove Member', () => {
     req.params.id = '4eb6e7e7e9b7f4194e000001';
     req.session._id = 'member@email.com';
     
-    const findMock = {
+    const mock = {
       lean: () => {
         return {
           exec: () => { return { admin: 'admin@email.com' }; }
         };
       }
     };
-    findStub = sinon.stub(mongoose.Model, 'findOne').returns(findMock);
-    groupUpdateStub = sinon.stub(Group, 'updateOne').returns(null);
-    userUpdateStub = sinon.stub(User, 'updateOne').returns(null);
+    const member = {
+      group: req.params.id,
+      user: req.body.userId
+    };
+    groupFindStub = sinon.stub(Group, 'findById').returns(mock);
+    memberFindStub = sinon.stub(Member, 'findOne').resolves(true);
+    deleteStub = sinon.stub(Member, 'deleteOne');
 
     const res = {
       json: (result) => {
         try {
           expect(result.result).toBe(false);
-          expect(result.error).toBe('Unauthorized');
-          sinon.assert.notCalled(Group.updateOne);
-          sinon.assert.notCalled(User.updateOne);
+          expect(result.error.message).toBe('Unauthorized!');
+          sinon.assert.calledWith(Member.findOne, member);
+          sinon.assert.notCalled(Member.deleteOne);
           done();
         } catch (error) {
           done(error);
@@ -164,7 +175,7 @@ describe('Remove Member', () => {
 
     ctrl.removeMember(req, res);
 
-    sinon.assert.calledOnce(Group.findOne);
+    sinon.assert.calledWith(Group.findById, req.params.id, 'admin');
   });
 
   it('is trying to remove another member as an admin', (done) => {
@@ -172,23 +183,27 @@ describe('Remove Member', () => {
     req.params.id = '4eb6e7e7e9b7f4194e000001';
     req.session._id = 'admin@email.com';
     
-    const findMock = {
+    const mock = {
       lean: () => {
         return {
           exec: () => { return { admin: 'admin@email.com' }; }
         };
       }
     };
-    findStub = sinon.stub(mongoose.Model, 'findOne').returns(findMock);
-    groupUpdateStub = sinon.stub(Group, 'updateOne').returns(null);
-    userUpdateStub = sinon.stub(User, 'updateOne').returns(null);
+    const member = {
+      group: req.params.id,
+      user: req.body.userId
+    };
+    groupFindStub = sinon.stub(Group, 'findById').returns(mock);
+    memberFindStub = sinon.stub(Member, 'findOne').resolves(true);
+    deleteStub = sinon.stub(Member, 'deleteOne').resolves();
 
     const res = {
       json: (result) => {
         try {
           expect(result.result).toBe(true);
-          sinon.assert.calledOnce(Group.updateOne);
-          sinon.assert.calledOnce(User.updateOne);
+          sinon.assert.calledWith(Member.findOne, member);
+          sinon.assert.calledWith(Member.deleteOne, member);
           done();
         } catch (error) {
           done(error);
@@ -198,7 +213,7 @@ describe('Remove Member', () => {
 
     ctrl.removeMember(req, res);
 
-    sinon.assert.calledOnce(Group.findOne);
+    sinon.assert.calledWith(Group.findById, req.params.id, 'admin');
   });
 
   it('is trying to remove itself as a member', (done) => {
@@ -206,23 +221,27 @@ describe('Remove Member', () => {
     req.params.id = '4eb6e7e7e9b7f4194e000001';
     req.session._id = 'member@email.com';
     
-    const findMock = {
+    const mock = {
       lean: () => {
         return {
           exec: () => { return { admin: 'admin@email.com' }; }
         };
       }
     };
-    findStub = sinon.stub(mongoose.Model, 'findOne').returns(findMock);
-    groupUpdateStub = sinon.stub(Group, 'updateOne').returns(null);
-    userUpdateStub = sinon.stub(User, 'updateOne').returns(null);
+    const member = {
+      group: req.params.id,
+      user: req.body.userId
+    };
+    groupFindStub = sinon.stub(Group, 'findById').returns(mock);
+    memberFindStub = sinon.stub(Member, 'findOne').resolves(true);
+    deleteStub = sinon.stub(Member, 'deleteOne').resolves();
 
     const res = {
       json: (result) => {
         try {
           expect(result.result).toBe(true);
-          sinon.assert.calledOnce(Group.updateOne);
-          sinon.assert.calledOnce(User.updateOne);
+          sinon.assert.calledWith(Member.findOne, member);
+          sinon.assert.calledWith(Member.deleteOne, member);
           done();
         } catch (error) {
           done(error);
@@ -232,6 +251,6 @@ describe('Remove Member', () => {
 
     ctrl.removeMember(req, res);
 
-    sinon.assert.calledOnce(Group.findOne);
+    sinon.assert.calledWith(Group.findById, req.params.id, 'admin');
   });
 });
