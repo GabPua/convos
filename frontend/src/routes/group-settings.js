@@ -99,10 +99,8 @@ export default function GroupSettings() {
 
           <SideBarItem to="." text="General" patt={/^(\/[^/]+){2}$/g} />
           <SideBarItem to="members" text="Members" patt={/(members)$/} />
-          {group.isAdmin ?
-            <SideBarItem to="disband" text="Disband" patt={/(disband)$/} /> :
-            <SideBarItem to="leave" text="Leave" patt={/(leave)$/} />
-          }
+          <SideBarItem to="leave" text="Leave" patt={/(leave)$/} />
+          { group.isAdmin && <SideBarItem to="disband" text="Disband" patt={/(disband)$/} /> }
         </div>
 
         <div className="ml-72 h-full p-14" style={{ 'width': 'calc(100vw - 24rem)', 'maxWidth': '70rem' }}>

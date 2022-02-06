@@ -47,27 +47,31 @@ export default function Overview() {
             <p className="text-xl">{group.name}</p>
             <p className="text-gray-500 capitalize">{group.tag}</p>
           </div>
-          { group.isAdmin ? <button className="btn primary w-40 text-xl h-10" onClick={handleChangeDetailsClick}>CHANGE</button> : '' }
+          {group.isAdmin && <button className="btn primary w-40 text-xl h-10" onClick={handleChangeDetailsClick}>CHANGE</button>}
         </div>
 
         <div className="mb-4">
-          <p className="text-2xl font-medium">{ group.isAdmin ? 'Preview' : '' }</p>
+          <p className="text-2xl font-medium">{group.isAdmin ? 'Preview' : ''}</p>
           <div className="shadow-lg rounded-lg flex flex-col items-center justify-end h-60 relative bg-no-repeat bg-contain hover:cursor-pointer pb-5 w-64" style={{ 'backgroundImage': `url(${group.coverUri})` }}>
             <img src={group.picUri} className="rounded-full w-14 border-4 border-white" alt="Group Picture" />
             <p className="mb-7">{group.name}</p>
           </div>
         </div>
 
-        { group.isAdmin ? <p className="text-2xl font-medium">Photo</p> : '' }
-        { group.isAdmin ? <p className="text-2xl font-medium">Banner</p> : '' }
+        {group.isAdmin &&
+          <>
+            <p className="text-2xl font-medium">Photo</p>
+            <p className="text-2xl font-medium">Banner</p>
 
-        { group.isAdmin ? <img src={group.picUri} alt="Group Photo" className="rounded-full w-36" /> : '' }
-        { group.isAdmin ? <img src={group.coverUri} alt="Cover Photo" className="h-36 rounded-lg" /> : '' }
+            <img src={group.picUri} alt="Group Photo" className="rounded-full w-36" />
+            <img src={group.coverUri} alt="Cover Photo" className="h-36 rounded-lg" />
 
-        { group.isAdmin ? <UploadWidget id="change-dp" text="CHANGE" onSuccessHandler={handleDpChange} publicId={group._id} uploadPreset="gc_dps" aspectRatio={1} /> : '' }
-        { group.isAdmin ? <UploadWidget id="change-cover" text="CHANGE" onSuccessHandler={handleCoverChange} publicId={group._id} uploadPreset="gc_covers" aspectRatio={2} /> : '' }
+            <UploadWidget id="change-dp" text="CHANGE" onSuccessHandler={handleDpChange} publicId={group._id} uploadPreset="gc_dps" aspectRatio={1} />
+            <UploadWidget id="change-cover" text="CHANGE" onSuccessHandler={handleCoverChange} publicId={group._id} uploadPreset="gc_covers" aspectRatio={2} />
+          </>
+        }
       </div>
-    </div>
+    </div >
   )
 }
 

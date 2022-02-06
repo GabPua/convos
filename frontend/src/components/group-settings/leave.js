@@ -20,8 +20,6 @@ export default function Leave() {
     navigate('/dashboard/groups')
   }
 
-  React.useEffect(() => { if (user._id === group.admin) navigate('..') }, [])
-
   return (
     <form onSubmit={handleFormSubmit}>
       <div className="flex justify-between mb-2">
@@ -29,8 +27,7 @@ export default function Leave() {
       </div>
       <hr />
       <div className="my-4">
-        <p className="text-2xl font-light">Leaving the group will make conversations from the group will no longer be
-          visible to you. This process cannot be reverted.
+        <p className="text-2xl font-light">Leaving the group will no longer make related conversations be visible to you. This process cannot be reverted.
         </p>
         <br />
         <div>
