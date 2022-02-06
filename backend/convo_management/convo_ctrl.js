@@ -27,7 +27,7 @@ const convo_ctrl = {
   getConvos: async (req, res) => {
     const groups = await Member.find({ user: req.session._id, accepted: true }, '-_id group').exec();
     const temp = groups.map(g => g.group);
-    const convos = await Convo.find({ group: { $in: temp } }).populate('group', 'name picUri coverUri').lean().exec();
+    const convos = await Convo.find({ group: { $in: temp } }).populate('group', 'name picUri coverUri count').lean({ virtuals: true }).exec();
     res.json({ result: true, convos });
   },
 
@@ -36,12 +36,13 @@ const convo_ctrl = {
     const { convoId } = req.params;
 
     try {
-      const convo = await Convo.findById(convoId).lean().exec();
+      const convo = await Convo.findById(convoId, '-_id group').lean().exec();
       const group = await Group.findOne({ _id: convo.group, users: userId }).lean().exec();
 
       if (group) {
-        await Convo.findByIdAndUpdate(convoId, { $addToSet: { users: userId } });
-        return res.json({ result: true });
+        const { count } = await Convo.findByIdAndUpdate(convoId, { $addToSet: { users: userId } }, { new: true }).lean({ virtuals: true }).exec();
+        console.log(count);
+        return res.json({ result: true, count });
       }
 
       res.json({ result: false, err: 'User not part of group!' });

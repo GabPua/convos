@@ -62,6 +62,15 @@ function useAuth() {
     }
   }
 
+  function updateConvoCount(id, count) {
+    const temp = user?.convos?.find(c => c._id == id)
+
+    if (temp) {
+      temp.count = count
+      forceUpdate()
+    }
+  }
+
   function addContact(c) {
     setUser(Object.assign(user, { contacts: user.contacts.concat(c) }))
   }
@@ -87,6 +96,7 @@ function useAuth() {
     refreshContacts,
     refreshGroups,
     refreshConvos,
+    updateConvoCount,
     addContact,
     login,
     logout,
