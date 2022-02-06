@@ -40,7 +40,8 @@ const convo_ctrl = {
       const group = await Group.findOne({ _id: convo.group, users: userId }).lean().exec();
 
       if (group) {
-        const { count } = await Convo.findByIdAndUpdate(convoId, { $addToSet: { users: userId } }, { new: true }).lean({ virtuals: true }).exec();
+        const { count } = await Convo.findByIdAndUpdate(convoId, { $addToSet: { users: userId }, createdAt: Date.now() }, 
+          { new: true }).lean({ virtuals: true }).exec();
         console.log(count);
         return res.json({ result: true, count });
       }

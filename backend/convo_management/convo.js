@@ -7,7 +7,7 @@ let convoSchema = new mongoose.Schema({
   group: { type: mongoose.ObjectId, required: true, ref: 'Group' },
   creator: { type: String, required: true, ref: 'User' },
   users: [{ type: String, required: true, ref: 'User' }],
-  createdAt: { type: Date, required: true, expires: 129600000, default: Date.now } // tentative: 36 hours
+  createdAt: { type: Date, required: true, expires: 129600, default: Date.now() } // tentative: 36 hours
 });
 
 convoSchema.plugin(leanVirtuals);
