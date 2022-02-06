@@ -31,8 +31,6 @@ describe('Register', () => {
     const user = {
       _id: req.body._id,
       name: req.body.name,
-      groups: [],
-      invitations: [],
       ...hashPassword(req.body.password)
     };
 
@@ -43,8 +41,6 @@ describe('Register', () => {
         try {
           sinon.assert.calledOnce(User.create);
 
-          expect(result.result.groups.length).toBe(0);
-          expect(result.result.invitations.length).toBe(0);
           expect(result.result._id).toBe(req.body._id);
           expect(result.result.name).toBe(req.body.name);
           expect(matchPassword(req.body.password, result.result.password, result.result.salt)).toBe(true);
@@ -73,8 +69,6 @@ describe('Register', () => {
     const user = {
       _id: req.body._id,
       name: req.body.name,
-      groups: [],
-      invitations: [],
       ...hashPassword(req.body.password)
     };
 
@@ -110,8 +104,6 @@ describe('Register', () => {
     const user = {
       _id: req.body._id,
       name: req.body.name,
-      groups: [],
-      invitations: [],
       ...hashPassword(req.body.password)
     };
 
@@ -147,8 +139,6 @@ describe('Register', () => {
     const user = {
       _id: req.body._id,
       name: req.body.name,
-      groups: [],
-      invitations: [],
       ...hashPassword(req.body.password)
     };
 

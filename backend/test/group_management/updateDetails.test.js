@@ -14,7 +14,8 @@ describe('Update Details', () => {
   it('encountered an error in updating group details', () => {
     req = {
       body: { coverUri: 'sample' },
-      params: { id: '4eb6e7e7e9b7f4194e000001' }
+      params: { id: '4eb6e7e7e9b7f4194e000001' },
+      session: { _id: 'example@email.com' }
     };
 
     const error = new Error();
@@ -34,7 +35,8 @@ describe('Update Details', () => {
   it('successfully changed group coverUri', () => {
     req = {
       body: { coverUri: 'sample' },
-      params: { id: '4eb6e7e7e9b7f4194e000001' }
+      params: { id: '4eb6e7e7e9b7f4194e000001' },
+      session: { _id: 'example@email.com' }
     };
 
     updateStub = sinon.stub(mongoose.Model, 'updateOne').yields(null);
@@ -53,7 +55,8 @@ describe('Update Details', () => {
   it('successfully changed group picUri', () => {
     req = {
       body: { picUri: 'sample' },
-      params: { id: '4eb6e7e7e9b7f4194e000001' }
+      params: { id: '4eb6e7e7e9b7f4194e000001' },
+      session: { _id: 'example@email.com' }
     };
 
     updateStub = sinon.stub(mongoose.Model, 'updateOne').yields(null);
@@ -72,7 +75,8 @@ describe('Update Details', () => {
   it('successfully changed group name', () => {
     req = {
       body: { name: 'group' },
-      params: { id: '4eb6e7e7e9b7f4194e000001' }
+      params: { id: '4eb6e7e7e9b7f4194e000001' },
+      session: { _id: 'example@email.com' }
     };
 
     updateStub = sinon.stub(mongoose.Model, 'updateOne').yields(null);
@@ -91,7 +95,8 @@ describe('Update Details', () => {
   it('does not have a valid group name', () => {
     req = {
       body: { name: '' },
-      params: { id: '4eb6e7e7e9b7f4194e000001' }
+      params: { id: '4eb6e7e7e9b7f4194e000001' },
+      session: { _id: 'example@email.com' }
     };
 
     updateStub = sinon.stub(mongoose.Model, 'updateOne').yields(null);
