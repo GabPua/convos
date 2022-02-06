@@ -67,7 +67,7 @@ const group_ctrl = {
     if (req.body?.name !== undefined && !isValidGroupName(req.body.name)) {
       return res.json({ err: groupNameErrorMessage });
     }
-    Group.updateOne({ _id: req.params.id }, req.body, (err) => res.json({ result: !err }));
+    Group.updateOne({ _id: req.params.id, admin: req.session._id }, req.body, (err) => res.json({ result: !err }));
   },
 
   inviteMembers: async (req, res) => {
