@@ -46,7 +46,7 @@ const group_ctrl = {
   getGroups: async (req, res) => {
     const groups = await Member.find({ user: req.session._id }, '-_id group accepted')
       .populate({
-        path: 'group', 
+        path: 'group',
         populate: {
           path: 'memCount'
         },
@@ -88,7 +88,7 @@ const group_ctrl = {
         return {
           updateOne: {
             filter: { group: groupId, user: id },
-            update: { $set: { group: groupId, user: id, accepted: false } },
+            update: { $setOnInsert: { group: groupId, user: id, accepted: false } },
             upsert: true,
           }
         };

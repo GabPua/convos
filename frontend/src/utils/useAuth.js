@@ -5,7 +5,7 @@ import app from './axiosConfig'
 const authContext = React.createContext()
 
 function useAuth() {
-  const [user, setUser] = useState({ contacts: [], groups: [], myGroups: [] })
+  const [user, setUser] = useState({ contacts: [], groups: [], myGroups: [], convos: [] })
   const [isLoading, setIsLoading] = useState(true)
   const [, forceUpdate] = useReducer(x => x + 1, 0)
   let cb = () => { }
@@ -14,7 +14,12 @@ function useAuth() {
     cb = cb1
   }
 
-  useEffect(refreshUser, [])
+  useEffect(() => {
+    refreshUser()
+    refreshGroups()
+    refreshContacts()
+    refreshConvos()
+  }, [])
 
   const isAuthed = (user1 = user) => !!user1?._id
 
@@ -42,8 +47,19 @@ function useAuth() {
       (res.groups[i].admin === user._id ? myGroups : groups ).push(res.groups[i])
     }
 
-    setUser(Object.assign(user, { groups, myGroups, invitations: res.invitations }))
+    setUser(Object.assign(user, { groups, myGroups }))
     return forceUpdate()
+  }
+
+  async function refreshConvos() {
+    const { result, convos, err } = await app.get('convo/all')
+
+    if (result) {
+      setUser(Object.assign(user, { convos }))
+      forceUpdate()
+    } else {
+      console.log(err)
+    }
   }
 
   function addContact(c) {
@@ -70,6 +86,7 @@ function useAuth() {
     refreshUser,
     refreshContacts,
     refreshGroups,
+    refreshConvos,
     addContact,
     login,
     logout,

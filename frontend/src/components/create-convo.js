@@ -6,7 +6,7 @@ import useAuth from '../utils/useAuth'
 
 export default function CreateConvo(props) {
   const [error, setError] = useState('')
-  const { user: { groups, myGroups } } = useAuth()
+  const { user: { groups, myGroups }, refreshConvos } = useAuth()
 
   const handleChange = () => setError({})
 
@@ -26,8 +26,14 @@ export default function CreateConvo(props) {
 
     setError(error)
     if (!Object.keys(error).length) {
-      app.post(`/convo/${groupId}/startConvo`, { topic, link })
-      props.closeHandler()
+      const { result, err } = await app.post(`/convo/${groupId}/startConvo`, { topic, link })
+
+      if (result) {
+        props.setFeedback(true, 'A convo was started!')
+        refreshConvos()
+      } else {
+        props.setFeedback(false, err)
+      }
     }
   }
 
@@ -71,4 +77,5 @@ export default function CreateConvo(props) {
 
 CreateConvo.propTypes = {
   closeHandler: PropTypes.func,
+  setFeedback: PropTypes.func,
 }
