@@ -64,7 +64,7 @@ const group_ctrl = {
   },
 
   updateDetails: (req, res) => {
-    if (req.body?.name && !isValidGroupName(req.body.name)) {
+    if (req.body?.name !== undefined && !isValidGroupName(req.body.name)) {
       return res.json({ err: groupNameErrorMessage });
     }
     Group.updateOne({ _id: req.params.id }, req.body, (err) => res.json({ result: !err }));
