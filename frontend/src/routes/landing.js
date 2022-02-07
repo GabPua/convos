@@ -21,9 +21,10 @@ export default function Landing() {
       const _id = email.toString().trim().toLowerCase()
       login(_id, password)
         .then(isSuccess => {
-          setError(!isSuccess)
           if (isSuccess) {
             navigate(state?.path || '/dashboard')
+          } else {
+            setError(!isSuccess)
           }
         })
     }

@@ -18,9 +18,11 @@ NavBarItem.propTypes = {
 }
 
 export default function NavBar({ handleNavClick, selectedTag, onSearchChange }) {
+  const temp = ['All'].concat(tags)
+
   return (
     <nav className="flex mb-5">
-      {tags.map(t => <NavBarItem key={t} tag={t} onClick={handleNavClick} isSelected={selectedTag == t.toLowerCase()} />)}
+      {temp.map(t => <NavBarItem key={t} tag={t} onClick={handleNavClick} isSelected={selectedTag == t.toLowerCase()} />)}
       <input className="bg-gray-300 text-gray-900 placeholder-gray-700 py-1 px-2 rounded-lg text-lg" type="search" placeholder="Search convo..."
         onChange={onSearchChange} />
     </nav>

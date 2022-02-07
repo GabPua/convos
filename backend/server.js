@@ -51,7 +51,7 @@ app.use(session({
   saveUninitialized: false,
   rolling: true,  // refresh cookie age
   cookie: {
-    maxAge: 18144e5 // three weeks
+    maxAge: 18144e5, // three weeks
   },
   store,
 }));

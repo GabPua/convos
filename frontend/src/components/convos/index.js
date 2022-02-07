@@ -59,7 +59,7 @@ ConvoItem.propTypes = {
 
 export default function Convos() {
   const { user, refreshConvos } = useAuth()
-  const [tag, setTag] = useState('')
+  const [tag, setTag] = useState('all')
   const [search, setSearch] = useState('')
   const { setFeedback } = useOutletContext()
 
@@ -81,7 +81,7 @@ export default function Convos() {
   let convos = user?.convos
 
   if (convos) {
-    if (tag) convos = convos.filter(c => c.group.tag === tag)
+    if (tag != 'all') convos = convos.filter(c => c.group.tag === tag)
     if (search) convos = convos.filter(c => c.group.name.toLowerCase().includes(search) || c.topic.toLowerCase().includes(search))
   }
 

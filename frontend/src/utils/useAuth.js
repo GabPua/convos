@@ -14,24 +14,25 @@ function useAuth() {
     cb = cb1
   }
 
-  useEffect(() => {
-    refreshUser()
-    refreshGroups()
-    refreshContacts()
-    refreshConvos()
+  useEffect(async () => {
+    await refreshUser()
+
+    if (user._id) {
+      refreshGroups()
+      refreshContacts()
+      refreshConvos()
+    }
   }, [])
 
   const isAuthed = (user1 = user) => !!user1?._id
 
-  function refreshUser() {
+  async function refreshUser() {
     setIsLoading(true)
-    app.get('user/getUser')
-      .then(res => {
-        setUser(Object.assign(user, res))
-        forceUpdate()
-        cb(isAuthed(res))
-        setIsLoading(false)
-      })
+    const res = await app.get('user/getUser')
+    setUser(Object.assign(user, res))
+    forceUpdate()
+    cb(isAuthed(res))
+    setIsLoading(false)
   }
 
   async function refreshContacts() {
@@ -44,7 +45,7 @@ function useAuth() {
     const groups = [], myGroups = []
 
     for (let i = 0; i < res.groups.length; i++) {
-      (res.groups[i].admin === user._id ? myGroups : groups ).push(res.groups[i])
+      (res.groups[i].admin === user._id ? myGroups : groups).push(res.groups[i])
     }
 
     setUser(Object.assign(user, { groups, myGroups }))
