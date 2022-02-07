@@ -42,7 +42,7 @@ describe('Join Convo', () => {
 
     ctrl.joinConvo(req, res);
 
-    sinon.assert.calledWith(Convo.findById, req.params.convoId, '-_id group');
+    sinon.assert.calledWith(Convo.findById, req.params.convoId, '-_id group link');
   });
 
   it('did not find a group', (done) => {
@@ -88,7 +88,7 @@ describe('Join Convo', () => {
 
     ctrl.joinConvo(req, res);
 
-    sinon.assert.calledWith(Convo.findById, req.params.convoId, '-_id group');
+    sinon.assert.calledWith(Convo.findById, req.params.convoId, '-_id group link');
   });
 
   it('successfully joined a convo', (done) => {
@@ -143,6 +143,6 @@ describe('Join Convo', () => {
 
     ctrl.joinConvo(req, res);
 
-    sinon.assert.calledWith(Convo.findById, req.params.convoId, '-_id group');
+    sinon.assert.calledWith(Convo.findById, req.params.convoId, '-_id group link');
   });
 });
