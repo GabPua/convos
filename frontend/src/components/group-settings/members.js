@@ -7,7 +7,7 @@ import InviteMember from './invite-member'
 function MemberItem({ id, name, dpUri, accepted }) {
   const { setModal, removeMember, group: { admin, isAdmin } } = useOutletContext()
 
-  const handleRemoveMemberClick = () => removeMember(id, accepted)
+  const handleRemoveMemberClick = () => removeMember(id)
 
   let elem = <></>
   let btn = (

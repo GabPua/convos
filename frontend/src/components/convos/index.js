@@ -3,26 +3,29 @@ import PropTypes from 'prop-types'
 import app from '../../utils/axiosConfig'
 import NavBar from './navbar'
 import useAuth from '../../utils/useAuth'
+import { useOutletContext } from 'react-router-dom'
 
-function ConvoItem({ id, topic, link, name, creator, coverUri, count, picUri, deleteConvo }) {
+function ConvoItem({ id, topic, name, creator, coverUri, count, picUri, deleteConvo, onError }) {
   const { user: { _id }, updateConvoCount } = useAuth()
 
   const handleLinkClick = async () => {
-    const { result, count } = await app.post(`convo/join/${id}`)
-
+    const { result, count, link, err } = await app.post(`convo/join/${id}`)
     if (result) {
       updateConvoCount(id, count)
+      window.open(link, '_blank')
+    } else {
+      console.log(err)
+      onError(err)
     }
   }
 
   const handleDeleteClick = e => {
     deleteConvo(id)
-    e.preventDefault()
+    e.stopPropagation()
   }
 
   return (
-    <a
-      href={link} target="_blank" rel="noreferrer" onClick={handleLinkClick}
+    <div onClick={handleLinkClick}
       className="group select-none shadow-lg rounded-lg flex flex-col items-center justify-end h-64 relative bg-no-repeat bg-contain hover:cursor-pointer pb-5 w-64 transition-all hover:scale-105"
       style={{ backgroundImage: `url(${coverUri}` }}>
       {creator === _id &&
@@ -38,7 +41,7 @@ function ConvoItem({ id, topic, link, name, creator, coverUri, count, picUri, de
         <i className="fas fa-user mr-2"></i>
         {count}
       </span>
-    </a>
+    </div>
   )
 }
 
@@ -46,22 +49,28 @@ ConvoItem.propTypes = {
   id: PropTypes.string.isRequired,
   topic: PropTypes.string.isRequired,
   creator: PropTypes.string.isRequired,
-  link: PropTypes.string.isRequired,
   name: PropTypes.string.isRequired,
   coverUri: PropTypes.string.isRequired,
   picUri: PropTypes.string.isRequired,
   count: PropTypes.number.isRequired,
   deleteConvo: PropTypes.func.isRequired,
+  onError: PropTypes.func.isRequired,
 }
 
 export default function Convos() {
   const { user, refreshConvos } = useAuth()
   const [tag, setTag] = useState('')
   const [search, setSearch] = useState('')
+  const { setFeedback } = useOutletContext()
 
   const deleteConvo = async id => {
     await app.delete(`convo/${id}`)
     refreshConvos()
+  }
+
+  const onError = (msg) => {
+    refreshConvos()
+    setFeedback(false, msg)
   }
 
   const handleNavClick = tag => setTag(tag.toLowerCase())
@@ -92,6 +101,7 @@ export default function Convos() {
           coverUri={c.group.coverUri}
           count={c.count}
           deleteConvo={deleteConvo}
+          onError={onError}
         />) : <p>No convos found!</p>}
       </div>
     </div>

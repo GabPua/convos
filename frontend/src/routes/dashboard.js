@@ -46,7 +46,7 @@ export default function Dashboard() {
         }
       </div>
       <div className="ml-60 h-full p-5" style={{ 'width': 'calc(100vw - 15rem)' }}>
-        <Outlet context={handleChangeClick} />
+        <Outlet context={{ handleChangeClick, setFeedback }} />
       </div>
       <Modal component={modal} closeHandler={closeModal} setFeedback={setFeedback} changeHandler={refreshUser} />
     </div>

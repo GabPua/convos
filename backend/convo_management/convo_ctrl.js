@@ -27,7 +27,7 @@ const convo_ctrl = {
   getConvos: async (req, res) => {
     const groups = await Member.find({ user: req.session._id, accepted: true }, '-_id group').lean().exec();
     const temp = groups.map(g => g.group);
-    const convos = await Convo.find({ group: { $in: temp } }, '-__v').populate('group', 'name picUri coverUri tag count').lean({ virtuals: true }).exec();
+    const convos = await Convo.find({ group: { $in: temp } }, '-__v -link').populate('group', 'name picUri coverUri tag count').lean({ virtuals: true }).exec();
     res.json({ result: true, convos });
   },
 
@@ -36,14 +36,17 @@ const convo_ctrl = {
     const { convoId } = req.params;
 
     try {
-      const convo = await Convo.findById(convoId, '-_id group').lean().exec();
+      const convo = await Convo.findById(convoId, '-_id group link').lean().exec();
+      if (!convo) {
+        return res.json({ result: false, err: 'Convo is already expired!' });
+      }
+      
       const group = await Group.findOne({ _id: convo.group, users: userId }).lean().exec();
 
       if (group) {
         const { count } = await Convo.findByIdAndUpdate(convoId, { $addToSet: { users: userId }, createdAt: Date.now() }, 
           { new: true }).lean({ virtuals: true }).exec();
-        console.log(count);
-        return res.json({ result: true, count });
+        return res.json({ result: true, count, link: convo.link });
       }
 
       res.json({ result: false, err: 'User not part of group!' });

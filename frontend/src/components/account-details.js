@@ -11,7 +11,7 @@ import app from '../utils/axiosConfig'
 
 export default function AccountDetails() {
   const { user, refreshUser, isLoading } = useAuth()
-  const handleChangeClick = useOutletContext()
+  const { handleChangeClick } = useOutletContext()
 
   function handleDpChange(result) {
     app.post('user/updateDp', { dpUri: result.url })

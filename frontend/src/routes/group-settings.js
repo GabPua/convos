@@ -57,12 +57,11 @@ export default function GroupSettings() {
     setGroup(Object.assign(group, details))
   }
 
-  const removeMember = async (userId, isInvited) => {
+  const removeMember = async (userId) => {
     const { result } = await app.post(`group/${groupId}/remove`, { userId })
 
     if (result) {
-      if (isInvited) setGroup(Object.assign(group, { invitations: group.invitations.filter(m => m._id !== userId) }))
-      else setGroup(Object.assign(group, { members: group.members.filter(m => m._id !== userId), }))
+      setGroup(Object.assign(group, { members: group.members.filter(m => m._id !== userId) }))
       setFeedback(true, 'User successfully removed!')
     } else {
       setFeedback(false, 'An error has occured!')

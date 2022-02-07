@@ -8,7 +8,8 @@ const memberSchema = new mongoose.Schema({
 });
 
 memberSchema.pre('deleteOne', function(next) {
-  Convo.deleteMany({ group: this.group, user: this.user }, next);
+  const { group, user: creator } = this._conditions;
+  Convo.deleteMany({ group, creator }, next);
 });
 
 module.exports = mongoose.model('Member', memberSchema, 'members');
