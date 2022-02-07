@@ -24,6 +24,8 @@ export function isValidEmail(email: string): boolean {
   return re.test(String(email).toLowerCase())
 }
 
+export const topicErrorMessage = "Topic must not be blank nor exceed 20 characters"
+
 export const passwordErrorMessage = "Password must be at least 5 characters long with at least one letter and at least one special character/digit"
 
 export const usernameErrorMessage = "Username must not be blank nor exceed 15 characters"

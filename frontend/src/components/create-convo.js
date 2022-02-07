@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import PropTypes from 'prop-types'
-import { isBlank } from 'convos-validator'
+import { isBlank, isValidTopicName, topicErrorMessage } from 'convos-validator'
 import app from '../utils/axiosConfig'
 import useAuth from '../utils/useAuth'
 
@@ -16,8 +16,8 @@ export default function CreateConvo(props) {
     const { groupName: groupId, topic, link } = Object.fromEntries(new FormData(e.target))
     const error = {}
 
-    if (isBlank(topic)) {
-      error.topic = 'Topic cannot be blank!'
+    if (isValidTopicName(topic)) {
+      error.topic = topicErrorMessage
     }
     
     if (isBlank(link)) {

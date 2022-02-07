@@ -10,7 +10,7 @@ const convo_ctrl = {
     const { groupId } = req.params;
 
     if (!isValidTopicName(topic)) {
-      return res.json({ result: false });
+      return res.json({ result: false, err: 'Topic name is too long!' });
     }
 
     let convo = {
