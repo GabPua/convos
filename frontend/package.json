@@ -9,7 +9,10 @@
     "@testing-library/user-event": "^12.8.3",
     "autoprefixer": "^9.8.8",
     "axios": "^0.25.0",
+    "babel-eslint": "^10.1.0",
     "convos-validator": "file:../convos-validator",
+    "eslint": "^7.32.0",
+    "eslint-plugin-react": "^7.27.1",
     "http-proxy-middleware": "^0.19.1",
     "postcss": "^7.0.39",
     "prop-types": "^15.7.2",
@@ -43,10 +46,5 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  },
-  "devDependencies": {
-    "babel-eslint": "^10.1.0",
-    "eslint": "^7.32.0",
-    "eslint-plugin-react": "^7.27.1"
   }
 }
