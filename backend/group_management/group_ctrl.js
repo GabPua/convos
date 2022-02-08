@@ -122,18 +122,23 @@ const group_ctrl = {
   },
 
   removeMember: async (req, res) => {
-    const { userId } = req.body;
+    const { userId, newAdmin } = req.body;
     const groupId = req.params.id;
 
     try {
       const result = await Group.findById(groupId, 'admin').lean().exec();
-      const inGroup = await Member.findOne({ group: groupId, user: userId });
+      const members = await Member.find({ group: groupId, user: { $in: [userId, newAdmin]} }).lean().exec();
+      const toRemove = members.find(m => m.user === userId);
+      const nextAdmin = members.find(m => m.user === newAdmin);
 
-      // if user to be removed is part of group and not an admin
-      if (inGroup && userId !== result.admin) {
+      // if user to be removed is part of group and not an admin or a new admin is assigned
+      if (toRemove && (userId !== result.admin || nextAdmin)) {
         // if logged in user is admin or user removing himself
         if (req.session._id === result.admin || req.session._id === userId) {
           await Member.deleteOne({ group: groupId, user: userId });
+
+          if (nextAdmin) await Group.updateOne({ _id: groupId }, { admin: nextAdmin.user }).lean().exec();
+
           return res.json({ result: true });
         }
       }

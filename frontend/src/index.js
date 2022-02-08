@@ -83,9 +83,10 @@ ReactDOM.render(
           }>
             <Route path="" element={<Overview />} />
             <Route path="members" element={<Members />} />
-            <Route path="disband" element={<Disband />}/>
-            <Route path="leave" element={<Leave />}/>
+            <Route path="disband" element={<Disband />} />
+            <Route path="leave" element={<Leave />} />
           </Route>
+          <Route path="*" element={<Navigate to={'/'} />} />
         </Routes>
       </Router>
     </AuthProvider>

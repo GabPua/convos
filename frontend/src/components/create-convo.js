@@ -16,7 +16,7 @@ export default function CreateConvo(props) {
     const { groupName: groupId, topic, link } = Object.fromEntries(new FormData(e.target))
     const error = {}
 
-    if (isValidTopicName(topic)) {
+    if (!isValidTopicName(topic)) {
       error.topic = topicErrorMessage
     }
     
