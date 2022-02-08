@@ -3,7 +3,7 @@ import axios from 'axios'
 const inDev = process.env.NODE_ENV === 'development'
 
 const app = axios.create({
-  baseURL: inDev ? 'http://localhost:3001/api/' : 'http://localhost:3001/api/',
+  baseURL: inDev ? 'http://localhost:3001/api/' : 'https://convos456.herokuapp.com/',
   withCredentials: true,
 })
 

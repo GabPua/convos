@@ -6,7 +6,8 @@
   "scripts": {
     "test": "cd backend && npm run test && cd ../convos-validator && npm run test",
     "dev": "concurrently \"cd backend && npm run dev\" \"cd frontend && npm start\" ",
-    "postinstall": "cd backend && npm i && cd ../frontend && npm i && cd ../convos-validator && npm i"
+    "postinstall": "cd backend && npm i && cd ../frontend && npm i && cd ../convos-validator && npm i",
+    "serve": "cd frontend && npm run build && cd ../backend && npm start"
   },
   "repository": {
     "type": "git",
