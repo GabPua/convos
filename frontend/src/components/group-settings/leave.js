@@ -46,7 +46,7 @@ export default function Leave() {
         </div>
       </div>
       <button type="submit" className="bg-red-500 hover:bg-error-600 transition-colors btn text-white py-2 px-10 text-xl m-auto tracking-wider"
-        disabled={input !== group.name || newAdmin === ''}>LEAVE</button>
+        disabled={input !== group.name || (group.admin === user._id && newAdmin === '')}>LEAVE</button>
     </form>
   )
 }
