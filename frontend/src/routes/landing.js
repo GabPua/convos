@@ -35,7 +35,6 @@ export default function Landing() {
   useEffect(() => {
     const path = Cookies.get('origPath')
     if (path) {
-      console.log(path)
       navigate(path)
       Cookies.remove('origPath')
     } else if (isAuthed()) navigate('/dashboard')

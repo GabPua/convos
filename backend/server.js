@@ -79,7 +79,9 @@ app.use('/api/convo', convo_route);
 
 // 404 redirect
 app.use('/', (req, res) => {
-  res.cookie('origPath', req.path, { httpOnly: false });
+  const queries = Object.keys(req.query).map(key => key + '=' + req.query[key]);
+  const path = queries.length ? req.path + '?' + queries.join('&') : req.path;
+  res.cookie('origPath', path, { httpOnly: false });
   res.redirect('/');
 });
 
