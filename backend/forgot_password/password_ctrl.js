@@ -3,6 +3,7 @@ const { randomBytes } = require('crypto');
 const Token = require('./token');
 const util = require('../utils/email/sendEmail');
 const ObjectId = require('mongoose').Types.ObjectId;
+const domain = process.env.NODE_ENV === 'production' ? 'https://convos456.herokuapp.com' : 'http://localhost:3000';
 
 dotenv.config();
 
@@ -15,7 +16,7 @@ const password_ctrl = {
       try {
         if (err) throw err;
         
-        await util.sendPasswordReset(email, `http://localhost:3000/reset?token=${token}&id=${doc._id}`);
+        await util.sendPasswordReset(email, `${domain}/reset?token=${token}&id=${doc._id}`);
         res.json({ result: true });
       } catch (error) {
         res.json({ result: false, error });
