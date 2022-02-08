@@ -78,7 +78,10 @@ app.use('/api/group', group_route);
 app.use('/api/convo', convo_route);
 
 // 404 redirect
-app.use('/', (req, res) => res.redirect('/'));
+app.use('/', (req, res) => {
+  res.cookie('origPath', req.path, { httpOnly: false });
+  res.redirect('/');
+});
 
 app.listen(app.get('port'), () => {
   console.log(`Find the server at: http://localhost:${app.get('port')}/`); // eslint-disable-line no-console

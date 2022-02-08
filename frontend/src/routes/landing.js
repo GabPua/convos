@@ -3,6 +3,7 @@ import React, { useEffect } from 'react'
 import { isValidEmail, isValidPassword } from 'convos-validator'
 import Loading from '../components/loading'
 import useAuth from '../utils/useAuth'
+import Cookies from 'js-cookie'
 
 export default function Landing() {
   const navigate = useNavigate()
@@ -32,7 +33,12 @@ export default function Landing() {
 
   // check cookie validity and login automatically
   useEffect(() => {
-    if (isAuthed()) navigate('/dashboard')
+    const path = Cookies.get('origPath')
+    if (path) {
+      console.log(path)
+      navigate(path)
+      Cookies.remove('origPath')
+    } else if (isAuthed()) navigate('/dashboard')
     else setLoading(false)
   }, [])
 
