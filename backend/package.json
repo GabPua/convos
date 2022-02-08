@@ -12,14 +12,17 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "cloudinary": "^1.27.1",
     "connect-mongodb-session": "^3.1.1",
     "convos-validator": "file:../convos-validator",
     "cookie-parser": "^1.4.6",
+    "cors": "^2.8.5",
     "dotenv": "^10.0.0",
     "express": "^4.17.1",
     "express-session": "^1.17.2",
     "jest": "^27.4.4",
     "mongoose": "^6.0.12",
+    "mongoose-lean-virtuals": "^0.9.0",
     "nodemailer": "^6.7.1",
     "sinon": "^12.0.1"
   },

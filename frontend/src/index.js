@@ -1,6 +1,6 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom'
+import { BrowserRouter as Router, Routes, Route, useNavigate, useLocation, Navigate } from 'react-router-dom'
 import './index.css'
 import useAuth, { AuthProvider } from './utils/useAuth'
 import PropTypes from 'prop-types'
@@ -8,12 +8,30 @@ import Landing from './routes/landing'
 import Register from './routes/register'
 import ResetForm from './routes/reset-form'
 import Dashboard from './routes/dashboard'
+import AccountDetails from './components/account-details'
+import Groups from './components/groups'
 import reportWebVitals from './reportWebVitals'
+import GroupSettings from './routes/group-settings'
+import Members from './components/group-settings/members'
+import Disband from './components/group-settings/disband'
+import Overview from './components/group-settings/overview'
+import MainView from './components/main-view'
+import Leave from './components/group-settings/leave'
+import Convos from './components/convos'
 
 function RequireAuth({ children }) {
-  const { isAuthed } = useAuth()
-  console.log('Is logged in: ', isAuthed())
-  return isAuthed() ? children : <Navigate to="/" replace />
+  const { isAuthed, isLoading, setCb } = useAuth()
+  const location = useLocation()
+  const path = location.pathname
+  const navigate = useNavigate()
+
+  if (isLoading) {
+    setCb((authed) => { if (authed && path != '/dashboard') navigate(path) })
+  } else {
+    return isAuthed() ? <MainView>{children}</MainView> : <Navigate to="/" replace state={{ path }} />
+  }
+
+  return <></>
 }
 
 RequireAuth.propTypes = {
@@ -22,7 +40,6 @@ RequireAuth.propTypes = {
 
 function RequireUnauth({ children }) {
   const { isAuthed } = useAuth()
-  console.log('Is logged in: ', isAuthed())
   return isAuthed() ? <Navigate to="/dashboard" replace /> : children
 }
 
@@ -50,11 +67,25 @@ ReactDOM.render(
               <ResetForm />
             </RequireUnauth>
           } />
-          <Route path="/dashboard" element={
+          <Route path="/dashboard/" element={
             <RequireAuth>
               <Dashboard />
             </RequireAuth>
-          } />
+          } >
+            <Route path="" element={<AccountDetails />} />
+            <Route path="groups" element={<Groups />} />
+            <Route path="convos" element={<Convos />} />
+          </Route>
+          <Route path="/groups/:groupId" element={
+            <RequireAuth>
+              <GroupSettings />
+            </RequireAuth>
+          }>
+            <Route path="" element={<Overview />} />
+            <Route path="members" element={<Members />} />
+            <Route path="disband" element={<Disband />}/>
+            <Route path="leave" element={<Leave />}/>
+          </Route>
         </Routes>
       </Router>
     </AuthProvider>

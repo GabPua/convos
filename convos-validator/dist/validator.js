@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.isValidEmail = exports.isValidName = exports.isValidPassword = exports.isBlank = void 0;
+exports.tags = exports.groupNameErrorMessage = exports.usernameErrorMessage = exports.passwordErrorMessage = exports.topicErrorMessage = exports.isValidEmail = exports.isValidName = exports.isValidTopicName = exports.isValidGroupName = exports.isValidPassword = exports.isBlank = void 0;
 function isBlank(str) {
     return str === null || !str.trim();
 }
@@ -10,8 +10,16 @@ function isValidPassword(password) {
     return isBlank(password) ? false : re.test(password);
 }
 exports.isValidPassword = isValidPassword;
+function isValidGroupName(name) {
+    return !isBlank(name) && name.length <= 20;
+}
+exports.isValidGroupName = isValidGroupName;
+function isValidTopicName(name) {
+    return isValidGroupName(name);
+}
+exports.isValidTopicName = isValidTopicName;
 function isValidName(name) {
-    return !isBlank(name);
+    return !isBlank(name) && name.length <= 15;
 }
 exports.isValidName = isValidName;
 function isValidEmail(email) {
@@ -19,3 +27,8 @@ function isValidEmail(email) {
     return re.test(String(email).toLowerCase());
 }
 exports.isValidEmail = isValidEmail;
+exports.topicErrorMessage = "Topic must not be blank nor exceed 20 characters";
+exports.passwordErrorMessage = "Password must be at least 5 characters long with at least one letter and at least one special character/digit";
+exports.usernameErrorMessage = "Username must not be blank nor exceed 15 characters";
+exports.groupNameErrorMessage = "Group name must not be blank nor exceed 20 characters";
+exports.tags = ['Social', 'School', 'Work', 'Hobby'];

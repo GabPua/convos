@@ -1,7 +1,7 @@
 const dotenv = require('dotenv');
 const { randomBytes } = require('crypto');
 const Token = require('./token');
-const { sendPasswordReset } = require('../utils/email/sendEmail');
+const util = require('../utils/email/sendEmail');
 const ObjectId = require('mongoose').Types.ObjectId;
 
 dotenv.config();
@@ -9,27 +9,17 @@ dotenv.config();
 const password_ctrl = {
   requestPasswordReset: (req, res) => {
     const email = decodeURIComponent(req.query._id);
+    const token = randomBytes(16).toString('hex'); // generate random token
 
-    Token.findOneAndDelete({ userId: email }, () => {
-      const tokenString = randomBytes(16).toString('hex'); // generate random token
-
-      let myToken = {
-        userId: email,
-        token: tokenString,
-      };
-
-      Token.create(myToken, async (err, token) => {
-        let result = false;
-        try {
-          if (!err) {
-            // TODO: how to set domain???
-            await sendPasswordReset(email, `http://localhost:3000/reset?token=${tokenString}&id=${token._id}`);
-            result = true;
-          }
-        } finally {
-          res.json({ result });
-        }
-      });
+    Token.findOneAndUpdate({ userId: email }, { token }, { upsert: true }, async (err, doc) => {
+      try {
+        if (err) throw err;
+        
+        await util.sendPasswordReset(email, `http://localhost:3000/reset?token=${token}&id=${doc._id}`);
+        res.json({ result: true });
+      } catch (error) {
+        res.json({ result: false, error });
+      }
     });
   },
 

@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "cd backend && npm run test && cd ../convos-validator && npm run test",
     "dev": "concurrently \"cd backend && npm run dev\" \"cd frontend && npm start\" ",
     "postinstall": "cd backend && npm i && cd ../frontend && npm i && cd ../convos-validator && npm i"
   },

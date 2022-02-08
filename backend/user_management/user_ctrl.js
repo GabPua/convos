@@ -1,6 +1,8 @@
+require('dotenv').config();
 const User = require('./user');
-const { isValidEmail, isValidName, isValidPassword } = require('convos-validator');
+const { isValidEmail, isValidName, isValidPassword, passwordErrorMessage } = require('convos-validator');
 const { hashPassword, matchPassword } = require('../utils/hashPassword');
+const Token = require('../forgot_password/token');
 
 async function getUser(_id) {
   return await User.findById(_id).exec();
@@ -24,7 +26,7 @@ const user_ctrl = {
     isUniqueEmail(_id)
       .then(result => {
         if (isValid && result) {
-          const user = { _id, name, groups: [], ...hashPassword(password) };
+          const user = { _id, name, ...hashPassword(password) };
           User.create(user, (err, result) => {
             if (!err) {
               req.session._id = _id;
@@ -54,31 +56,34 @@ const user_ctrl = {
           req.session._id = _id;
           req.session.name = user.name;
           res.status(200);
-          res.json({ _id, name: user.name });
+          res.json({
+            _id,
+            name: user.name,
+            dpUri: user.dpUri,
+          });
         } else {
-          res.status(401);
           res.json({});
         }
       });
   },
 
   getUser: (req, res) => {
-    getUser(req.session._id).then(user => {
-      if (user) {
-        res.json({
+    getUser(req.params.id ? req.params.id : req.session._id)
+      .then(user => {
+        res.json(user ? {
           _id: user._id,
           name: user.name,
-        });
-      } else {
-        res.json({});
-      }
-    });
+          dpUri: user.dpUri,
+        } : {});
+      });
   },
 
   forgotPassword: (req, res) => {
     const { _id, password } = req.body;
     updatePassword(_id, password)
-      .then(() => res.json({ result: true }))
+      .then(() => {
+        Token.deleteOne({ userId: _id }, () => res.json({ result: true })); // remove forgot password token 
+      })
       .catch(() => res.json({ result: false }));
   },
 
@@ -91,6 +96,18 @@ const user_ctrl = {
     } else {
       res.status(400);
       res.json({ err: 'Bad Request: No session or new name passed.' });
+    }
+  },
+
+  updateDp: (req, res) => {
+    const _id = req.session._id;
+    const { dpUri } = req.body;
+
+    if (_id && dpUri) {
+      User.updateOne({ _id }, { dpUri }, (err) => res.json({ result: !err }));
+    } else {
+      res.status(400);
+      res.json({ err: 'Bad Request: No session or new URI passed.' });
     }
   },
 
@@ -108,7 +125,7 @@ const user_ctrl = {
       }
 
       if (!isValidPassword(newPassword)) {
-        return res.json({ new: 'Password must contain' }); // TODO: Error message
+        return res.json({ new: passwordErrorMessage });
       }
 
       updatePassword(_id, newPassword)
@@ -123,6 +140,6 @@ const user_ctrl = {
       res.json({ err });
     });
   }
-}; 
+};
 
 module.exports = user_ctrl;

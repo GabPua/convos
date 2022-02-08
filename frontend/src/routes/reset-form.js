@@ -1,8 +1,8 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import PropTypes from 'prop-types'
-import { isValidEmail, isValidPassword } from 'convos-validator'
-import postRequest from '../utils/postRequest'
+import { isValidEmail, isValidPassword, passwordErrorMessage } from 'convos-validator'
+import app from '../utils/axiosConfig'
 
 function SubmitButton(props) {
   if (props.loading) {
@@ -12,7 +12,7 @@ function SubmitButton(props) {
       </div>
     )
   }
-  return <input type="submit" className="btn primary w-full mt-4" />
+  return <input type="submit" value="Reset Password" className="btn primary w-full mt-4" />
 }
 
 SubmitButton.propTypes = {
@@ -75,8 +75,7 @@ class ResetForm extends React.Component {
       const id = params.get('id')
 
       if (token && id) {
-        fetch(`/api/password/checkToken?token=${token}&id=${id}`)
-          .then(res => res.json())
+        app.get(`password/checkToken?token=${token}&id=${id}`)
           .then(res => {
             if (res.result) {
               this.setState({ status: 'get password', submitHandler: this.onPasswordSubmit, _id: res.email })
@@ -96,8 +95,7 @@ class ResetForm extends React.Component {
 
   sendEmail = (email) => {
     this.setState({ loading: true, error: null })
-    fetch(`/api/password/requestPasswordReset?_id=${encodeURIComponent(email.toLowerCase())}`)
-      .then(res => res.json())
+    app.get(`password/requestPasswordReset?_id=${encodeURIComponent(email.toLowerCase())}`)
       .then(res => {
         if (res.result) {
           this.setState({ status: 'email sent' })
@@ -118,8 +116,7 @@ class ResetForm extends React.Component {
     if (!isValidEmail(email)) {
       this.setState({ status: 'get email', submitHandler: this.onEmailSubmit, error: 'Invalid email' })
     } else {
-      fetch(`/api/user/checkEmail?_id=${encodeURIComponent(email.toString().trim().toLowerCase())}`)
-        .then(res => res.json())
+      app.get(`user/checkEmail?_id=${encodeURIComponent(email.toString().trim().toLowerCase())}`)
         .then(res => {
           if (res.result) {
             this.setState({
@@ -136,7 +133,6 @@ class ResetForm extends React.Component {
 
   onPasswordSubmit = (e) => {
     e.preventDefault()
-    // TODO: front end check, update backend password
     const { password, confirm } = Object.fromEntries(new FormData(e.target))
     const _id = this.state._id
 
@@ -145,7 +141,7 @@ class ResetForm extends React.Component {
         status: 'get password',
         submitHandler: this.onPasswordSubmit,
         _id: _id,
-        error: 'Invalid password'
+        error: passwordErrorMessage
       })
     } else if (password !== confirm) {
       this.setState({
@@ -155,12 +151,11 @@ class ResetForm extends React.Component {
         error: 'Password does not match'
       })
     } else {
-      postRequest('/api/user/forgotPassword', { _id, password })
+      app.post('user/forgotPassword', { _id, password })
         .then(res => {
           if (res.result) {
             this.setState({ status: 'password updated' })
             window.history.replaceState(null, '', '/reset')
-            console.log('SUCCESS!')
           } else {
             alert('An error was encountered!')
           }
@@ -182,7 +177,7 @@ class ResetForm extends React.Component {
         </div>
         <div className="h-[40vh] relative bg-secondary z-10"></div>
 
-        <div className="absolute w-1/5 min-w-max left-1/2 top-1/2 shadow-2xl bg-secondary -translate-x-1/2 -translate-y-1/2 rounded-xl p-8 z-50">
+        <div className="absolute lg:w-2/5 xl:w-1/4 left-1/2 top-1/2 shadow-2xl bg-secondary -translate-x-1/2 -translate-y-1/2 rounded-xl p-8 z-50">
           <figure className="mb-10">
             <img className="m-auto w-10 mb-2" src="/assets/white-question-mark.png" alt="question mark" />
             <figcaption className="text-2xl font-keep-calm text-center">Reset your<br />password</figcaption>

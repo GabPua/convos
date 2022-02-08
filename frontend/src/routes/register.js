@@ -1,7 +1,7 @@
 import { Link, useNavigate } from 'react-router-dom'
 import React from 'react'
-import { isValidEmail, isValidName, isValidPassword } from 'convos-validator'
-import postRequest from '../utils/postRequest'
+import { isValidEmail, isValidName, isValidPassword, passwordErrorMessage, usernameErrorMessage } from 'convos-validator'
+import app from '../utils/axiosConfig'
 
 export default function Register() {
   let navigate = useNavigate()
@@ -12,10 +12,10 @@ export default function Register() {
     const { email, name, password, confirm } = Object.fromEntries(new FormData(e.target))
     let tempError = {}
 
-    if (!isValidName(name)) { tempError.name = 'Invalid name' }
+    if (!isValidName(name)) { tempError.name = usernameErrorMessage }
 
     if (!isValidPassword(password)) {
-      tempError.password = 'Invalid password'
+      tempError.password = passwordErrorMessage
     } else if (password !== confirm) {
       tempError.password = 'Passwords do not match'
     }
@@ -24,8 +24,7 @@ export default function Register() {
       tempError.email = 'Invalid email'
       setError(tempError)
     } else {
-      fetch(`/api/user/checkEmail?_id=${encodeURIComponent(email.toString().toLowerCase())}`)
-        .then(res => res.json())
+      app.get(`user/checkEmail?_id=${encodeURIComponent(email.toString().toLowerCase())}`)
         .then(res => {
           if (!res.result) tempError.email = 'Email is taken'
 
@@ -39,7 +38,7 @@ export default function Register() {
   }
 
   function createAccount(_id, name, password) {
-    postRequest('/api/user/register', { _id, name, password })
+    app.post('user/register', { _id, name, password })
       .then(res => {
         if (res.result) {
           navigate('/dashboard', { state: { _id: res.result._id } })
@@ -52,7 +51,7 @@ export default function Register() {
 
   return (
     <div className="flex min-h-screen items-stretch">
-      <div className="w-[51vw] flex-grow-[0.25] flex-shrink-0 bg-primary shadow-2xl min-h-screen flex flex-col justify-center">
+      <div className="w-[45vw] flex-grow-[0.25] flex-shrink-0 bg-primary shadow-2xl min-h-screen flex flex-col justify-center">
         <div className="flex flex-col items-center justify-center">
           <figure className="mb-5">
             <img src="/assets/logo-white.png" alt="Convos Logo" className="mb-10 m-auto" />
@@ -63,7 +62,7 @@ export default function Register() {
           </Link>
         </div>
       </div>
-      <div className="flex-auto">
+      <div className="flex-1">
         <form className="flex flex-col items-center justify-center h-full w-5/6 m-auto" onSubmit={handleSubmit}>
           <div className="field w-5/6 lg:w-3/4">
             <input type="email" name="email" className="input max-w-lg w-full" placeholder="Email" />
@@ -78,7 +77,7 @@ export default function Register() {
           </div>
           <div className="field w-5/6 lg:w-3/4">
             <input type="password" name="confirm" className="input max-w-lg w-full" placeholder="Confirm password" />
-            <p className="help-text">{error.password}</p>
+            <p className="help-text max-w-md">{error.password}</p>
           </div>
           <input type="submit" className="btn primary w-full max-w-sm font-medium text-xl mt-12" value="Register" />
         </form>
