@@ -47,7 +47,7 @@ export default function CreateConvo(props) {
             <label className="mb-3" htmlFor="group-name">Group</label>
             <div className="w-72">
               <select className="input w-full text-center" onChange={handleChange} type="text" id="group-name" name="groupName">
-                {groups.filter(g => g.accepted).concat(myGroups).map(g => <option key={g._id} value={g._id}>{g.name}</option>)}
+                {groups?.filter(g => g.accepted)?.concat(myGroups)?.map(g => <option key={g._id} value={g._id}>{g.name}</option>)}
               </select>
             </div>
           </div>
