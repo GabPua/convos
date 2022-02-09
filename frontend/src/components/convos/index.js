@@ -58,7 +58,7 @@ ConvoItem.propTypes = {
 }
 
 export default function Convos() {
-  const { user, refreshConvos } = useAuth()
+  const { user, refreshConvos, refreshGroups } = useAuth()
   const [tag, setTag] = useState('all')
   const [search, setSearch] = useState('')
   const { setFeedback } = useOutletContext()
@@ -76,7 +76,10 @@ export default function Convos() {
   const handleNavClick = tag => setTag(tag.toLowerCase())
   const handleSearch = e => setSearch(e.target.value.toLowerCase())
 
-  useEffect(refreshConvos, [])
+  useEffect(() => {
+    refreshGroups()
+    refreshConvos()
+  }, [])
 
   let convos = user?.convos
 
